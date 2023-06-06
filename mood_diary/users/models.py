@@ -37,7 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
 
     # The `is_staff` flag is expected by Django to determine who can and cannot
     # log into the Django admin site
-    is_staff = models.BooleanField()
+    is_staff = models.BooleanField(default=False)
 
     # The `USERNAME_FIELD` property tells us which field we will use to log in
     USERNAME_FIELD = "email"
