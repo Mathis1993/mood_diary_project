@@ -10,3 +10,5 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Sequence(lambda n: "user{0}@example.com".format(n))
     password = factory.PostGenerationMethodCall("set_password", "password1")
     role = factory.fuzzy.FuzzyChoice(["admin", "counselor", "client"])
+    first_login_completed = False
+    is_staff = False
