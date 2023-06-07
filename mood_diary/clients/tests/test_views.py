@@ -1,3 +1,5 @@
+import http
+
 import pytest
 from clients.forms import ClientCreationForm
 from clients.models import Client
@@ -32,7 +34,7 @@ def test_create_client_view_get(create_user, create_response):
     counselor = create_user(User.Role.COUNSELOR)
     response = create_response(user=counselor, method="GET")
 
-    assert response.status_code == 200
+    assert response.status_code == http.HTTPStatus.OK
     assert isinstance(response.context["form"], ClientCreationForm)
 
 
@@ -43,7 +45,7 @@ def test_create_client_view_post_valid_form(create_user, create_response):
         user=counselor, method="POST", data={"email": "test@example.com", "identifier": "client1"}
     )
 
-    assert response.status_code == 200
+    assert response.status_code == http.HTTPStatus.OK
     assert "email" in response.context
     assert "password" in response.context
     assert User.objects.filter(email="test@example.com", role=User.Role.CLIENT).exists()
@@ -57,7 +59,7 @@ def test_create_client_view_post_invalid_email(create_user, create_response):
         user=counselor, method="POST", data={"email": "invalid-email", "identifier": "client1"}
     )
 
-    assert response.status_code == 200
+    assert response.status_code == http.HTTPStatus.OK
     assert isinstance(response.context["form"], ClientCreationForm)
     assert "email" in response.context["form"].errors
 
@@ -70,7 +72,7 @@ def test_create_client_view_post_client_already_exists(create_user, create_respo
         user=counselor, method="POST", data={"email": "test@example.com", "identifier": "client1"}
     )
 
-    assert response.status_code == 200
+    assert response.status_code == http.HTTPStatus.OK
     assert isinstance(response.context["form"], ClientCreationForm)
     assert "email" in response.context["form"].errors
 
@@ -81,4 +83,4 @@ def test_create_client_view_permission(create_user, create_response):
 
     response = create_response(user=client_user)
 
-    assert response.status_code == 403
+    assert response.status_code == http.HTTPStatus.FORBIDDEN
