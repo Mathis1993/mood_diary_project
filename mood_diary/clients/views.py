@@ -2,7 +2,6 @@ from clients.forms import ClientCreationForm
 from clients.models import Client
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.utils.crypto import get_random_string
@@ -37,13 +36,6 @@ class CreateClientView(LoginRequiredMixin, UserPassesTestMixin, View):
 
             password = get_random_string(length=15)
             client_user.set_password(password)
-
-            try:
-                validate_password(password, client_user)
-            except ValidationError as e:
-                form.add_error("password", e)
-                return render(request, self.template_name, {"form": form})
-
             client_user.save()
 
             Client.objects.create(user=client_user, identifier=identifier, counselor=counselor)
