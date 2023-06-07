@@ -1,5 +1,6 @@
 import factory.fuzzy
 from diaries.models import Activity, Emotion, Mood, MoodDiary, MoodDiaryEntry, Strain, StrainArea
+from django.utils import timezone
 
 MOOD_SCALE = {
     "Extremely Unhappy": 1,
@@ -36,6 +37,8 @@ class MoodDiaryEntryFactory(factory.django.DjangoModelFactory):
 
     mood_diary = factory.SubFactory(MoodDiaryFactory)
     released = factory.fuzzy.FuzzyChoice([True, False])
+    start_time = timezone.now() - timezone.timedelta(hours=1)
+    end_time = timezone.now()
     mood = factory.SubFactory("diaries.tests.factories.MoodFactory")
     emotion = factory.SubFactory("diaries.tests.factories.EmotionFactory")
     mood_and_emotion_info = factory.faker.Faker("sentence", nb_words=10)

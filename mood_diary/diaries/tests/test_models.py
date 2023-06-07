@@ -8,6 +8,7 @@ from diaries.tests.factories import (
     StrainAreaFactory,
     StrainFactory,
 )
+from django.utils import timezone
 
 
 @pytest.mark.django_db
@@ -22,6 +23,9 @@ def test_mood_diary_entry():
     # All fields of MoodDiaryEntry filled
     mood_diary_entry_1 = MoodDiaryEntry.objects.create(
         mood_diary=mood_diary,
+        released=False,
+        start_time=timezone.now() - timezone.timedelta(hours=1),
+        end_time=timezone.now(),
         mood=mood,
         emotion=emotion,
         mood_and_emotion_info="blorg",
@@ -32,6 +36,7 @@ def test_mood_diary_entry():
     )
 
     assert mood_diary_entry_1.mood_diary == mood_diary
+    assert mood_diary_entry_1.start_time < mood_diary_entry_1.end_time
     assert mood_diary_entry_1.released is False
     assert mood_diary_entry_1.mood == mood
     assert mood_diary_entry_1.emotion == emotion
@@ -51,6 +56,8 @@ def test_mood_diary_entry():
         strain_info="blepp",
     )
 
+    assert mood_diary_entry_2.start_time is None
+    assert mood_diary_entry_2.end_time is not None
     assert mood_diary_entry_2.mood_and_emotion_info is None
     assert mood_diary_entry_2.strain_area is None
 
