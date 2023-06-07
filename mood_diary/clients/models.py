@@ -11,11 +11,11 @@ class Client(TrackCreationAndUpdates):
         db_table = "clients_clients"
 
     user = models.OneToOneField(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user"
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="client"
     )
     identifier = models.CharField(max_length=255)
     counselor = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name="counselor"
+        to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name="clients"
     )
     active = models.BooleanField(default=True)
 
