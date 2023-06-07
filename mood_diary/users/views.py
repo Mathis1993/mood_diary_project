@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -22,7 +23,7 @@ def index(request):
         return HttpResponse("Hello, world.")
 
 
-class CustomPasswordChangeView(PasswordChangeView):
+class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     success_url = reverse_lazy("users:password_change_done")
 
     def form_valid(self, form):

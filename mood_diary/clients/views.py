@@ -1,26 +1,22 @@
 from clients.forms import ClientCreationForm
 from clients.models import Client
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.shortcuts import render
 from django.views import View
 
 User = get_user_model()
 
 
-class CreateClientView(UserPassesTestMixin, View):
+class CreateClientView(LoginRequiredMixin, UserPassesTestMixin, View):
     form = ClientCreationForm
     template_name = "clients/create_client.html"
     success_template_name = "clients/client_login_details.html"
 
     def test_func(self):
         return self.request.user.role == User.Role.COUNSELOR
-
-    def handle_no_permission(self):
-        return redirect(reverse("users:index"))
 
     def get(self, request):
         form = self.form()
