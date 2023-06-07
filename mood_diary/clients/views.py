@@ -1,7 +1,7 @@
 from clients.forms import ClientCreationForm
 from clients.models import Client
+from core.views import AuthenticatedCounselorRoleMixin
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.utils.crypto import get_random_string
@@ -10,20 +10,17 @@ from django.views import View
 User = get_user_model()
 
 
-class CreateClientView(LoginRequiredMixin, UserPassesTestMixin, View):
-    form = ClientCreationForm
+class CreateClientView(AuthenticatedCounselorRoleMixin, View):
+    form_class = ClientCreationForm
     template_name = "clients/create_client.html"
     success_template_name = "clients/client_login_details.html"
 
-    def test_func(self):
-        return self.request.user.is_counselor()
-
     def get(self, request):
-        form = self.form()
+        form = self.form_class()
         return render(request, self.template_name, {"form": form})
 
     def post(self, request):
-        form = self.form(request.POST)
+        form = self.form_class(request.POST)
         if form.is_valid():
             counselor = request.user
             email = form.cleaned_data["email"]
