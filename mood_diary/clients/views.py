@@ -16,7 +16,7 @@ class CreateClientView(LoginRequiredMixin, UserPassesTestMixin, View):
     success_template_name = "clients/client_login_details.html"
 
     def test_func(self):
-        return self.request.user.role == User.Role.COUNSELOR
+        return self.request.user.is_counselor()
 
     def get(self, request):
         form = self.form()

@@ -46,3 +46,11 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
     # The BaseUserManager contains a "get_by_natural_key" method using the
     # `USERNAME_FIELD` property during authentication
     objects = UserManager()
+
+    def is_client(self):
+        """Used as authorization check."""
+        return self.role == User.Role.CLIENT
+
+    def is_counselor(self):
+        """Used as authorization check."""
+        return self.role == User.Role.COUNSELOR
