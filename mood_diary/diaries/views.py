@@ -8,7 +8,7 @@ from django.views.generic import DeleteView, ListView, UpdateView
 from django.views.generic.detail import DetailView
 
 
-class MoodDiaryEntryDetailView(DetailView):
+class MoodDiaryEntryDetailView(AuthenticatedClientRoleMixin, DetailView):
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entry_get.html"
     context_object_name = "entry"
@@ -44,7 +44,7 @@ class CreateMoodDiaryEntryView(AuthenticatedClientRoleMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
-class MoodDiaryEntryUpdateView(UpdateView):
+class MoodDiaryEntryUpdateView(AuthenticatedClientRoleMixin, UpdateView):
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entry_update.html"
     fields = [
@@ -61,7 +61,7 @@ class MoodDiaryEntryUpdateView(UpdateView):
     success_url = reverse_lazy("diaries:list_mood_diary_entries")
 
 
-class MoodDiaryEntryDeleteView(DeleteView):
+class MoodDiaryEntryDeleteView(AuthenticatedClientRoleMixin, DeleteView):
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entry_delete.html"
     context_object_name = "entry"
