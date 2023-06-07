@@ -22,8 +22,8 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('identifier', models.CharField(max_length=255)),
                 ('active', models.BooleanField(default=True)),
-                ('counselor', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='counselor', to=settings.AUTH_USER_MODEL)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='user', to=settings.AUTH_USER_MODEL)),
+                ('counselor', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='clients', to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='client', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'db_table': 'clients_clients',
