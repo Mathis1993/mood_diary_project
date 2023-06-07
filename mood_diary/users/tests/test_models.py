@@ -10,6 +10,7 @@ from django.forms import ModelForm
 from django.http import HttpResponse
 from django.test import RequestFactory
 from django.urls import reverse
+from users.tests.factories import UserFactory
 
 User = get_user_model()
 
@@ -95,3 +96,14 @@ def test_user_model_authentication():
     request.user = user
     response = dummy_view(request)
     assert response.status_code == HTTPStatus.OK
+
+
+@pytest.mark.django_db
+def test_user_model_authorization_checks():
+    counselor = UserFactory.create(role=User.Role.COUNSELOR)
+    client_user = UserFactory.create(role=User.Role.CLIENT)
+
+    assert counselor.is_counselor()
+    assert client_user.is_client()
+    assert not counselor.is_client()
+    assert not client_user.is_counselor()
