@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
+from django.utils.crypto import get_random_string
 from django.views import View
 
 User = get_user_model()
@@ -34,7 +35,7 @@ class CreateClientView(LoginRequiredMixin, UserPassesTestMixin, View):
                 form.add_error("email", ValidationError("client already exists"))
                 return render(request, self.template_name, {"form": form})
 
-            password = User.objects.make_random_password(length=15)
+            password = get_random_string(length=15)
             client_user.set_password(password)
 
             try:
