@@ -1,6 +1,7 @@
 from clients.models import Client
 from core.models import NormalizedScaleModel, NormalizedStringValueModel, TrackCreationAndUpdates
 from django.db import models
+from django.utils import timezone
 
 
 class MoodDiary(models.Model):
@@ -16,6 +17,8 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
 
     mood_diary = models.ForeignKey(to=MoodDiary, on_delete=models.CASCADE, related_name="entries")
     released = models.BooleanField(default=False)
+    start_time = models.TimeField(null=True, blank=True, default=None)
+    end_time = models.TimeField(default=timezone.now, null=True, blank=True)
     mood = models.ForeignKey(
         to="diaries.Mood", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
@@ -54,22 +57,37 @@ class Mood(NormalizedScaleModel):
     class Meta:
         db_table = "diaries_moods"
 
+    def __str__(self):
+        return f"{self.label} ({self.value})"
+
 
 class Emotion(NormalizedStringValueModel):
     class Meta:
         db_table = "diaries_emotions"
+
+    def __str__(self):
+        return self.value
 
 
 class Activity(NormalizedStringValueModel):
     class Meta:
         db_table = "diaries_activities"
 
+    def __str__(self):
+        return self.value
+
 
 class Strain(NormalizedScaleModel):
     class Meta:
         db_table = "diaries_strains"
 
+    def __str__(self):
+        return f"{self.label} ({self.value})"
+
 
 class StrainArea(NormalizedStringValueModel):
     class Meta:
         db_table = "diaries_strain_areas"
+
+    def __str__(self):
+        return self.value
