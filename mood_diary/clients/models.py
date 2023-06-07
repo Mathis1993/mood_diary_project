@@ -11,7 +11,7 @@ class Client(TrackCreationAndUpdates):
         db_table = "clients_clients"
 
     user = models.OneToOneField(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user", unique=True
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user"
     )
     identifier = models.CharField(max_length=255)
     counselor = models.ForeignKey(
