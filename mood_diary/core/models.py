@@ -18,3 +18,18 @@ class TrackUpdates(models.Model):
 class TrackCreationAndUpdates(TrackCreation, TrackUpdates):
     class Meta:
         abstract = True
+
+
+class NormalizedStringValueModel(models.Model):
+    value = models.CharField(max_length=255)
+
+    class Meta:
+        abstract = True
+
+
+class NormalizedScaleModel(models.Model):
+    label = models.CharField(max_length=255)
+    value = models.IntegerField()
+
+    class Meta:
+        abstract = True
