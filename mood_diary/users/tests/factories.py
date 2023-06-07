@@ -1,14 +1,15 @@
 import factory.fuzzy
-from django.contrib.auth import get_user_model
+from django.conf import settings
+from users.models import User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = get_user_model()
+        model = User
         django_get_or_create = ("email",)
 
     email = factory.Sequence(lambda n: "user{0}@example.com".format(n))
-    password = factory.PostGenerationMethodCall("set_password", "password1")
+    password = factory.PostGenerationMethodCall("set_password", settings.TEST_USER_PASSWORD)
     role = factory.fuzzy.FuzzyChoice(["admin", "counselor", "client"])
     first_login_completed = False
     is_staff = False
