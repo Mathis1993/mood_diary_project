@@ -45,11 +45,8 @@ precision = 2
 
 [tool.pytest.ini_options]
 python_files = "tests.py test_*.py *_tests.py"
-DJANGO_SETTINGS_MODULE= "config.settings_testing"
+DJANGO_SETTINGS_MODULE= "config.settings.test"
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "jwt_scope: sets required scope for api test",
-]
-env = [
-    "ENVIRONMENT=test",
 ]
