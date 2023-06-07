@@ -1,18 +1,32 @@
 from core.models import TrackCreationAndUpdates
 from django.conf import settings
-from django.db import models
+from django.contrib.auth import get_user_model
+from django.db import IntegrityError, models
+
+User = get_user_model()
 
 
 class Client(TrackCreationAndUpdates):
     class Meta:
         db_table = "clients_clients"
-        unique_together = ["identifier", "counselor"]
 
     user = models.OneToOneField(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user"
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user", unique=True
     )
     identifier = models.CharField(max_length=255)
     counselor = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name="counselor"
     )
     active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        """
+        Validate user roles.
+        """
+        if not self.user.role == User.Role.CLIENT:
+            raise IntegrityError("The client user must have the client role")
+
+        if not self.counselor.role == User.Role.COUNSELOR:
+            raise IntegrityError("The counselor user must have the counselor role")
+
+        super().save(*args, **kwargs)
