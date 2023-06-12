@@ -4,6 +4,7 @@ import pytest
 from clients.forms import ClientCreationForm
 from clients.models import Client
 from clients.tests.factories import ClientFactory
+from diaries.models import MoodDiary
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from users.tests.factories import UserFactory
@@ -47,6 +48,7 @@ def test_create_client_view_post_valid_form(create_user, create_response):
     assert "password" in response.context
     assert User.objects.filter(email="test@example.com", role=User.Role.CLIENT).exists()
     assert Client.objects.filter(identifier="client1", counselor=counselor).exists()
+    assert MoodDiary.objects.filter(client__identifier="client1").exists()
 
 
 @pytest.mark.django_db

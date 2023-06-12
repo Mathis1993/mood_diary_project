@@ -1,6 +1,7 @@
 from clients.forms import ClientCreationForm
 from clients.models import Client
 from core.views import AuthenticatedCounselorRoleMixin
+from diaries.models import MoodDiary
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
@@ -35,7 +36,10 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
             client_user.set_password(password)
             client_user.save()
 
-            Client.objects.create(user=client_user, identifier=identifier, counselor=counselor)
+            client = Client.objects.create(
+                user=client_user, identifier=identifier, counselor=counselor
+            )
+            MoodDiary.objects.create(client=client)
 
             return render(
                 request, self.success_template_name, {"email": email, "password": password}
