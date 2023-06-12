@@ -19,20 +19,12 @@ def create_user():
     return _create_user
 
 
-@pytest.fixture
-def create_response(client):
-    def _create_response(user, method="GET", data=None):
-        client.force_login(user)
-        response = getattr(client, method.lower())(reverse("clients:create_client"), data)
-        return response
-
-    return _create_response
-
-
 @pytest.mark.django_db
 def test_create_client_view_get(create_user, create_response):
     counselor = create_user(User.Role.COUNSELOR)
-    response = create_response(user=counselor, method="GET")
+    url = reverse("clients:create_client")
+
+    response = create_response(user=counselor, url=url)
 
     assert response.status_code == http.HTTPStatus.OK
     assert isinstance(response.context["form"], ClientCreationForm)
@@ -41,8 +33,13 @@ def test_create_client_view_get(create_user, create_response):
 @pytest.mark.django_db
 def test_create_client_view_post_valid_form(create_user, create_response):
     counselor = create_user(User.Role.COUNSELOR)
+    url = reverse("clients:create_client")
+
     response = create_response(
-        user=counselor, method="POST", data={"email": "test@example.com", "identifier": "client1"}
+        user=counselor,
+        url=url,
+        method="POST",
+        data={"email": "test@example.com", "identifier": "client1"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -55,8 +52,13 @@ def test_create_client_view_post_valid_form(create_user, create_response):
 @pytest.mark.django_db
 def test_create_client_view_post_invalid_email(create_user, create_response):
     counselor = create_user(User.Role.COUNSELOR)
+    url = reverse("clients:create_client")
+
     response = create_response(
-        user=counselor, method="POST", data={"email": "invalid-email", "identifier": "client1"}
+        user=counselor,
+        url=url,
+        method="POST",
+        data={"email": "invalid-email", "identifier": "client1"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -68,8 +70,13 @@ def test_create_client_view_post_invalid_email(create_user, create_response):
 def test_create_client_view_post_client_already_exists(create_user, create_response):
     counselor = create_user(User.Role.COUNSELOR)
     ClientFactory.create(user__email="test@example.com")
+    url = reverse("clients:create_client")
+
     response = create_response(
-        user=counselor, method="POST", data={"email": "test@example.com", "identifier": "client1"}
+        user=counselor,
+        url=url,
+        method="POST",
+        data={"email": "test@example.com", "identifier": "client1"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -80,7 +87,8 @@ def test_create_client_view_post_client_already_exists(create_user, create_respo
 @pytest.mark.django_db
 def test_create_client_view_permission(create_user, create_response):
     client_user = create_user(User.Role.CLIENT)
+    url = reverse("clients:create_client")
 
-    response = create_response(user=client_user)
+    response = create_response(user=client_user, url=url)
 
     assert response.status_code == http.HTTPStatus.FORBIDDEN
