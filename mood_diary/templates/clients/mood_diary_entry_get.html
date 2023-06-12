@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mood Diary Entry</title>
+</head>
+<body>
+
+{% block content %}
+  <h1>Mood Diary Entry</h1>
+  <p><strong>Date:</strong> {{ entry.created_at.date }}</p>
+  <p><strong>Duration:</strong> {{ entry.start_time }} - {{ entry.end_time }}</p>
+  <p><strong>Mood:</strong> {{ entry.mood.label }} ({{ entry.mood.value }})</p>
+  <p><strong>Emotion:</strong> {{ entry.emotion.value }}</p>
+  <p><strong>Mood And Emotion Info:</strong> {{ entry.mood_and_emotion_info }}</p>
+  <p><strong>Activity:</strong> {{ entry.activity.value }}</p>
+  <p><strong>Strain:</strong> {{ entry.strain.label }} ({{ entry.strain.value }})</p>
+  <p><strong>Strain Area:</strong> {{ entry.strain_area.value }}</p>
+  <p><strong>Strain Info:</strong> {{ entry.strain_info }}</p>
+  <!-- Include additional fields as needed -->
+{% endblock %}
+
+</body>
+</html>
