@@ -1,3 +1,5 @@
+from datetime import date
+
 from clients.models import Client
 from core.models import NormalizedScaleModel, NormalizedStringValueModel, TrackCreationAndUpdates
 from django.db import models
@@ -17,6 +19,7 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
 
     mood_diary = models.ForeignKey(to=MoodDiary, on_delete=models.CASCADE, related_name="entries")
     released = models.BooleanField(default=False)
+    date = models.DateField(default=date.today)
     start_time = models.TimeField(null=True, blank=True, default=None)
     end_time = models.TimeField(default=timezone.now, null=True, blank=True)
     mood = models.ForeignKey(
