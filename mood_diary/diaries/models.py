@@ -1,8 +1,12 @@
+from __future__ import annotations
+
 from datetime import date
+from typing import Dict, List
 
 from clients.models import Client
 from core.models import NormalizedScaleModel, NormalizedStringValueModel, TrackCreationAndUpdates
 from django.db import models
+from django.db.models import Avg
 from django.utils import timezone
 
 
@@ -11,6 +15,16 @@ class MoodDiary(models.Model):
         db_table = "diaries_mood_diaries"
 
     client = models.OneToOneField(to=Client, on_delete=models.CASCADE, related_name="mood_diary")
+
+    def average_mood_scores_previous_days(self, n_days: int) -> Dict[str, int]:
+        return (
+            self.entries.order_by("-date")
+            .values("date")
+            .annotate(average_mood=Avg("mood__value"))[:n_days]
+        )
+
+    def most_recent_mood_highlights(self, n_highlights: int) -> List[MoodDiary]:
+        return self.entries.order_by("-mood__value", "-date")[:n_highlights]
 
 
 class MoodDiaryEntry(TrackCreationAndUpdates):
