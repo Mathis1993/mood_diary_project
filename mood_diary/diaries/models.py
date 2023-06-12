@@ -25,6 +25,9 @@ class MoodDiary(models.Model):
     def most_recent_mood_highlights(self, n_highlights: int) -> QuerySet:
         return self.entries.order_by("-mood__value", "-date")[:n_highlights]
 
+    def release_entries(self):
+        self.entries.filter(released=False).update(released=True)
+
 
 class MoodDiaryEntry(TrackCreationAndUpdates):
     class Meta:

@@ -122,3 +122,17 @@ def test_mood_diary_entry_most_recent_mood_highlights():
     assert most_recent_highlights[1].id == target_3.id
     assert most_recent_highlights[2].id == target_2.id
     assert most_recent_highlights[3].id == target_1.id
+
+
+@pytest.mark.django_db
+def test_release_entries():
+    mood_diary = MoodDiaryFactory.create()
+    MoodDiaryEntryFactory.create_batch(3, mood_diary=mood_diary, released=False)
+    MoodDiaryEntryFactory.create_batch(2, mood_diary=mood_diary, released=True)
+
+    mood_diary.release_entries()
+
+    unreleased_entries = mood_diary.entries.filter(released=False)
+    assert unreleased_entries.count() == 0
+    released_entries = mood_diary.entries.filter(released=True)
+    assert released_entries.count() == 5
