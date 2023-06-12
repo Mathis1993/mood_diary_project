@@ -1,3 +1,5 @@
+from datetime import date
+
 import factory.fuzzy
 from diaries.models import Activity, Emotion, Mood, MoodDiary, MoodDiaryEntry, Strain, StrainArea
 from django.utils import timezone
@@ -37,6 +39,7 @@ class MoodDiaryEntryFactory(factory.django.DjangoModelFactory):
 
     mood_diary = factory.SubFactory(MoodDiaryFactory)
     released = factory.fuzzy.FuzzyChoice([True, False])
+    date = date.today()
     start_time = timezone.now() - timezone.timedelta(hours=1)
     end_time = timezone.now()
     mood = factory.SubFactory("diaries.tests.factories.MoodFactory")
