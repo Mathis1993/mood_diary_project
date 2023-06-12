@@ -13,3 +13,12 @@ class AuthenticatedClientRoleMixin(AccessMixin):
         if not (user := request.user).is_authenticated or not user.is_client():
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
+
+
+class AuthenticatedCounselorOrClientRoleMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not (user := request.user).is_authenticated or not (
+            user.is_counselor() or user.is_client()
+        ):
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
