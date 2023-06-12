@@ -3,6 +3,7 @@ from diaries.models import MoodDiaryEntry
 from diaries.tests.factories import (
     ActivityFactory,
     EmotionFactory,
+    MoodDiaryEntryFactory,
     MoodDiaryFactory,
     MoodFactory,
     StrainAreaFactory,
@@ -71,3 +72,53 @@ def test_mood_diary_entry():
     assert mood_diary_entry_3.emotion is None
     assert mood_diary_entry_3.strain is None
     assert mood_diary_entry_3.strain_info is None
+
+
+@pytest.mark.django_db
+def test_mood_diary_entry_average_mood_scores_previous_days():
+    mood_diary = MoodDiaryFactory.create()
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-01", mood__value=1)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-01", mood__value=2)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-01", mood__value=3)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-02", mood__value=4)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-02", mood__value=4)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-03", mood__value=2)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-03", mood__value=3)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-03", mood__value=4)
+
+    # last four days (although only data for three days exists)
+    average_mood_scores = mood_diary.average_mood_scores_previous_days(4)
+
+    assert average_mood_scores.count() == 3
+    assert average_mood_scores[0]["average_mood"] == 3.0  # 2023-10-03
+    assert average_mood_scores[1]["average_mood"] == 4.0  # 2023-10-02
+    assert average_mood_scores[2]["average_mood"] == 2.0  # 2023-10-01
+
+    # last two days (without third day)
+    average_mood_scores = mood_diary.average_mood_scores_previous_days(2)
+
+    assert average_mood_scores.count() == 2
+    assert average_mood_scores[0]["average_mood"] == 3.0  # 2023-10-03
+    assert average_mood_scores[1]["average_mood"] == 4.0  # 2023-10-02
+
+
+@pytest.mark.django_db
+def test_mood_diary_entry_most_recent_mood_highlights():
+    mood_diary = MoodDiaryFactory.create()
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-01", mood__value=1)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-01", mood__value=2)
+    target_3 = MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-01", mood__value=5)
+    target_1 = MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-01", mood__value=4)
+    target_2 = MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-02", mood__value=4)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-02", mood__value=3)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-03", mood__value=2)
+    MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-03", mood__value=3)
+    target_4 = MoodDiaryEntryFactory.create(mood_diary=mood_diary, date="2023-10-03", mood__value=6)
+
+    most_recent_highlights = mood_diary.most_recent_mood_highlights(4)
+
+    assert most_recent_highlights.count() == 4
+    assert most_recent_highlights[0].id == target_4.id
+    assert most_recent_highlights[1].id == target_3.id
+    assert most_recent_highlights[2].id == target_2.id
+    assert most_recent_highlights[3].id == target_1.id
