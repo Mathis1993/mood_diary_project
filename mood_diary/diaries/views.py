@@ -30,7 +30,7 @@ class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, ListView):
     def get_queryset(self):
         client_id = self.request.user.client.id
         mood_diary, _ = MoodDiary.objects.get_or_create(client_id=client_id)
-        return mood_diary.entries.all().order_by("-created_at")
+        return mood_diary.entries.all().order_by("-date")
 
 
 class CreateMoodDiaryEntryView(AuthenticatedClientRoleMixin, View):
