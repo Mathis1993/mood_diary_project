@@ -37,18 +37,32 @@ def test_index_with_first_login_not_completed_superuser(admin_client):
     url = reverse("users:index")
 
     response = admin_client.get(url)
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == http.HTTPStatus.FOUND
+    assert response.url == reverse("admin:index")
 
 
 @pytest.mark.django_db
-def test_index_with_first_login_completed(client):
+def test_index_with_first_login_completed_counselor(client):
+    user = UserFactory.create(role=User.Role.COUNSELOR, first_login_completed=True)
+    client.force_login(user)
+    url = reverse("users:index")
+
+    response = client.get(url)
+
+    assert response.status_code == http.HTTPStatus.FOUND
+    assert response.url == reverse("dashboards:dashboard_counselor")
+
+
+@pytest.mark.django_db
+def test_index_with_first_login_completed_client(client):
     user = UserFactory.create(role=User.Role.CLIENT, first_login_completed=True)
     client.force_login(user)
     url = reverse("users:index")
 
     response = client.get(url)
 
-    assert response.status_code == http.HTTPStatus.OK
+    assert response.status_code == http.HTTPStatus.FOUND
+    assert response.url == reverse("dashboards:dashboard_client")
 
 
 @pytest.mark.django_db
