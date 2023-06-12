@@ -5,23 +5,23 @@ from diaries.models import Activity, Emotion, Mood, MoodDiary, MoodDiaryEntry, S
 from django.utils import timezone
 
 MOOD_SCALE = {
-    "Extremely Unhappy": 1,
-    "Unhappy": 2,
-    "Somewhat Unhappy": 3,
-    "Neutral": 4,
-    "Somewhat Happy": 5,
-    "Happy": 6,
-    "Extremely Happy": 7,
+    1: "Extremely Unhappy",
+    2: "Unhappy",
+    3: "Somewhat Unhappy",
+    4: "Neutral",
+    5: "Somewhat Happy",
+    6: "Happy",
+    7: "Extremely Happy",
 }
 
 STRAIN_SCALE = {
-    "Very Low Strain": 1,
-    "Low Strain": 2,
-    "Moderate-Low Strain": 3,
-    "Neutral": 4,
-    "Moderate-High Strain": 5,
-    "High Strain": 6,
-    "Very High Strain": 7,
+    1: "Very Low Strain",
+    2: "Low Strain",
+    3: "Moderate-Low Strain",
+    4: "Neutral",
+    5: "Moderate-High Strain",
+    6: "High Strain",
+    7: "Very High Strain",
 }
 
 
@@ -54,10 +54,10 @@ class MoodDiaryEntryFactory(factory.django.DjangoModelFactory):
 class MoodFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Mood
-        django_get_or_create = ("label",)
+        django_get_or_create = ("value",)
 
-    label = factory.fuzzy.FuzzyChoice(list(MOOD_SCALE.keys()))
-    value = factory.LazyAttribute(lambda obj: MOOD_SCALE[obj.label])
+    value = factory.fuzzy.FuzzyChoice(list(MOOD_SCALE.keys()))
+    label = factory.LazyAttribute(lambda obj: MOOD_SCALE[obj.value])
 
 
 class EmotionFactory(factory.django.DjangoModelFactory):
@@ -101,10 +101,10 @@ class ActivityFactory(factory.django.DjangoModelFactory):
 class StrainFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Strain
-        django_get_or_create = ("label",)
+        django_get_or_create = ("value",)
 
-    label = factory.fuzzy.FuzzyChoice(list(STRAIN_SCALE.keys()))
-    value = factory.LazyAttribute(lambda obj: STRAIN_SCALE[obj.label])
+    value = factory.fuzzy.FuzzyChoice(list(STRAIN_SCALE.keys()))
+    label = factory.LazyAttribute(lambda obj: STRAIN_SCALE[obj.value])
 
 
 class StrainAreaFactory(factory.django.DjangoModelFactory):
