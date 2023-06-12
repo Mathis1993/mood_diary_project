@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.utils.crypto import get_random_string
 from django.views import View
+from django.views.generic import ListView
 
 User = get_user_model()
 
@@ -46,3 +47,14 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
             )
 
         return render(request, self.template_name, {"form": form})
+
+
+class ClientListView(AuthenticatedCounselorRoleMixin, ListView):
+    model = Client
+    template_name = "clients/clients_list.html"
+    context_object_name = "clients"
+    paginate_by = 10
+
+    def get_queryset(self):
+        counselor_id = self.request.user.id
+        return Client.objects.filter(counselor_id=counselor_id).order_by("-created_at")

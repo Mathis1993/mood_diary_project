@@ -94,3 +94,19 @@ def test_create_client_view_permission(create_user, create_response):
     response = create_response(user=client_user, url=url)
 
     assert response.status_code == http.HTTPStatus.FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_client_list_view(create_user, create_response):
+    counselor = create_user(User.Role.COUNSELOR)
+    client = ClientFactory.create(counselor=counselor)
+    ClientFactory.create()
+    assert Client.objects.count() == 2
+    url = reverse("clients:list_clients")
+
+    response = create_response(counselor, url)
+
+    assert response.status_code == http.HTTPStatus.OK
+    assert client in (response_clients := response.context_data["clients"])
+    assert response_clients.count() == 1
+    assert "clients/clients_list.html" in response.template_name
