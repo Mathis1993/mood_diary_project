@@ -46,12 +46,16 @@ def test_mood_diary_entry_detail_view_restricted(user, entry, create_response):
 
 @pytest.mark.django_db
 def test_mood_diary_entry_list_view(user, entry, create_response):
+    other_client = ClientFactory.create()
+    MoodDiaryEntryFactory.create(mood_diary__client=other_client)
+    assert MoodDiaryEntry.objects.count() == 2
     url = reverse("diaries:list_mood_diary_entries")
 
     response = create_response(user, url)
 
     assert response.status_code == http.HTTPStatus.OK
-    assert entry in response.context_data["entries"]
+    assert entry in (response_entries := response.context_data["entries"])
+    assert response_entries.count() == 1
     assert "diaries/mood_diary_entries_list.html" in response.template_name
 
 
