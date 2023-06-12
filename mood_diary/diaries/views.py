@@ -77,3 +77,22 @@ class MoodDiaryEntryDeleteView(
     template_name = "diaries/mood_diary_entry_delete.html"
     context_object_name = "entry"
     success_url = reverse_lazy("diaries:list_mood_diary_entries")
+
+
+class MoodDiaryEntryReleaseView(AuthenticatedClientRoleMixin, View):
+    template_name = "diaries/mood_diary_entry_release.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        mood_diary = self.request.user.client.mood_diary
+        mood_diary.release_entries()
+        return redirect("diaries:release_mood_diary_entries_done")
+
+
+class MoodDiaryEntryReleaseDoneView(AuthenticatedClientRoleMixin, View):
+    template_name = "diaries/mood_diary_entry_release_done.html"
+
+    def get(self, request):
+        return render(request, self.template_name)

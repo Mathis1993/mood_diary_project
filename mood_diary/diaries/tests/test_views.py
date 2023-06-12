@@ -146,3 +146,28 @@ def test_mood_diary_entry_delete_view_post(user, entry, create_response):
     assert response.status_code == 302
     assert response.url == reverse("diaries:list_mood_diary_entries")
     assert not MoodDiaryEntry.objects.exists()
+
+
+@pytest.mark.django_db
+def test_mood_diary_entry_release_view_get(user, entry, create_response):
+    url = reverse("diaries:release_mood_diary_entries")
+
+    response = create_response(user, url)
+
+    assert response.status_code == 200
+    assert response.templates[0].name == "diaries/mood_diary_entry_release.html"
+
+
+@pytest.mark.django_db
+def test_mood_diary_entry_release_view_post(user, entry, create_response):
+    MoodDiaryEntryFactory.create_batch(size=3, mood_diary__client=user.client, released=False)
+
+    url = reverse("diaries:release_mood_diary_entries")
+
+    assert MoodDiaryEntry.objects.filter(released=True).count() == 0
+
+    response = create_response(user, url, method="POST")
+
+    assert response.status_code == 302
+    assert response.url == reverse("diaries:release_mood_diary_entries_done")
+    assert not MoodDiaryEntry.objects.filter(released=True).count() == 3

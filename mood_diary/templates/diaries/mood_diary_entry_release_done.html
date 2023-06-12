@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mood Diary Entries Release Done</title>
+</head>
+<body>
+{% load i18n %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'users:index' %}">{% translate 'Home' %}</a>
+&rsaquo; {% translate 'Mood Diary Entries Release' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<p>{% translate 'Mood Diary Entries released.' %}</p>
+{% endblock %}
+</body>
+</html>

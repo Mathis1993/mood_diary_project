@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Release Mood Diary Entries</title>
+</head>
+<body>
+
+{% block content %}
+  <h1>Release Mood Diary Entries</h1>
+  <p>Are you sure you want to release all diary entries?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Release Entries</button>
+  </form>
+{% endblock %}
+
+</body>
+</html>

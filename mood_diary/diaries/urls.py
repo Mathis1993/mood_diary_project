@@ -29,4 +29,14 @@ urlpatterns = [
         views.MoodDiaryEntryDeleteView.as_view(),
         name="delete_mood_diary_entry",
     ),
+    path(
+        "mood_diary_entries/release/",
+        views.MoodDiaryEntryReleaseView.as_view(),
+        name="release_mood_diary_entries",
+    ),
+    path(
+        "mood_diary_entries/release_done/",
+        views.MoodDiaryEntryReleaseDoneView.as_view(),
+        name="release_mood_diary_entries_done",
+    ),
 ]
