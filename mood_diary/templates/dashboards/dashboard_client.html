@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h1>Mood Scores</h1>
+    <ul>
+        {% for entry in mood_scores %}
+            <li>{{ entry.date }}: {{ entry.average_mood }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Mood Highlights</h1>
+        {% for entry in mood_highlights %}
+            <h2>Highlight {{ forloop.counter }}</h2>
+            <ul>
+                <li>Date: {{ entry.date }}</li>
+                <li>Mood: {{ entry.mood }}</li>
+                <li>Activity: {{ entry.activity }}</li>
+            </ul>
+        {% endfor %}
+
+</body>
+</html>
