@@ -1,0 +1,9 @@
+{% extends "base_generic.html" %}
+
+{% block sidebar %}
+<ul class="sidebar-nav">
+  <li><a href="{% url 'users:index' %}">Home</a></li>
+  <li><a href="{% url 'diaries:list_mood_diary_entries' %}">Diary</a></li>
+  <li><a href="{% url 'users:logout' %}">Logout</a></li>
+</ul>
+{% endblock %}

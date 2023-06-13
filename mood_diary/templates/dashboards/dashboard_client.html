@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-</head>
-<body>
+{% extends "base_client_role.html" %}
+
+{% block content %}
 
 <h1>Mood Scores</h1>
     <ul>
@@ -23,5 +19,4 @@
             </ul>
         {% endfor %}
 
-</body>
-</html>
+{% endblock %}

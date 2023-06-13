@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Mood Diary Entry</title>
-</head>
-<body>
+{% extends "base_client_role.html" %}
 
 {% block content %}
   <h1>Mood Diary Entry</h1>
@@ -17,8 +11,6 @@
   <p><strong>Strain:</strong> {{ entry.strain.label }} ({{ entry.strain.value }})</p>
   <p><strong>Strain Area:</strong> {{ entry.strain_area.value }}</p>
   <p><strong>Strain Info:</strong> {{ entry.strain_info }}</p>
-  <!-- Include additional fields as needed -->
+    <p><a href="{% url 'diaries:update_mood_diary_entry' pk=entry.id %}">Update</a></p>
+    <p><a href="{% url 'diaries:delete_mood_diary_entry' pk=entry.id %}">Delete</a></p>
 {% endblock %}
-
-</body>
-</html>

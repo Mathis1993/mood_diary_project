@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Delete Mood Diary Entry</title>
-</head>
-<body>
+{% extends "base_client_role.html" %}
 
 {% block content %}
   <h1>Confirm Delete Mood Diary Entry</h1>
@@ -15,6 +9,3 @@
     <a href="{% url 'diaries:get_mood_diary_entry' pk=entry.pk %}">Cancel</a>
   </form>
 {% endblock %}
-
-</body>
-</html>

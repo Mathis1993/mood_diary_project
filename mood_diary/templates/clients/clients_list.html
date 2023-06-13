@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Clients</title>
-</head>
-<body>
+{% extends "base_counselor_role.html" %}
 
 {% block content %}
   <h1>Clients</h1>
+
+    <p><a href="{% url 'clients:create_client' %}">Create client</a></p>
 
   {% if clients %}
     <ul>
@@ -15,6 +11,7 @@
         <li>
           <strong>Identifier:</strong> {{ client.identifier }}<br>
           <strong>Active:</strong> {{ client.active }}<br>
+          <p><a href="{% url 'clients:list_mood_diary_entries_client' client_pk=client.id %}">Diary</a></p>
         </li>
       {% endfor %}
     </ul>
@@ -22,26 +19,3 @@
     <p>No clients found.</p>
   {% endif %}
 {% endblock %}
-
-{% if is_paginated %}
-  <div class="pagination">
-    <span class="page-links">
-      {% if page_obj.has_previous %}
-        <a href="{% url 'clients:list_clients' %}?page=1">&laquo; first</a>
-        <a href="{% url 'clients:list_clients' %}?page={{ page_obj.previous_page_number }}">previous</a>
-      {% endif %}
-
-      <span class="page-current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
-
-      {% if page_obj.has_next %}
-        <a href="{% url 'clients:list_clients' %}?page={{ page_obj.next_page_number }}">next</a>
-        <a href="{% url 'clients:list_clients' %}?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-      {% endif %}
-    </span>
-  </div>
-{% endif %}
-
-</body>
-</html>
