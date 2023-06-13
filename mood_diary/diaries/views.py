@@ -67,7 +67,9 @@ class MoodDiaryEntryUpdateView(
         "strain_area",
         "strain_info",
     ]
-    success_url = reverse_lazy("diaries:list_mood_diary_entries")
+
+    def get_success_url(self):
+        return reverse_lazy("diaries:get_mood_diary_entry", kwargs={"pk": self.object.id})
 
 
 class MoodDiaryEntryDeleteView(
