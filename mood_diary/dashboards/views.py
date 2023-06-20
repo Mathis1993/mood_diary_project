@@ -13,11 +13,23 @@ class DashboardClientView(AuthenticatedClientRoleMixin, View):
         user = request.user
         mood_diary = user.client.mood_diary
         mood_scores = mood_diary.average_mood_scores_previous_days(7)
+        mood_scores_dates = [
+            mood_score_date.strftime("%A")
+            for mood_score_date in mood_scores.values_list("date", flat=True)
+        ]
+        mood_scores_values = [
+            round(mood_score_value, 1)
+            for mood_score_value in mood_scores.values_list("average_mood", flat=True)
+        ]
         mood_highlights = mood_diary.most_recent_mood_highlights(3)
         return render(
             request,
             self.template_name,
-            {"mood_scores": mood_scores, "mood_highlights": mood_highlights},
+            {
+                "mood_scores_values": mood_scores_values,
+                "mood_scores_dates": mood_scores_dates,
+                "mood_highlights": mood_highlights,
+            },
         )
 
 

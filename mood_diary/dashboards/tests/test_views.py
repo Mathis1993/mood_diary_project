@@ -1,4 +1,5 @@
 import http
+from datetime import datetime
 from unittest import mock
 
 import pytest
@@ -24,11 +25,20 @@ def mood_diary(user):
 
 @pytest.fixture
 def mood_scores(mood_diary):
-    return [
-        {"date": "2023-10-01", "average_mood": 8},
-        {"date": "2023-10-02", "average_mood": 9},
-        {"date": "2023-10-03", "average_mood": 10},
-    ]
+    class MockQuerySet:
+        data = [
+            {"date": datetime(2023, 10, 1).date(), "average_mood": 8},
+            {"date": datetime(2023, 10, 2).date(), "average_mood": 9},
+            {"date": datetime(2023, 10, 3).date(), "average_mood": 10},
+        ]
+
+        def values_list(self, *args, **kwargs):
+            if args[0] == "date":
+                return [item["date"] for item in self.data]
+            if args[0] == "average_mood":
+                return [item["average_mood"] for item in self.data]
+
+    return MockQuerySet()
 
 
 @pytest.fixture
@@ -59,7 +69,8 @@ def test_dashboard_client_view(
     response = create_response(user, url)
 
     assert response.status_code == http.HTTPStatus.OK
-    assert response.context["mood_scores"] == mock_scores.return_value
+    assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
+    assert response.context["mood_scores_values"] == [8, 9, 10]
     assert response.context["mood_highlights"] == mock_highlights.return_value
 
 
