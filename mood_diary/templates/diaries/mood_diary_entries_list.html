@@ -7,18 +7,7 @@
   <p><a href="{% url 'diaries:release_mood_diary_entries' %}">Release all entries</a></p>
 
   {% if entries %}
-    <ul>
     {% include page_template %}
-{#      {% for entry in entries %}#}
-{#        <li>#}
-{#          <strong>Date:</strong> {{ entry.created_at.date }}<br>#}
-{#          <strong>Duration:</strong> {{ entry.start_time }} - {{ entry.end_time }}<br>#}
-{#          <strong>Mood:</strong> {{ entry.mood.label }} ({{ entry.mood.value }})<br>#}
-{#          <strong>Activity:</strong> {{ entry.activity.value }}<br>#}
-{#          <a href="{% url 'diaries:get_mood_diary_entry' pk=entry.id %}">Details</a>#}
-{#        </li>#}
-{#      {% endfor %}#}
-    </ul>
   {% else %}
     <p>No mood diary entries found.</p>
   {% endif %}
