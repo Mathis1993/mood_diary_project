@@ -167,7 +167,13 @@
                 </nav>
                 <!-- End of Topbar -->
 
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
                 {% block content %}{% endblock %}
+
+                </div>
+                <!-- /.container-fluid -->
 
                 {% block pagination %}
             {% if is_paginated %}
@@ -249,7 +255,7 @@
     <script src="{% static 'theme/vendor/chart.js/Chart.min.js' %}"></script>
 
     <!-- Page level custom scripts -->
-    <script src="{% static 'theme/js/demo/chart-area-demo.js' %}"></script>
-    <script src="{% static 'theme/js/demo/chart-pie-demo.js' %}"></script>
+    {%block scripts%}{%endblock scripts%}
+
   </body>
 </html>
