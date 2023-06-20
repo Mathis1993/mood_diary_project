@@ -36,8 +36,8 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
     mood_diary = models.ForeignKey(to=MoodDiary, on_delete=models.CASCADE, related_name="entries")
     released = models.BooleanField(default=False)
     date = models.DateField(default=date.today)
-    start_time = models.TimeField(null=True, blank=True, default=None)
-    end_time = models.TimeField(default=timezone.now, null=True, blank=True)
+    start_time = models.TimeField()
+    end_time = models.TimeField(default=timezone.now)
     mood = models.ForeignKey(
         to="diaries.Mood", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
