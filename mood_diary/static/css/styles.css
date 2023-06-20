@@ -1,0 +1,19 @@
+.button-lower-right-corner-1 {
+  position: fixed;
+  right: 4.5rem;
+  bottom: 0.7rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  text-align: center;
+  line-height: 46px;
+}
+
+.button-lower-right-corner-2 {
+  position: fixed;
+  right: 8.5rem;
+  bottom: 0.7rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  text-align: center;
+  line-height: 46px;
+}
