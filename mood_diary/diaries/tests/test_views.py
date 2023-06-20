@@ -22,7 +22,7 @@ def user():
 
 @pytest.fixture
 def entry(user):
-    return MoodDiaryEntryFactory.create(mood_diary__client=user.client)
+    return MoodDiaryEntryFactory.create(mood_diary__client=user.client, released=False)
 
 
 @pytest.mark.django_db
@@ -118,7 +118,7 @@ def test_mood_diary_entry_update_view_post(user, entry, create_response):
     )
 
     assert response.status_code == http.HTTPStatus.FOUND
-    assert response.url == reverse("diaries:list_mood_diary_entries")
+    assert response.url == reverse("diaries:get_mood_diary_entry", kwargs={"pk": entry.pk})
     entry.refresh_from_db()
     assert entry.start_time.strftime("%H:%M") == "12:00"
     assert entry.end_time.strftime("%H:%M") == "13:00"
