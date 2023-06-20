@@ -2,12 +2,28 @@
 
 {% block content %}
 
-<h1>Mood Scores</h1>
-    <ul>
-        {% for entry in mood_scores %}
-            <li>{{ entry.date }}: {{ entry.average_mood }}</li>
-        {% endfor %}
-    </ul>
+<!-- Content Row -->
+
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Mood Overview</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="moodOverviewChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
     <h1>Mood Highlights</h1>
         {% for entry in mood_highlights %}
@@ -20,3 +36,11 @@
         {% endfor %}
 
 {% endblock %}
+
+{% block scripts %}
+{{ mood_scores_dates|json_script:"chart-labels" }}
+{{ mood_scores_values|json_script:"chart-data" }}
+{%  load static %}
+<script src="{% static 'js/average_mood_chart.js' %}"></script>
+{% endblock %}
+```
