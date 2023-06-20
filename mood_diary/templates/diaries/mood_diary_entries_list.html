@@ -8,17 +8,26 @@
 
   {% if entries %}
     <ul>
-      {% for entry in entries %}
-        <li>
-          <strong>Date:</strong> {{ entry.created_at.date }}<br>
-          <strong>Duration:</strong> {{ entry.start_time }} - {{ entry.end_time }}<br>
-          <strong>Mood:</strong> {{ entry.mood.label }} ({{ entry.mood.value }})<br>
-          <strong>Activity:</strong> {{ entry.activity.value }}<br>
-          <a href="{% url 'diaries:get_mood_diary_entry' pk=entry.id %}">Details</a>
-        </li>
-      {% endfor %}
+    {% include page_template %}
+{#      {% for entry in entries %}#}
+{#        <li>#}
+{#          <strong>Date:</strong> {{ entry.created_at.date }}<br>#}
+{#          <strong>Duration:</strong> {{ entry.start_time }} - {{ entry.end_time }}<br>#}
+{#          <strong>Mood:</strong> {{ entry.mood.label }} ({{ entry.mood.value }})<br>#}
+{#          <strong>Activity:</strong> {{ entry.activity.value }}<br>#}
+{#          <a href="{% url 'diaries:get_mood_diary_entry' pk=entry.id %}">Details</a>#}
+{#        </li>#}
+{#      {% endfor %}#}
     </ul>
   {% else %}
     <p>No mood diary entries found.</p>
   {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+{#    <script src="http://code.jquery.com/jquery-latest.js"></script>#}
+    {% load static %}
+    <script src="{% static 'el-pagination/js/el-pagination.js'  %}"></script>
+    <script>$.endlessPaginate({paginateOnScroll: true, paginateOnScrollMargin: 20});</script>
 {% endblock %}

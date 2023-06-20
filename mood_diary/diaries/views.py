@@ -4,8 +4,9 @@ from diaries.models import MoodDiary, MoodDiaryEntry
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, UpdateView
 from django.views.generic.detail import DetailView
+from el_pagination.views import AjaxListView
 
 
 class RestrictMoodDiaryEntryToOwnerMixin:
@@ -21,11 +22,11 @@ class MoodDiaryEntryDetailView(
     context_object_name = "entry"
 
 
-class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, ListView):
+class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entries_list.html"
+    page_template = "diaries/mood_diary_entry_list_page.html"
     context_object_name = "entries"
-    paginate_by = 10
 
     def get_queryset(self):
         client_id = self.request.user.client.id
