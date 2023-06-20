@@ -22,6 +22,9 @@
         <!-- Custom styles for this template-->
         <link href="{% static 'theme/css/sb-admin-2.min.css' %}" rel="stylesheet">
 
+        <!-- Custom styles -->
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+
     </head>
 
   <body id="page-top">
@@ -218,6 +221,7 @@
             <i class="fas fa-angle-up"></i>
         </a>
 
+    {% block modals %}
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -240,6 +244,7 @@
             </div>
         </div>
     </div>
+    {% endblock %}
 
       <!-- Bootstrap core JavaScript-->
     <script src="{% static 'theme/vendor/jquery/jquery.min.js' %}"></script>
