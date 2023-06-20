@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>Mood Diary Entry</h1>
-  <p><strong>Date:</strong> {{ entry.created_at.date }}</p>
+  <p><strong>Date:</strong> {{ entry.date }}</p>
   <p><strong>Duration:</strong> {{ entry.start_time }} - {{ entry.end_time }}</p>
   <p><strong>Mood:</strong> {{ entry.mood.label }} ({{ entry.mood.value }})</p>
   <p><strong>Emotion:</strong> {{ entry.emotion.value }}</p>
