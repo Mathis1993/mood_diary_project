@@ -79,6 +79,13 @@ class Mood(NormalizedScaleModel):
     def __str__(self):
         return f"{self.label} ({self.value})"
 
+    def to_percentage(self) -> int:
+        return int(self.value / 7 * 100)
+
+    @staticmethod
+    def max_value() -> int:
+        return 7
+
 
 class Emotion(NormalizedStringValueModel):
     class Meta:
