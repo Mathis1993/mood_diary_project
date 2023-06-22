@@ -58,6 +58,7 @@ class MoodDiaryEntryUpdateView(
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entry_update.html"
     fields = [
+        "date,",
         "start_time",
         "end_time",
         "mood",
