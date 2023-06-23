@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 
 User = get_user_model()
@@ -23,11 +23,6 @@ def index(request: HttpRequest) -> HttpResponse:
 
     if user.role == User.Role.CLIENT:
         return redirect("dashboards:dashboard_client")
-
-
-@login_required(login_url="users:login")
-def logout_confirmation(request: HttpRequest) -> HttpResponse:
-    return render(request, "users/logout.html")
 
 
 class CustomLoginView(LoginView):
