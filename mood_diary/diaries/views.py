@@ -1,6 +1,6 @@
 from core.views import AuthenticatedClientRoleMixin
 from diaries.forms import MoodDiaryEntryForm
-from diaries.models import MoodDiary, MoodDiaryEntry
+from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
@@ -20,6 +20,13 @@ class MoodDiaryEntryDetailView(
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entry_get.html"
     context_object_name = "entry"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["moods"] = Mood.objects.all()
+        context["label_left"] = Mood.objects.first().label
+        context["label_right"] = Mood.objects.last().label
+        return context
 
 
 class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
