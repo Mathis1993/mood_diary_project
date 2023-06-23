@@ -14,13 +14,14 @@
             <h6 class="m-0 font-weight-bold text-secondary">({{ entry.start_time }} - {{ entry.end_time }})</h6>
             </div>
             <div class="card-body">
-                <h4 class="text-md-left">Mood <span class="float-right small">{{ entry.mood.value }}/{{ entry.mood.max_value }}</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar" role="progressbar" aria-label="Basic example" style="width: {{ entry.mood.to_percentage }}%" aria-valuenow="{{ entry.mood.value }}" aria-valuemin="1" aria-valuemax="7">{{ entry.mood.label }}</div>
-                </div>
                 <h4 class="text-md-left">Activity</h4>
                 <div class="text">
                     <p>{{ entry.activity.value }}</p>
+                </div>
+{#                <h4 class="text-md-left">Mood <span class="float-right small">{{ entry.mood.value }}/{{ entry.mood.max_value }}</span></h4>#}
+                <h4 class="text-md-left">Mood</h4>
+                <div class="progress mb-4">
+                    <div class="progress-bar" role="progressbar" aria-label="Basic example" style="width: {{ entry.mood.to_percentage }}%" aria-valuenow="{{ entry.mood.value }}" aria-valuemin="1" aria-valuemax="7">{{ entry.mood.label }}</div>
                 </div>
                 {% if entry.mood_and_emotion_info %}
                 <h4 class="text-md-left">Info</h4>
