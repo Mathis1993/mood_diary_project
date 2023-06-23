@@ -61,6 +61,7 @@ def test_mood_diary_entry_list_view(user, entry, create_response):
 
 @pytest.mark.django_db
 def test_mood_diary_entry_create_view_get(user, create_response):
+    MoodFactory.create(value=0)
     url = reverse("diaries:create_mood_diary_entry")
 
     response = create_response(user, url)
@@ -72,7 +73,7 @@ def test_mood_diary_entry_create_view_get(user, create_response):
 @pytest.mark.django_db
 def test_mood_diary_entry_create_view_post(user, create_response):
     MoodDiaryFactory.create(client=user.client)
-    mood = MoodFactory.create()
+    mood = MoodFactory.create(value=0)
     activity = ActivityFactory.create()
     url = reverse("diaries:create_mood_diary_entry")
 
@@ -82,7 +83,13 @@ def test_mood_diary_entry_create_view_post(user, create_response):
         user,
         url,
         method="POST",
-        data={"date": date.today(), "mood": mood.id, "activity": activity.id},
+        data={
+            "date": date.today(),
+            "start_time": "12:00",
+            "end_time": "13:00",
+            "mood": mood.id,
+            "activity": activity.id,
+        },
     )
 
     assert response.status_code == http.HTTPStatus.FOUND
@@ -92,6 +99,7 @@ def test_mood_diary_entry_create_view_post(user, create_response):
 
 @pytest.mark.django_db
 def test_mood_diary_entry_update_view_get(user, entry, create_response):
+    MoodFactory.create(value=0)
     url = reverse("diaries:update_mood_diary_entry", kwargs={"pk": entry.pk})
 
     response = create_response(user, url)
@@ -103,6 +111,7 @@ def test_mood_diary_entry_update_view_get(user, entry, create_response):
 
 @pytest.mark.django_db
 def test_mood_diary_entry_update_view_post(user, entry, create_response):
+    MoodFactory.create(value=0)
     url = reverse("diaries:update_mood_diary_entry", kwargs={"pk": entry.pk})
 
     response = create_response(
@@ -110,6 +119,7 @@ def test_mood_diary_entry_update_view_post(user, entry, create_response):
         url,
         method="POST",
         data={
+            "date": date.today(),
             "start_time": "12:00",
             "end_time": "13:00",
             "mood": entry.mood_id,

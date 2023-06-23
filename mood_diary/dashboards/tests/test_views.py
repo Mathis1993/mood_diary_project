@@ -45,13 +45,22 @@ def mood_scores(mood_diary):
 def mood_highlights(mood_diary):
     return [
         MoodDiaryEntry(
-            date="2023-06-07", mood=Mood(value=7, label="Happiest"), activity=Activity(value="A1")
+            id=1,
+            date="2023-06-07",
+            mood=Mood(value=7, label="Happiest"),
+            activity=Activity(value="A1"),
         ),
         MoodDiaryEntry(
-            date="2023-06-06", mood=Mood(value=6, label="Happier"), activity=Activity(value="A2")
+            id=2,
+            date="2023-06-06",
+            mood=Mood(value=6, label="Happier"),
+            activity=Activity(value="A2"),
         ),
         MoodDiaryEntry(
-            date="2023-06-05", mood=Mood(value=5, label="Happy"), activity=Activity(value="A3")
+            id=3,
+            date="2023-06-05",
+            mood=Mood(value=5, label="Happy"),
+            activity=Activity(value="A3"),
         ),
     ]
 
