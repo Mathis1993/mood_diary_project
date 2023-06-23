@@ -18,88 +18,73 @@
   line-height: 46px;
 }
 
-/* mood scale */
-
-.md-stepper-horizontal {
-	display:table;
-	width:100%;
-	margin:0 auto;
-}
-.md-stepper-horizontal .md-step {
-	display:table-cell;
-	position:relative;
-	padding:8px;
-}
-.md-stepper-horizontal .md-step .md-step-circle.first {
-  position: relative;
-  margin-left: 35px;
-  z-index: 2;
-}
-.md-stepper-horizontal .md-step .md-step-circle.last {
-  position: relative;
-  z-index: 2;
+/* Mood Stepper */
+.stepper-container {
+  text-align: center;
 }
 
-.md-stepper-horizontal .md-step .md-step-circle {
-	width: 20px;
-	height: 20px;
-	margin: 0;
-	background-color: #999999;
-	border-radius: 50%;
-	text-align: center;
-	padding-top: 1px;
-	font-size: 0.75rem;
-	font-weight: 600;
-	color: #FFFFFF;
+.stepper-wrapper {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
-.md-stepper-horizontal.orange .md-step.active .md-step-circle {
-	background-color:#4E73DF;
+
+.stepper-wrapper::before {
+  content: "";
+  width: calc(100% - 40px); /* Adjust as needed */
+  height: 3px;
+  background-color: #858796;
+  position: absolute;
+  top: 50%;
+  left: 20px; /* Adjust as needed */
+  transform: translateY(-50%);
+  z-index: 1;
 }
-.md-stepper-horizontal .md-step.active .md-step-circle {
-	background-color: rgb(33,150,243);
+
+.stepper-progress {
+  content: "";
+  width: 0%;
+  height: 3px;
+  position: absolute;
+  top: 50%;
+  left: 20px; /* Adjust as needed */
+  transform: translateY(-50%);
+  z-index: -1;
+  transition: width 1s;
 }
-.md-stepper-horizontal .md-step.done .md-step-circle *,
-.md-stepper-horizontal .md-step.editable .md-step-circle * {
-	display:none;
+
+.stepper-screen-indicator {
+  position: relative;
+  z-index: 1;
+  border-radius: 50%;
+  border: 3px solid #858796;
+  background-color: white;
+  padding: 0.75rem; /* Adjust as needed */
+  color: gray;
+  font-size: 0.75rem; /* Adjust as needed */
 }
-.md-stepper-horizontal .md-step.editable .md-step-circle {
-	-moz-transform: scaleX(-1);
-	-o-transform: scaleX(-1);
-	-webkit-transform: scaleX(-1);
-	transform: scaleX(-1);
+
+.stepper-completed {
+  border-color: #4e73df;
+  color: #4e73df;
 }
-.md-stepper-horizontal .md-step .md-step-title {
-	margin-top:16px;
-	font-size:0.75rem;
-	font-weight:600;
+
+.stepper-label-left,
+.stepper-label-right {
+  position: absolute;
+  bottom: -2rem; /* Adjust as needed */
+  font-size: 0.8rem; /* Adjust as needed */
+  color: gray;
 }
-.md-stepper-horizontal .md-step .md-step-title,
-.md-stepper-horizontal .md-step .md-step-optional {
-	text-align: center;
-	color:rgba(0,0,0,.26);
+
+.stepper-label-left {
+  left: 0;
 }
-.md-stepper-horizontal .md-step.active .md-step-title {
-	font-weight: 600;
-	color:rgba(0,0,0,.87);
-}
-.md-stepper-horizontal .md-step.active.done .md-step-title,
-.md-stepper-horizontal .md-step.active.editable .md-step-title {
-	font-weight:600;
-}
-.md-stepper-horizontal .md-step .md-step-bar-left,
-.md-stepper-horizontal .md-step .md-step-bar-right {
-	position:absolute;
-	top:16px;
-	height: 1px;
-	border-top: 4px solid #DDDDDD;
-}
-.md-stepper-horizontal .md-step .md-step-bar-right {
-	right:0;
-	left:50%;
-	margin-left: 10px;
-}
-.md-stepper-horizontal .md-step .md-step-bar-left {
-	left:0;
-	right:50%;
-	margin-right:10px;
+
+.stepper-label-right {
+  right: 0;
 }

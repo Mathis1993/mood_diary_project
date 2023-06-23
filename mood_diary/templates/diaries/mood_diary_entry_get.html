@@ -20,57 +20,20 @@
                 </div>
 {#                <h4 class="text-md-left">Mood <span class="float-right small">{{ entry.mood.value }}/{{ entry.mood.max_value }}</span></h4>#}
                 <h4 class="text-md-left">Mood</h4>
-                {# THIS PART IS NOT VISIBLE ON MOBILE PHONE #}
-                <div class="d-none d-sm-block">
-                    <div class="text">
-                        <p>{{ entry.mood.label }}</p>
-                    </div>
-                </div>
-                {# THIS PART IS ONLY VISIBLE ON MOBILE PHONE #}
-                <div class="d-block d-sm-none">
-                    <div class="md-stepper-horizontal orange">
-                        <div class="md-step {% if entry.mood.label == "Extremely Unhappy" %}active{% endif %}">
-                          <div class="md-step-circle first"><span>-3</span></div>
-                          <div class="md-step-title">Extremely Unhappy</div>
-                          <div class="md-step-bar-right"></div>
-                        </div>
-                        <div class="md-step {% if entry.mood.label == "Unhappy" %}active{% endif %}">
-                          <div class="md-step-circle"><span>-2</span></div>
-                          <div class="md-step-title"></div>
-                          <div class="md-step-bar-left"></div>
-                          <div class="md-step-bar-right"></div>
-                        </div>
-                        <div class="md-step {% if entry.mood.label == "Somewhat Unhappy" %}active{% endif %}">
-                          <div class="md-step-circle"><span>-1</span></div>
-                          <div class="md-step-title"></div>
-                          <div class="md-step-bar-left"></div>
-                          <div class="md-step-bar-right"></div>
-                        </div>
-                        <div class="md-step {% if entry.mood.label == "Neutral" %}active{% endif %}">
-                          <div class="md-step-circle"><span>0</span></div>
-                          <div class="md-step-title"></div>
-                          <div class="md-step-bar-left"></div>
-                          <div class="md-step-bar-right"></div>
-                        </div>
-                        <div class="md-step {% if entry.mood.label == "Somewhat Happy" %}active{% endif %}">
-                          <div class="md-step-circle"><span>+1</span></div>
-                          <div class="md-step-title"></div>
-                          <div class="md-step-bar-left"></div>
-                          <div class="md-step-bar-right"></div>
-                        </div>
-                        <div class="md-step {% if entry.mood.label == "Happy" %}active{% endif %}">
-                          <div class="md-step-circle"><span>+2</span></div>
-                          <div class="md-step-title"></div>
-                          <div class="md-step-bar-left"></div>
-                          <div class="md-step-bar-right"></div>
-                        </div>
-                        <div class="md-step {% if entry.mood.label == "Extremely Happy" %}active{% endif %}">
-                          <div class="md-step-circle last"><span>+3</span></div>
-                          <div class="md-step-title">Extremely Happy</div>
-                          <div class="md-step-bar-left"></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="stepper-container mb-4">
+              <div class="stepper-wrapper mb-4">
+                <div class="stepper-progress"></div>
+                  {% for mood in moods %}
+                    {% if mood.value == entry.mood.value %}
+                      <div class="stepper-screen-indicator stepper-completed">{{ mood.value }}</div>
+                    {% else %}
+                      <div class="stepper-screen-indicator">{{ mood.value }}</div>
+                    {% endif %}
+                  {% endfor %}
+                <div class="stepper-label-left">{{ label_left }}</div>
+                <div class="stepper-label-right">{{ label_right }}</div>
+              </div>
+            </div>
 
                 {% if entry.mood_and_emotion_info %}
                 <h4 class="text-md-left">Info</h4>
