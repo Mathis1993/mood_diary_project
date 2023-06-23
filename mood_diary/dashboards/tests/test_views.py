@@ -27,9 +27,9 @@ def mood_diary(user):
 def mood_scores(mood_diary):
     class MockQuerySet:
         data = [
-            {"date": datetime(2023, 10, 1).date(), "average_mood": 8},
-            {"date": datetime(2023, 10, 2).date(), "average_mood": 9},
             {"date": datetime(2023, 10, 3).date(), "average_mood": 10},
+            {"date": datetime(2023, 10, 2).date(), "average_mood": 9},
+            {"date": datetime(2023, 10, 1).date(), "average_mood": 8},
         ]
 
         def values_list(self, *args, **kwargs):
@@ -78,6 +78,7 @@ def test_dashboard_client_view(
     response = create_response(user, url)
 
     assert response.status_code == http.HTTPStatus.OK
+    # assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
     assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
     assert response.context["mood_scores_values"] == [8, 9, 10]
     assert response.context["mood_highlights"] == mock_highlights.return_value
