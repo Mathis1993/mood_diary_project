@@ -1,0 +1,23 @@
+{% load el_pagination_tags %}
+
+{% lazy_paginate clients %}
+{% for client in clients %}
+     <div class="col-xl-5 col-md-6 mb-4">
+        <a href="{% url 'clients:list_mood_diary_entries_client' client_pk=client.id %}">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ client.identifier }}</div>
+                            <div class="text-gray-500">{% if client.active %}Active{%  else %}Inactive{% endif %}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        </div>
+{% endfor %}
+{% show_more %}

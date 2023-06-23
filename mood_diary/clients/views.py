@@ -8,13 +8,14 @@ from django.shortcuts import render
 from django.utils.crypto import get_random_string
 from django.views import View
 from django.views.generic import DetailView, ListView
+from el_pagination.views import AjaxListView
 
 User = get_user_model()
 
 
 class CreateClientView(AuthenticatedCounselorRoleMixin, View):
     form_class = ClientCreationForm
-    template_name = "clients/create_client.html"
+    template_name = "clients/client_create.html"
     success_template_name = "clients/client_login_details.html"
 
     def get(self, request):
@@ -49,11 +50,11 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
-class ClientListView(AuthenticatedCounselorRoleMixin, ListView):
+class ClientListView(AuthenticatedCounselorRoleMixin, AjaxListView):
     model = Client
     template_name = "clients/clients_list.html"
+    page_template = "clients/clients_list_page.html"
     context_object_name = "clients"
-    paginate_by = 10
 
     def get_queryset(self):
         counselor_id = self.request.user.id
