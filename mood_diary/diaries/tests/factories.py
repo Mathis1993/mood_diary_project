@@ -56,7 +56,7 @@ class MoodFactory(factory.django.DjangoModelFactory):
         model = Mood
         django_get_or_create = ("value",)
 
-    value = factory.fuzzy.FuzzyChoice(list(MOOD_SCALE.keys()))
+    value = factory.fuzzy.FuzzyChoice([-3, -2, -1, 0, 1, 2, 3])
     label = factory.LazyAttribute(lambda obj: MOOD_SCALE[obj.value])
 
 
