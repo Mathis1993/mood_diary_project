@@ -47,6 +47,7 @@ class CustomLoginView(LoginView):
 
 
 class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    template_name = "users/password_change.html"
     success_url = reverse_lazy("users:password_change_done")
 
     def form_valid(self, form):
@@ -57,3 +58,25 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
         user.save()
 
         return response
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["old_password"].widget.attrs.update(
+            {
+                "class": "form-control form-control-user",
+                "placeholder": "Enter Old Password...",
+            }
+        )
+        form.fields["new_password1"].widget.attrs.update(
+            {
+                "class": "form-control form-control-user",
+                "placeholder": "Enter New Password...",
+            }
+        )
+        form.fields["new_password2"].widget.attrs.update(
+            {
+                "class": "form-control form-control-user",
+                "placeholder": "Confirm New Password...",
+            }
+        )
+        return form
