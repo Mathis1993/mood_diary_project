@@ -16,7 +16,7 @@ urlpatterns = [
     ),
     path(
         "mood_diary_entries/create/",
-        views.CreateMoodDiaryEntryView.as_view(),
+        views.MoodDiaryEntryCreateView.as_view(),
         name="create_mood_diary_entry",
     ),
     path(

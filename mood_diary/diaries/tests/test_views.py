@@ -60,7 +60,7 @@ def test_mood_diary_entry_list_view(user, entry, create_response):
 
 
 @pytest.mark.django_db
-def test_create_mood_diary_entry_view_get(user, create_response):
+def test_mood_diary_entry_create_view_get(user, create_response):
     url = reverse("diaries:create_mood_diary_entry")
 
     response = create_response(user, url)
@@ -70,7 +70,7 @@ def test_create_mood_diary_entry_view_get(user, create_response):
 
 
 @pytest.mark.django_db
-def test_create_mood_diary_entry_view_post(user, create_response):
+def test_mood_diary_entry_create_view_post(user, create_response):
     MoodDiaryFactory.create(client=user.client)
     mood = MoodFactory.create()
     activity = ActivityFactory.create()

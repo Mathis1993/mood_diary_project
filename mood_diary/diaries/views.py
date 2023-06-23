@@ -34,7 +34,7 @@ class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
         return mood_diary.entries.all().order_by("-date")
 
 
-class CreateMoodDiaryEntryView(AuthenticatedClientRoleMixin, CreateView):
+class MoodDiaryEntryCreateView(AuthenticatedClientRoleMixin, CreateView):
     model = MoodDiaryEntry
     form_class = MoodDiaryEntryForm
     template_name = "diaries/mood_diary_entry_create.html"
