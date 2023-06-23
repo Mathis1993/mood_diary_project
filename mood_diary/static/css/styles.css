@@ -17,3 +17,89 @@
   text-align: center;
   line-height: 46px;
 }
+
+/* mood scale */
+
+.md-stepper-horizontal {
+	display:table;
+	width:100%;
+	margin:0 auto;
+}
+.md-stepper-horizontal .md-step {
+	display:table-cell;
+	position:relative;
+	padding:8px;
+}
+.md-stepper-horizontal .md-step .md-step-circle.first {
+  position: relative;
+  margin-left: 35px;
+  z-index: 2;
+}
+.md-stepper-horizontal .md-step .md-step-circle.last {
+  position: relative;
+  z-index: 2;
+}
+
+.md-stepper-horizontal .md-step .md-step-circle {
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	background-color: #999999;
+	border-radius: 50%;
+	text-align: center;
+	padding-top: 1px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: #FFFFFF;
+}
+.md-stepper-horizontal.orange .md-step.active .md-step-circle {
+	background-color:#4E73DF;
+}
+.md-stepper-horizontal .md-step.active .md-step-circle {
+	background-color: rgb(33,150,243);
+}
+.md-stepper-horizontal .md-step.done .md-step-circle *,
+.md-stepper-horizontal .md-step.editable .md-step-circle * {
+	display:none;
+}
+.md-stepper-horizontal .md-step.editable .md-step-circle {
+	-moz-transform: scaleX(-1);
+	-o-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+}
+.md-stepper-horizontal .md-step .md-step-title {
+	margin-top:16px;
+	font-size:0.75rem;
+	font-weight:600;
+}
+.md-stepper-horizontal .md-step .md-step-title,
+.md-stepper-horizontal .md-step .md-step-optional {
+	text-align: center;
+	color:rgba(0,0,0,.26);
+}
+.md-stepper-horizontal .md-step.active .md-step-title {
+	font-weight: 600;
+	color:rgba(0,0,0,.87);
+}
+.md-stepper-horizontal .md-step.active.done .md-step-title,
+.md-stepper-horizontal .md-step.active.editable .md-step-title {
+	font-weight:600;
+}
+.md-stepper-horizontal .md-step .md-step-bar-left,
+.md-stepper-horizontal .md-step .md-step-bar-right {
+	position:absolute;
+	top:16px;
+	height: 1px;
+	border-top: 4px solid #DDDDDD;
+}
+.md-stepper-horizontal .md-step .md-step-bar-right {
+	right:0;
+	left:50%;
+	margin-left: 10px;
+}
+.md-stepper-horizontal .md-step .md-step-bar-left {
+	left:0;
+	right:50%;
+	margin-right:10px;
+}
