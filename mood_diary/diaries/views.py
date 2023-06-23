@@ -4,7 +4,7 @@ from diaries.models import MoodDiary, MoodDiaryEntry
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DeleteView, UpdateView
+from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
 from el_pagination.views import AjaxListView
 
@@ -34,41 +34,24 @@ class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
         return mood_diary.entries.all().order_by("-date")
 
 
-class CreateMoodDiaryEntryView(AuthenticatedClientRoleMixin, View):
+class CreateMoodDiaryEntryView(AuthenticatedClientRoleMixin, CreateView):
+    model = MoodDiaryEntry
     form_class = MoodDiaryEntryForm
     template_name = "diaries/mood_diary_entry_create.html"
 
-    def get(self, request):
-        form = self.form_class()
-        return render(request, self.template_name, {"form": form})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            entry = form.save(commit=False)
-            entry.mood_diary = request.user.client.mood_diary
-            entry.save()
-            return redirect("diaries:list_mood_diary_entries")
-        return render(request, self.template_name, {"form": form})
+    def form_valid(self, form):
+        entry = form.save(commit=False)
+        entry.mood_diary = self.request.user.client.mood_diary
+        entry.save()
+        return redirect("diaries:list_mood_diary_entries")
 
 
 class MoodDiaryEntryUpdateView(
     AuthenticatedClientRoleMixin, RestrictMoodDiaryEntryToOwnerMixin, UpdateView
 ):
     model = MoodDiaryEntry
+    form_class = MoodDiaryEntryForm
     template_name = "diaries/mood_diary_entry_update.html"
-    fields = [
-        "date,",
-        "start_time",
-        "end_time",
-        "mood",
-        "emotion",
-        "mood_and_emotion_info",
-        "activity",
-        "strain",
-        "strain_area",
-        "strain_info",
-    ]
 
     def get_success_url(self):
         return reverse_lazy("diaries:get_mood_diary_entry", kwargs={"pk": self.object.id})
