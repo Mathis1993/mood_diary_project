@@ -75,6 +75,7 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
 class Mood(NormalizedScaleModel):
     class Meta:
         db_table = "diaries_moods"
+        ordering = ["value"]
 
     def __str__(self):
         return f"{self.label} ({self.value})"
