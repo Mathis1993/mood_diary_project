@@ -1,10 +1,17 @@
 {% extends "base_client_role.html" %}
 
 {% block content %}
-  <h1>Update Mood Diary Entry</h1>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Update Mood Diary Entry</h1>
+    </div>
+
+    <div class="row">
+    <div class="col-xl-5 col-md-6 mb-4">
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Update</button>
+    <button type="submit" class="btn btn-primary">Update</button>
   </form>
+    </div>
+</div>
 {% endblock %}
