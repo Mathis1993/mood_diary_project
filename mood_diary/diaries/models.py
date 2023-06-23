@@ -6,7 +6,6 @@ from clients.models import Client
 from core.models import NormalizedScaleModel, NormalizedStringValueModel, TrackCreationAndUpdates
 from django.db import models
 from django.db.models import Avg, QuerySet
-from django.utils import timezone
 
 
 class MoodDiary(models.Model):
@@ -37,7 +36,7 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
     released = models.BooleanField(default=False)
     date = models.DateField(default=date.today)
     start_time = models.TimeField()
-    end_time = models.TimeField(default=timezone.now)
+    end_time = models.TimeField()
     mood = models.ForeignKey(
         to="diaries.Mood", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
@@ -99,6 +98,7 @@ class Emotion(NormalizedStringValueModel):
 class Activity(NormalizedStringValueModel):
     class Meta:
         db_table = "diaries_activities"
+        ordering = ["value"]
 
     def __str__(self):
         return self.value
