@@ -1,8 +1,29 @@
 {% extends "base_counselor_role.html" %}
 
 {% block content %}
-  <h1>Client Login Details</h1>
-  <p>Email: {{ email }}</p>
-  <p>Password: {{ password }}</p>
-  <p>Please provide these login details to the client.</p>
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Client Login Details</h1>
+    </div>
+
+    <div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="shadow mb-4">
+            <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Please provide these login details to the client! </h6>
+            </div>
+            <div class="card-body">
+                <h4 class="text-md-left">Email</h4>
+                <div class="text">
+                    <p>{{ email }}</p>
+                </div>
+                <h4 class="text-md-left">Password</h4>
+                <div class="text">
+                    <p>{{ password }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
 {% endblock %}

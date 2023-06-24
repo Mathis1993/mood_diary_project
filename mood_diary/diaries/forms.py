@@ -1,4 +1,4 @@
-from diaries.models import MoodDiaryEntry
+from diaries.models import Mood, MoodDiaryEntry
 from django import forms
 
 
@@ -9,14 +9,34 @@ class MoodDiaryEntryForm(forms.ModelForm):
             "date",
             "start_time",
             "end_time",
-            "mood",
-            "emotion",
-            "mood_and_emotion_info",
             "activity",
-            "strain",
-            "strain_area",
-            "strain_info",
+            "mood",
+            "mood_and_emotion_info",
         ]
+        widgets = {
+            "date": forms.DateInput(
+                attrs={"placeholder": "Select a date", "type": "date"},
+            ),
+            "start_time": forms.TimeInput(
+                attrs={"placeholder": "Select a start time", "type": "time"},
+            ),
+            "end_time": forms.TimeInput(
+                attrs={"placeholder": "Select an end time", "type": "time"},
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        [
+            self.fields[field].widget.attrs.update({"class": "form-control"})
+            for field in self.fields.keys()
+        ]
+        self.fields["activity"].empty_label = None
+        self.fields["mood"].empty_label = None
+        self.fields["mood"].initial = Mood.objects.get(value=0)
+        self.fields["mood_and_emotion_info"].widget.attrs.update(
+            {"rows": 5, "placeholder": "Enter any additional info here"}
+        )
 
     def clean(self):
         cleaned_data = super().clean()

@@ -5,13 +5,13 @@ from diaries.models import Activity, Emotion, Mood, MoodDiary, MoodDiaryEntry, S
 from django.utils import timezone
 
 MOOD_SCALE = {
-    1: "Extremely Unhappy",
-    2: "Unhappy",
-    3: "Somewhat Unhappy",
-    4: "Neutral",
-    5: "Somewhat Happy",
-    6: "Happy",
-    7: "Extremely Happy",
+    -3: "Extremely Unhappy",
+    -2: "Unhappy",
+    -1: "Somewhat Unhappy",
+    0: "Neutral",
+    1: "Somewhat Happy",
+    2: "Happy",
+    3: "Extremely Happy",
 }
 
 STRAIN_SCALE = {
@@ -39,9 +39,9 @@ class MoodDiaryEntryFactory(factory.django.DjangoModelFactory):
 
     mood_diary = factory.SubFactory(MoodDiaryFactory)
     released = factory.fuzzy.FuzzyChoice([True, False])
-    date = date.today()
-    start_time = timezone.now() - timezone.timedelta(hours=1)
-    end_time = timezone.now()
+    date = factory.LazyAttribute(lambda obj: date.today())
+    start_time = factory.LazyAttribute(lambda obj: timezone.now() - timezone.timedelta(hours=1))
+    end_time = factory.LazyAttribute(lambda obj: timezone.now())
     mood = factory.SubFactory("diaries.tests.factories.MoodFactory")
     emotion = factory.SubFactory("diaries.tests.factories.EmotionFactory")
     mood_and_emotion_info = factory.faker.Faker("sentence", nb_words=10)
@@ -56,7 +56,7 @@ class MoodFactory(factory.django.DjangoModelFactory):
         model = Mood
         django_get_or_create = ("value",)
 
-    value = factory.fuzzy.FuzzyChoice(list(MOOD_SCALE.keys()))
+    value = factory.fuzzy.FuzzyChoice([-3, -2, -1, 0, 1, 2, 3])
     label = factory.LazyAttribute(lambda obj: MOOD_SCALE[obj.value])
 
 

@@ -1,4 +1,5 @@
 import http
+from datetime import datetime
 from unittest import mock
 
 import pytest
@@ -24,24 +25,42 @@ def mood_diary(user):
 
 @pytest.fixture
 def mood_scores(mood_diary):
-    return [
-        {"date": "2023-10-01", "average_mood": 8},
-        {"date": "2023-10-02", "average_mood": 9},
-        {"date": "2023-10-03", "average_mood": 10},
-    ]
+    class MockQuerySet:
+        data = [
+            {"date": datetime(2023, 10, 3).date(), "average_mood": 10},
+            {"date": datetime(2023, 10, 2).date(), "average_mood": 9},
+            {"date": datetime(2023, 10, 1).date(), "average_mood": 8},
+        ]
+
+        def values_list(self, *args, **kwargs):
+            if args[0] == "date":
+                return [item["date"] for item in self.data]
+            if args[0] == "average_mood":
+                return [item["average_mood"] for item in self.data]
+
+    return MockQuerySet()
 
 
 @pytest.fixture
 def mood_highlights(mood_diary):
     return [
         MoodDiaryEntry(
-            date="2023-06-07", mood=Mood(value=7, label="Happiest"), activity=Activity(value="A1")
+            id=1,
+            date="2023-06-07",
+            mood=Mood(value=7, label="Happiest"),
+            activity=Activity(value="A1"),
         ),
         MoodDiaryEntry(
-            date="2023-06-06", mood=Mood(value=6, label="Happier"), activity=Activity(value="A2")
+            id=2,
+            date="2023-06-06",
+            mood=Mood(value=6, label="Happier"),
+            activity=Activity(value="A2"),
         ),
         MoodDiaryEntry(
-            date="2023-06-05", mood=Mood(value=5, label="Happy"), activity=Activity(value="A3")
+            id=3,
+            date="2023-06-05",
+            mood=Mood(value=5, label="Happy"),
+            activity=Activity(value="A3"),
         ),
     ]
 
@@ -59,7 +78,9 @@ def test_dashboard_client_view(
     response = create_response(user, url)
 
     assert response.status_code == http.HTTPStatus.OK
-    assert response.context["mood_scores"] == mock_scores.return_value
+    # assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
+    assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
+    assert response.context["mood_scores_values"] == [8, 9, 10]
     assert response.context["mood_highlights"] == mock_highlights.return_value
 
 

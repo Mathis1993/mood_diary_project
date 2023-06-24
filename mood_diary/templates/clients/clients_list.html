@@ -1,21 +1,32 @@
 {% extends "base_counselor_role.html" %}
 
 {% block content %}
-  <h1>Clients</h1>
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Your Clients</h1>
+    </div>
 
-    <p><a href="{% url 'clients:create_client' %}">Create client</a></p>
+    <div class="row">
+  <div class="col-lg-10">
+
 
   {% if clients %}
-    <ul>
-      {% for client in clients %}
-        <li>
-          <strong>Identifier:</strong> {{ client.identifier }}<br>
-          <strong>Active:</strong> {{ client.active }}<br>
-          <p><a href="{% url 'clients:list_mood_diary_entries_client' client_pk=client.id %}">Diary</a></p>
-        </li>
-      {% endfor %}
-    </ul>
+    {% include page_template %}
   {% else %}
-    <p>No clients found.</p>
+    <p>No clients yet.</p>
   {% endif %}
+  </div>
+    </div>
+
+    <!-- Create New CLIENT Button-->
+    <a href="{% url 'clients:create_client' %}" class="btn btn-success btn-circle btn-lg button-lower-right-corner-1">
+    <i class="fas fa-plus"></i>
+    </a>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% load static %}
+    <script src="{% static 'el-pagination/js/el-pagination.js'  %}"></script>
+    <script>$.endlessPaginate({paginateOnScroll: true, paginateOnScrollMargin: 20});</script>
 {% endblock %}

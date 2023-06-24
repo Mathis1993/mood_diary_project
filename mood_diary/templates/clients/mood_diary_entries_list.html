@@ -1,21 +1,27 @@
 {% extends "base_counselor_role.html" %}
 
 {% block content %}
-  <h1>Mood Diary Entries</h1>
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Mood Diary Entries</h1>
+    </div>
+
+    <div class="row">
+  <div class="col-lg-10">
+
 
   {% if entries %}
-    <ul>
-      {% for entry in entries %}
-        <li>
-          <strong>Date:</strong> {{ entry.created_at.date }}<br>
-          <strong>Duration:</strong> {{ entry.start_time }} - {{ entry.end_time }}<br>
-          <strong>Mood:</strong> {{ entry.mood.label }} ({{ entry.mood.value }})<br>
-          <strong>Activity:</strong> {{ entry.activity.value }}<br>
-          <a href="{% url 'clients:get_mood_diary_entry_client' client_pk=entry.mood_diary.client_id entry_pk=entry.id %}">Details</a>
-        </li>
-      {% endfor %}
-    </ul>
+    {% include page_template %}
   {% else %}
-    <p>No mood diary entries found.</p>
+    <p>No mood diary entries released yet.</p>
   {% endif %}
+  </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% load static %}
+    <script src="{% static 'el-pagination/js/el-pagination.js'  %}"></script>
+    <script>$.endlessPaginate({paginateOnScroll: true, paginateOnScrollMargin: 20});</script>
 {% endblock %}

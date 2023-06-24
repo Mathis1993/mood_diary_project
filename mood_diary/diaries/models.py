@@ -6,7 +6,6 @@ from clients.models import Client
 from core.models import NormalizedScaleModel, NormalizedStringValueModel, TrackCreationAndUpdates
 from django.db import models
 from django.db.models import Avg, QuerySet
-from django.utils import timezone
 
 
 class MoodDiary(models.Model):
@@ -36,8 +35,8 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
     mood_diary = models.ForeignKey(to=MoodDiary, on_delete=models.CASCADE, related_name="entries")
     released = models.BooleanField(default=False)
     date = models.DateField(default=date.today)
-    start_time = models.TimeField(null=True, blank=True, default=None)
-    end_time = models.TimeField(default=timezone.now, null=True, blank=True)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
     mood = models.ForeignKey(
         to="diaries.Mood", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
@@ -75,9 +74,17 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
 class Mood(NormalizedScaleModel):
     class Meta:
         db_table = "diaries_moods"
+        ordering = ["value"]
 
     def __str__(self):
         return f"{self.label} ({self.value})"
+
+    def to_percentage(self) -> int:
+        return int(self.value / 7 * 100)
+
+    @staticmethod
+    def max_value() -> int:
+        return 7
 
 
 class Emotion(NormalizedStringValueModel):
@@ -91,6 +98,7 @@ class Emotion(NormalizedStringValueModel):
 class Activity(NormalizedStringValueModel):
     class Meta:
         db_table = "diaries_activities"
+        ordering = ["value"]
 
     def __str__(self):
         return self.value

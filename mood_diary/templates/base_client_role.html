@@ -7,3 +7,21 @@
   <li><a href="{% url 'users:logout' %}">Logout</a></li>
 </ul>
 {% endblock %}
+
+{% block navigation_items %}
+
+    <!-- Nav Item - Home -->
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'users:index' %}">
+            <i class="fas fa-fw fa-home"></i>
+            <span>Home</span></a>
+    </li>
+
+    <!-- Nav Item - Diary -->
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'diaries:list_mood_diary_entries' %}">
+            <i class="fas fa-fw fa-book"></i>
+            <span>Diary</span></a>
+    </li>
+
+{% endblock %}

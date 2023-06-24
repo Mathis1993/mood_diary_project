@@ -1,14 +1,48 @@
 {% extends "base_counselor_role.html" %}
 
 {% block content %}
-  <h1>Mood Diary Entry</h1>
-  <p><strong>Date:</strong> {{ entry.created_at.date }}</p>
-  <p><strong>Duration:</strong> {{ entry.start_time }} - {{ entry.end_time }}</p>
-  <p><strong>Mood:</strong> {{ entry.mood.label }} ({{ entry.mood.value }})</p>
-  <p><strong>Emotion:</strong> {{ entry.emotion.value }}</p>
-  <p><strong>Mood And Emotion Info:</strong> {{ entry.mood_and_emotion_info }}</p>
-  <p><strong>Activity:</strong> {{ entry.activity.value }}</p>
-  <p><strong>Strain:</strong> {{ entry.strain.label }} ({{ entry.strain.value }})</p>
-  <p><strong>Strain Area:</strong> {{ entry.strain_area.value }}</p>
-  <p><strong>Strain Info:</strong> {{ entry.strain_info }}</p>
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Mood Diary Entry</h1>
+    </div>
+
+    <div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="shadow mb-4">
+            <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ entry.date }} </h6>
+            <h6 class="m-0 font-weight-bold text-secondary">({{ entry.start_time }} - {{ entry.end_time }})</h6>
+            </div>
+            <div class="card-body">
+                <h4 class="text-md-left">Activity</h4>
+                <div class="text">
+                    <p>{{ entry.activity.value }}</p>
+                </div>
+                <h4 class="text-md-left">Mood</h4>
+                <div class="stepper-container mb-5">
+              <div class="stepper-wrapper mb-4">
+                <div class="stepper-progress"></div>
+                  {% for mood in moods %}
+                    {% if mood.value == entry.mood.value %}
+                      <div class="stepper-screen-indicator stepper-completed">{{ mood.value }}</div>
+                    {% else %}
+                      <div class="stepper-screen-indicator">{{ mood.value }}</div>
+                    {% endif %}
+                  {% endfor %}
+                <div class="stepper-label-left">{{ label_left }}</div>
+                <div class="stepper-label-right">{{ label_right }}</div>
+              </div>
+            </div>
+
+                {% if entry.mood_and_emotion_info %}
+                <h4 class="text-md-left">Info</h4>
+                <div class="text">
+                    <p>{{ entry.mood_and_emotion_info }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+
 {% endblock %}

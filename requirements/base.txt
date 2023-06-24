@@ -2,3 +2,6 @@ Django==4.2.2
 
 # Database
 psycopg2-binary==2.9.6
+
+# Pagination
+django-el-pagination==4.0.0

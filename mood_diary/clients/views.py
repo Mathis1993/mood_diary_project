@@ -1,20 +1,21 @@
 from clients.forms import ClientCreationForm
 from clients.models import Client
 from core.views import AuthenticatedCounselorRoleMixin
-from diaries.models import MoodDiary, MoodDiaryEntry
+from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.utils.crypto import get_random_string
 from django.views import View
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
+from el_pagination.views import AjaxListView
 
 User = get_user_model()
 
 
 class CreateClientView(AuthenticatedCounselorRoleMixin, View):
     form_class = ClientCreationForm
-    template_name = "clients/create_client.html"
+    template_name = "clients/client_create.html"
     success_template_name = "clients/client_login_details.html"
 
     def get(self, request):
@@ -49,22 +50,22 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
-class ClientListView(AuthenticatedCounselorRoleMixin, ListView):
+class ClientListView(AuthenticatedCounselorRoleMixin, AjaxListView):
     model = Client
     template_name = "clients/clients_list.html"
+    page_template = "clients/clients_list_page.html"
     context_object_name = "clients"
-    paginate_by = 10
 
     def get_queryset(self):
         counselor_id = self.request.user.id
         return Client.objects.filter(counselor_id=counselor_id).order_by("-created_at")
 
 
-class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, ListView):
+class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, AjaxListView):
     model = MoodDiaryEntry
     template_name = "clients/mood_diary_entries_list.html"
+    page_template = "clients/mood_diary_entries_list_page.html"
     context_object_name = "entries"
-    paginate_by = 10
     pk_url_kwarg = "client_pk"
 
     def get_queryset(self):
@@ -87,3 +88,10 @@ class MoodDiaryEntryDetailView(AuthenticatedCounselorRoleMixin, DetailView):
             mood_diary__client_id=client_id,
             mood_diary__client__counselor_id=self.request.user.id,
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["moods"] = Mood.objects.all()
+        context["label_left"] = Mood.objects.first().label
+        context["label_right"] = Mood.objects.last().label
+        return context

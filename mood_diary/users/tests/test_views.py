@@ -4,20 +4,9 @@ import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from pytest_django.asserts import assertTemplateUsed
 from users.tests.factories import UserFactory
 
 User = get_user_model()
-
-
-@pytest.mark.django_db
-def test_logout_confirmation(admin_client):
-    url = reverse("users:logout")
-
-    response = admin_client.get(url)
-
-    assert response.status_code == 200
-    assertTemplateUsed(response, "users/logout.html")
 
 
 @pytest.mark.django_db

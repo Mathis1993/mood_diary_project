@@ -1,11 +1,12 @@
 from core.views import AuthenticatedClientRoleMixin
 from diaries.forms import MoodDiaryEntryForm
-from diaries.models import MoodDiary, MoodDiaryEntry
+from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
+from el_pagination.views import AjaxListView
 
 
 class RestrictMoodDiaryEntryToOwnerMixin:
@@ -20,12 +21,19 @@ class MoodDiaryEntryDetailView(
     template_name = "diaries/mood_diary_entry_get.html"
     context_object_name = "entry"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["moods"] = Mood.objects.all()
+        context["label_left"] = Mood.objects.first().label
+        context["label_right"] = Mood.objects.last().label
+        return context
 
-class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, ListView):
+
+class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entries_list.html"
+    page_template = "diaries/mood_diary_entry_list_page.html"
     context_object_name = "entries"
-    paginate_by = 10
 
     def get_queryset(self):
         client_id = self.request.user.client.id
@@ -33,40 +41,24 @@ class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, ListView):
         return mood_diary.entries.all().order_by("-date")
 
 
-class CreateMoodDiaryEntryView(AuthenticatedClientRoleMixin, View):
+class MoodDiaryEntryCreateView(AuthenticatedClientRoleMixin, CreateView):
+    model = MoodDiaryEntry
     form_class = MoodDiaryEntryForm
     template_name = "diaries/mood_diary_entry_create.html"
 
-    def get(self, request):
-        form = self.form_class()
-        return render(request, self.template_name, {"form": form})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            entry = form.save(commit=False)
-            entry.mood_diary = request.user.client.mood_diary
-            entry.save()
-            return redirect("diaries:list_mood_diary_entries")
-        return render(request, self.template_name, {"form": form})
+    def form_valid(self, form):
+        entry = form.save(commit=False)
+        entry.mood_diary = self.request.user.client.mood_diary
+        entry.save()
+        return redirect("diaries:list_mood_diary_entries")
 
 
 class MoodDiaryEntryUpdateView(
     AuthenticatedClientRoleMixin, RestrictMoodDiaryEntryToOwnerMixin, UpdateView
 ):
     model = MoodDiaryEntry
+    form_class = MoodDiaryEntryForm
     template_name = "diaries/mood_diary_entry_update.html"
-    fields = [
-        "start_time",
-        "end_time",
-        "mood",
-        "emotion",
-        "mood_and_emotion_info",
-        "activity",
-        "strain",
-        "strain_area",
-        "strain_info",
-    ]
 
     def get_success_url(self):
         return reverse_lazy("diaries:get_mood_diary_entry", kwargs={"pk": self.object.id})
