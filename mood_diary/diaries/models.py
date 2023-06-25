@@ -31,6 +31,7 @@ class MoodDiary(models.Model):
 class MoodDiaryEntry(TrackCreationAndUpdates):
     class Meta:
         db_table = "diaries_mood_diary_entries"
+        ordering = ["-date", "-start_time"]
 
     mood_diary = models.ForeignKey(to=MoodDiary, on_delete=models.CASCADE, related_name="entries")
     released = models.BooleanField(default=False)
