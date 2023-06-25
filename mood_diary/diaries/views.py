@@ -1,8 +1,9 @@
 from core.views import AuthenticatedClientRoleMixin
-from diaries.forms import MoodDiaryEntryForm
+from diaries.forms import MoodDiaryEntryCreateForm, MoodDiaryEntryForm
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
@@ -38,18 +39,31 @@ class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
     def get_queryset(self):
         client_id = self.request.user.client.id
         mood_diary, _ = MoodDiary.objects.get_or_create(client_id=client_id)
-        return mood_diary.entries.all().order_by("-date")
+        return mood_diary.entries.all()
 
 
 class MoodDiaryEntryCreateView(AuthenticatedClientRoleMixin, CreateView):
     model = MoodDiaryEntry
-    form_class = MoodDiaryEntryForm
+    form_class = MoodDiaryEntryCreateForm
     template_name = "diaries/mood_diary_entry_create.html"
 
     def form_valid(self, form):
+        start_time = form.cleaned_data.get("start_time")
+        end_time = form.cleaned_data.get("end_time")
+        start_date = form.cleaned_data.get("date")
+        end_date = form.cleaned_data.get("end_date")
         entry = form.save(commit=False)
-        entry.mood_diary = self.request.user.client.mood_diary
-        entry.save()
+        for index in range((days_between := (end_date - start_date).days) + 1):
+            entry.id = None
+            entry.date = start_date + timezone.timedelta(days=index)
+            entry.start_time = "00:00:00"
+            entry.end_time = "23:59:59"
+            if index == 0:
+                entry.start_time = start_time
+            if index == days_between:
+                entry.end_time = end_time
+            entry.mood_diary = self.request.user.client.mood_diary
+            entry.save()
         return redirect("diaries:list_mood_diary_entries")
 
 

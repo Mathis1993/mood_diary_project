@@ -71,7 +71,7 @@ class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, AjaxListV
     def get_queryset(self):
         client_id = self.kwargs.get(self.pk_url_kwarg)
         mood_diary, _ = MoodDiary.objects.get_or_create(client_id=client_id)
-        return mood_diary.entries.filter(released=True).order_by("-date")
+        return mood_diary.entries.filter(released=True)
 
 
 class MoodDiaryEntryDetailView(AuthenticatedCounselorRoleMixin, DetailView):

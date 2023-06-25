@@ -1,3 +1,5 @@
+from datetime import date
+
 from diaries.models import Mood, MoodDiaryEntry
 from django import forms
 
@@ -34,6 +36,7 @@ class MoodDiaryEntryForm(forms.ModelForm):
         self.fields["activity"].empty_label = None
         self.fields["mood"].empty_label = None
         self.fields["mood"].initial = Mood.objects.get(value=0)
+        self.fields["mood_and_emotion_info"].label = "Additional info"
         self.fields["mood_and_emotion_info"].widget.attrs.update(
             {"rows": 5, "placeholder": "Enter any additional info here"}
         )
@@ -51,3 +54,34 @@ class MoodDiaryEntryForm(forms.ModelForm):
         strain_info = cleaned_data.get("strain_info")
         if strain_info:
             self.add_error("strain_info", "Please set a strain when providing strain info.")
+
+        return cleaned_data
+
+
+class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["date"].label = "Start date"
+        self.order_fields(["date", "end_date"])
+
+    end_date = forms.DateField(
+        initial=date.today(),
+        required=False,
+        widget=forms.DateInput(
+            attrs={"placeholder": "Select an end date", "type": "date"},
+        ),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if not cleaned_data.get("end_date"):
+            cleaned_data["end_date"] = cleaned_data.get("date")
+
+        start_date = cleaned_data.get("date")
+        end_date = cleaned_data.get("end_date")
+        if start_date and end_date:
+            if start_date > end_date:
+                self.add_error("end_date", "End date must be after start date.")
+
+        return cleaned_data
