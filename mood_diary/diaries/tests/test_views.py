@@ -1,3 +1,4 @@
+import datetime
 import http
 from datetime import date
 
@@ -12,6 +13,7 @@ from diaries.tests.factories import (
     MoodFactory,
 )
 from django.urls import reverse
+from django.utils import timezone
 
 
 @pytest.fixture
@@ -94,7 +96,45 @@ def test_mood_diary_entry_create_view_post(user, create_response):
 
     assert response.status_code == http.HTTPStatus.FOUND
     assert response.url == reverse("diaries:list_mood_diary_entries")
-    assert MoodDiaryEntry.objects.exists()
+    assert MoodDiaryEntry.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_mood_diary_entry_create_view_post_multiple_days(user, create_response):
+    MoodDiaryFactory.create(client=user.client)
+    mood = MoodFactory.create(value=0)
+    activity = ActivityFactory.create()
+    url = reverse("diaries:create_mood_diary_entry")
+
+    assert not MoodDiaryEntry.objects.exists()
+
+    response = create_response(
+        user,
+        url,
+        method="POST",
+        data={
+            "date": date.today(),
+            "end_date": date.today() + timezone.timedelta(days=2),
+            "start_time": "12:00",
+            "end_time": "13:00",
+            "mood": mood.id,
+            "activity": activity.id,
+        },
+    )
+
+    assert response.status_code == http.HTTPStatus.FOUND
+    assert response.url == reverse("diaries:list_mood_diary_entries")
+    assert MoodDiaryEntry.objects.count() == 3
+    entries = MoodDiaryEntry.objects.all().order_by("date")
+    assert entries[0].date == date.today()
+    assert entries[0].start_time == datetime.time(12, 0, 0)
+    assert entries[0].end_time == datetime.time(23, 59, 59)
+    assert entries[1].date == date.today() + timezone.timedelta(days=1)
+    assert entries[1].start_time == datetime.time(0, 0, 0)
+    assert entries[1].end_time == datetime.time(23, 59, 59)
+    assert entries[2].date == date.today() + timezone.timedelta(days=2)
+    assert entries[2].start_time == datetime.time(0, 0, 0)
+    assert entries[2].end_time == datetime.time(13, 0, 0)
 
 
 @pytest.mark.django_db
