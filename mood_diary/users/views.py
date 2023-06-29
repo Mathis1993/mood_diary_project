@@ -48,7 +48,7 @@ class CustomLoginView(LoginView):
 
 class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = "users/password_change.html"
-    success_url = reverse_lazy("users:password_change_done")
+    success_url = reverse_lazy("users:index")
 
     def form_valid(self, form):
         response = super().form_valid(form)
