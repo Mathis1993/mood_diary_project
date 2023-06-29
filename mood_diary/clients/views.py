@@ -4,7 +4,8 @@ from core.views import AuthenticatedCounselorRoleMixin
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views import View
 from django.views.generic import DetailView
@@ -58,7 +59,17 @@ class ClientListView(AuthenticatedCounselorRoleMixin, AjaxListView):
 
     def get_queryset(self):
         counselor_id = self.request.user.id
-        return Client.objects.filter(counselor_id=counselor_id).order_by("-created_at")
+        return Client.objects.filter(counselor_id=counselor_id, active=True).order_by("-created_at")
+
+
+class ClientUpdateToInactiveView(AuthenticatedCounselorRoleMixin, View):
+    def post(self, request, pk):
+        client = Client.objects.get(id=pk)
+        counselor_id = self.request.user.id
+        if client.counselor_id == counselor_id:
+            client.active = False
+            client.save()
+        return redirect(reverse_lazy("clients:list_clients"))
 
 
 class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, AjaxListView):
@@ -70,7 +81,13 @@ class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, AjaxListV
 
     def get_queryset(self):
         client_id = self.kwargs.get(self.pk_url_kwarg)
-        mood_diary, _ = MoodDiary.objects.get_or_create(client_id=client_id)
+        mood_diary, _ = MoodDiary.objects.get_or_create(
+            # ToDo(ME-29.06.23): Is this smart? Should we not just return a 404
+            #  in case the counselor is not allowed to see this client?
+            #  Also test this!
+            client_id=client_id,
+            client__counselor_id=self.request.user.id,
+        )
         return mood_diary.entries.filter(released=True)
 
 

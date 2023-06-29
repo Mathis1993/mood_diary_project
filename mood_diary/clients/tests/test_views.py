@@ -187,3 +187,27 @@ def test_client_list_view(create_user, create_response):
     assert client in (response_clients := response.context_data["clients"])
     assert response_clients.count() == 1
     assert "clients/clients_list.html" in response.template_name
+
+
+@pytest.mark.django_db
+def test_client_update_to_inactive_view(create_user, create_response):
+    counselor = create_user(User.Role.COUNSELOR)
+    client = ClientFactory.create(counselor=counselor, active=True)
+    assert Client.objects.filter(active=True).count() == 1
+    url = reverse("clients:update_to_inactive", kwargs={"pk": client.pk})
+
+    response = create_response(counselor, url, method="POST")
+
+    assert response.status_code == http.HTTPStatus.FOUND
+    assert not Client.objects.filter(active=True).exists()
+    assert not Client.objects.get(pk=client.pk).active
+
+    # Client not belonging to this Counselor is not set to inactive
+    client = ClientFactory.create(active=True)
+    assert Client.objects.filter(active=True).count() == 1
+    url = reverse("clients:update_to_inactive", kwargs={"pk": client.pk})
+
+    response = create_response(counselor, url, method="POST")
+
+    assert response.status_code == http.HTTPStatus.FOUND
+    assert Client.objects.filter(active=True).count() == 1
