@@ -1,6 +1,7 @@
 from datetime import date
 
-from diaries.models import Mood, MoodDiaryEntry
+from core.forms import GroupedModelChoiceField
+from diaries.models import Activity, Mood, MoodDiaryEntry
 from django import forms
 
 
@@ -26,6 +27,8 @@ class MoodDiaryEntryForm(forms.ModelForm):
                 attrs={"placeholder": "Select an end time", "type": "time"},
             ),
         }
+
+    activity = GroupedModelChoiceField(queryset=Activity.objects.all(), choices_group_by="category")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
