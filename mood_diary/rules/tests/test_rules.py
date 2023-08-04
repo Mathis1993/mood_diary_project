@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 import pytest
 from clients.tests.factories import ClientFactory
@@ -7,7 +8,12 @@ from diaries.tests.factories import MoodDiaryEntryFactory
 from django.utils import timezone
 from notifications.models import Notification
 from rules.models import RuleTriggeredLog
-from rules.rules import ActivityWithPeakMoodRule, BaseRule, RelaxingActivityRule
+from rules.rules import (
+    ActivityWithPeakMoodRule,
+    BaseRule,
+    PhysicalActivityPerWeekRule,
+    RelaxingActivityRule,
+)
 from rules.tests.factories import RuleFactory
 
 
@@ -146,3 +152,54 @@ def test_relaxing_activity_mood_rule():
     rule.evaluate()  # no effect
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_physical_activity_per_week_rule(freezer):
+    # It is Friday
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    rule_db = RuleFactory.create(title="Physical activity per week")
+    rule_db.subscribed_clients.add(client)
+    # Sunday (does not count)
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.physical_activity_value,
+        date="2023-09-24",
+        start_time=datetime(2023, 9, 24, 10, 0),
+        end_time=datetime(2023, 9, 24, 13, 0),
+    )
+    # Monday (does count)
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.physical_activity_value,
+        date="2023-09-25",
+        start_time=datetime(2023, 9, 25, 10, 0),
+        end_time=datetime(2023, 9, 25, 11, 0),
+    )
+    timestamp = timezone.now()
+    rule = PhysicalActivityPerWeekRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    # Tuesday (does count)
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.physical_activity_value,
+        date="2023-09-26",
+        start_time=datetime(2023, 9, 26, 10, 0),
+        end_time=datetime(2023, 9, 26, 12, 0),
+    )
+
+    assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+
+    assert rule.triggering_allowed() is False
+
+    freezer.move_to("2023-10-02")
+
+    assert rule.triggering_allowed() is True
