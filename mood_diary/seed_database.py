@@ -1,5 +1,10 @@
 from clients.tests.factories import ClientFactory
-from diaries.tests.factories import MoodDiaryEntryFactory, MoodDiaryFactory
+from diaries.tests.factories import (
+    ACTIVITIES,
+    ActivityFactory,
+    MoodDiaryEntryFactory,
+    MoodDiaryFactory,
+)
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from users.tests.factories import UserFactory
@@ -14,6 +19,11 @@ def seed_database():
     counselor = UserFactory.create(role=User.Role.COUNSELOR)
     client_user = UserFactory.create(role=User.Role.CLIENT)
     client = ClientFactory.create(user=client_user, counselor=counselor)
+    [
+        ActivityFactory.create(category__value=category, value=activity)
+        for category, activities in ACTIVITIES.items()
+        for activity in activities
+    ]
     mood_diary = MoodDiaryFactory.create(client=client)
     for _ in range(25):
         MoodDiaryEntryFactory.create(mood_diary=mood_diary)

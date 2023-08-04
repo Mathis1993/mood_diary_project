@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # third-party
     "el_pagination",
     "pwa",
+    "django_extensions",
     # custom
     "clients",
     "core",
