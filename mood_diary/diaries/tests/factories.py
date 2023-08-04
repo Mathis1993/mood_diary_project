@@ -1,7 +1,16 @@
 from datetime import date
 
 import factory.fuzzy
-from diaries.models import Activity, Emotion, Mood, MoodDiary, MoodDiaryEntry, Strain, StrainArea
+from diaries.models import (
+    Activity,
+    ActivityCategory,
+    Emotion,
+    Mood,
+    MoodDiary,
+    MoodDiaryEntry,
+    Strain,
+    StrainArea,
+)
 from django.utils import timezone
 
 MOOD_SCALE = {
@@ -22,6 +31,17 @@ STRAIN_SCALE = {
     5: "Moderate-High Strain",
     6: "High Strain",
     7: "Very High Strain",
+}
+
+ACTIVITIES = {
+    "Eating": ["Eating", "Drinking"],
+    "Sleep": ["Sleeping", "Napping"],
+    "Work": ["Working", "School", "Volunteering"],
+    "Studies": ["Studying", "Reading", "Homework"],
+    "Physical Activity": ["Exercise", "Sports", "Yoga"],
+    "Social": ["Socializing", "Partying", "Hanging out with friends"],
+    "Relaxation": ["Relaxing", "Meditating", "Praying"],
+    "Travel": ["Traveling", "Commuting"],
 }
 
 
@@ -84,18 +104,18 @@ class ActivityFactory(factory.django.DjangoModelFactory):
         model = Activity
         django_get_or_create = ("value",)
 
-    value = factory.fuzzy.FuzzyChoice(
-        [
-            "Eating meals",
-            "Sleeping",
-            "Working or studying",
-            "Exercising or engaging in physical activities",
-            "Socializing with friends or family",
-            "Relaxing or pursuing hobbies",
-            "Running errands or doing chores",
-            "Commuting or traveling",
-        ]
+    category = factory.SubFactory("diaries.tests.factories.ActivityCategoryFactory")
+    value = factory.LazyAttribute(
+        lambda obj: factory.fuzzy.FuzzyChoice(ACTIVITIES[obj.category.value]).fuzz()
     )
+
+
+class ActivityCategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ActivityCategory
+        django_get_or_create = ("value",)
+
+    value = factory.fuzzy.FuzzyChoice(ACTIVITIES.keys())
 
 
 class StrainFactory(factory.django.DjangoModelFactory):

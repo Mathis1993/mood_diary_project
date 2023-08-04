@@ -99,6 +99,19 @@ class Emotion(NormalizedStringValueModel):
 class Activity(NormalizedStringValueModel):
     class Meta:
         db_table = "diaries_activities"
+        ordering = ["category__value", "value"]
+
+    category = models.ForeignKey(
+        to="diaries.ActivityCategory", on_delete=models.CASCADE, related_name="activities"
+    )
+
+    def __str__(self):
+        return self.value
+
+
+class ActivityCategory(NormalizedStringValueModel):
+    class Meta:
+        db_table = "diaries_activity_categories"
         ordering = ["value"]
 
     def __str__(self):
