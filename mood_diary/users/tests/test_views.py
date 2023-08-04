@@ -83,6 +83,6 @@ def test_custom_password_change_view_valid_form_submission(client):
     )
 
     assert response.status_code == http.HTTPStatus.FOUND
-    assert response.url == reverse("users:password_change_done")
+    assert response.url == reverse("users:index")
     user.refresh_from_db()
     assert user.first_login_completed is True
