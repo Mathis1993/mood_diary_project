@@ -21,7 +21,7 @@ class Rule(TrackCreationAndUpdates):
     evaluation = models.TextField(choices=Evaluation.choices, max_length=255)
     conclusion_message = models.TextField()
     subscribed_clients = models.ManyToManyField(
-        "clients.Client", through="RuleClient", related_name="subscribed_rules"
+        through="RuleClient", to="clients.Client", related_name="subscribed_rules"
     )
 
 
