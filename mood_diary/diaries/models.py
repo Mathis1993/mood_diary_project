@@ -85,7 +85,7 @@ class Mood(NormalizedScaleModel):
 
     @staticmethod
     def max_value() -> int:
-        return 7
+        return 3
 
 
 class Emotion(NormalizedStringValueModel):
@@ -116,6 +116,9 @@ class ActivityCategory(NormalizedStringValueModel):
 
     def __str__(self):
         return self.value
+
+    physical_activity_value = "Physical Activity"
+    relaxing_value = "Relaxation"
 
 
 class Strain(NormalizedScaleModel):
