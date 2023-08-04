@@ -1,11 +1,12 @@
 from datetime import timedelta
 from functools import cached_property
 
-from diaries.models import ActivityCategory, Mood, MoodDiaryEntry
+from diaries.models import ActivityCategory, Mood, MoodDiary, MoodDiaryEntry
 from django.db import models
 from django.utils import timezone
 from notifications.models import Notification
 from rules.models import Rule, RuleTriggeredLog
+from rules.utils import get_beginning_of_current_week
 
 
 class BaseRule:
@@ -78,6 +79,11 @@ class BaseRule:
 
 
 class ActivityWithPeakMoodRule(BaseRule):
+    """
+    Rule checking if the last activity the client did before the rule evaluation was
+    requested had the highest mood value available.
+    """
+
     rule_title = "Activity with peak mood"
 
     def triggering_allowed(self) -> bool:
@@ -87,16 +93,23 @@ class ActivityWithPeakMoodRule(BaseRule):
         """
         Get the mood diary entry that was last edited before rule evaluation was requested.
         """
-        return MoodDiaryEntry.objects.filter(
-            client_id=self.client_id, updated_at__lte=self.requested_at
-        ).order_by("-updated_at")
+        return (
+            MoodDiary.objects.get(client_id=self.client_id)
+            .entries.filter(updated_at__lte=self.requested_at)
+            .order_by("-updated_at")
+        )
 
     def evaluate_preconditions(self) -> bool:
         mood_diary_entries = self.get_mood_diary_entries()
-        return mood_diary_entries and mood_diary_entries.first().mood == Mood.max_value()
+        return mood_diary_entries and mood_diary_entries.first().mood.value == Mood.max_value()
 
 
 class RelaxingActivityRule(ActivityWithPeakMoodRule):
+    """
+    Rule checking if the last activity the client did before the rule evaluation was
+    requested was a relaxing activity.
+    """
+
     rule_title = "Relaxing activity"
 
     def evaluate_preconditions(self) -> bool:
@@ -109,20 +122,23 @@ class RelaxingActivityRule(ActivityWithPeakMoodRule):
 
 
 class PhysicalActivityPerWeekRule(BaseRule):
+    """
+    Rule checking if the client has done at least 150 minutes of physical activity this week.
+    """
+
     rule_title = "Physical activity per week"
 
     def triggering_allowed(self) -> bool:
-        # ToDo(ME-04.08.23): Not 7 day back but to Monday of this week (included)
-        time_interval = timezone.now() - timedelta(days=7)
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=time_interval,
+            created_at__gte=get_beginning_of_current_week(),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
-        # ToDo(ME-04.08.23):
-        pass
+        return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
+            date__gte=get_beginning_of_current_week(),
+        )
 
     def evaluate_preconditions(self) -> bool:
         relevant_entries = self.get_mood_diary_entries().filter(
