@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "core",
     "dashboards",
     "diaries",
+    "notifications",
+    "rules",
     "users",
 ]
 
