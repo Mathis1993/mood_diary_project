@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from notifications.models import Notification
 from rules.models import Rule, RuleTriggeredLog
-from rules.utils import get_beginning_of_week
+from rules.utils import get_beginning_of_week, get_end_of_week
 
 
 class BaseRule:
@@ -334,3 +334,87 @@ class NegativeMoodChangeBetweenActivitiesRule(PositiveMoodChangeBetweenActivitie
             return False
         mood_values = relevant_entries.values_list("mood__value", flat=True)
         return mood_values[0] - mood_values[1] <= -2
+
+
+class DailyAverageMoodImprovingRule(BaseRule):
+    """
+    Rule checking if the client has a higher average mood than the day before.
+    """
+
+    rule_title = "Daily average mood improving"
+
+    def triggering_allowed(self) -> bool:
+        return not RuleTriggeredLog.objects.filter(
+            rule=self.rule,
+            client_id=self.client_id,
+            created_at__gte=self.requested_at.date(),
+        ).exists()
+
+    def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
+        return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
+            date__gte=self.requested_at.date() - timedelta(days=1),
+            date__lte=self.requested_at.date(),
+        )
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries()
+        if not relevant_entries.exists():
+            return False
+        if relevant_entries.values_list("date", flat=True).distinct().count() != 2:
+            return False
+        mood_values_per_day = (
+            relevant_entries.values("date")
+            .annotate(avg_mood=models.Avg("mood__value"))
+            .order_by("-date")
+        )
+        return mood_values_per_day[0]["avg_mood"] > mood_values_per_day[1]["avg_mood"]
+
+
+class PhysicalActivityPerWeekIncreasingRule(BaseRule):
+    """
+    Rule checking if the client has a higher physical activity than the week before.
+    """
+
+    rule_title = "Physical activity per week increasing"
+
+    def triggering_allowed(self) -> bool:
+        # Only to be triggered on Sundays
+        if self.requested_at.weekday() != 6:
+            return False
+        return not RuleTriggeredLog.objects.filter(
+            rule=self.rule,
+            client_id=self.client_id,
+            created_at__gte=get_beginning_of_week(self.requested_at),
+        ).exists()
+
+    def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
+        return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
+            date__gte=get_beginning_of_week(self.requested_at - timedelta(days=7)),
+            date__lte=self.requested_at.date(),
+        )
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries().filter(
+            activity__category__value=ActivityCategory.physical_activity_value
+        )
+        if not relevant_entries.exists():
+            return False
+        duration_sum_last_week = (
+            relevant_entries.filter(
+                date__gte=get_beginning_of_week(self.requested_at) - timedelta(days=7),
+                date__lte=get_end_of_week(self.requested_at) - timedelta(days=7),
+            )
+            .annotate(duration=models.F("end_time") - models.F("start_time"))
+            .aggregate(models.Sum("duration"))["duration__sum"]
+        )
+        duration_sum_current_week = (
+            relevant_entries.filter(
+                date__gte=get_beginning_of_week(self.requested_at),
+                date__lte=self.requested_at.date(),
+            )
+            .annotate(duration=models.F("end_time") - models.F("start_time"))
+            .aggregate(models.Sum("duration"))["duration__sum"]
+        )
+        if duration_sum_last_week is None or duration_sum_current_week is None:
+            return False
+        return duration_sum_current_week > duration_sum_last_week

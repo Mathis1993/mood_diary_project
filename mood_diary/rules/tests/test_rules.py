@@ -11,10 +11,12 @@ from rules.models import RuleTriggeredLog
 from rules.rules import (
     ActivityWithPeakMoodRule,
     BaseRule,
+    DailyAverageMoodImprovingRule,
     FourteenDaysMoodAverageRule,
     FourteenDaysMoodMaximumRule,
     HighMediaUsagePerDayRule,
     NegativeMoodChangeBetweenActivitiesRule,
+    PhysicalActivityPerWeekIncreasingRule,
     PhysicalActivityPerWeekRule,
     PositiveMoodChangeBetweenActivitiesRule,
     RelaxingActivityRule,
@@ -592,3 +594,163 @@ def test_negative_mood_change_between_activities_rule():
     rule.evaluate()
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_daily_average_mood_improving_rule(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    MoodDiaryFactory.create(client=client)
+    rule_db = RuleFactory.create(title="Daily average mood improving")
+    rule_db.subscribed_clients.add(client)
+
+    timestamp = timezone.now()
+    rule = DailyAverageMoodImprovingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 0
+    assert rule.evaluate_preconditions() is False
+
+    # Only entries for today, not for yesterday
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        mood__value=-1,
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        mood__value=1,
+    )
+    assert rule.get_mood_diary_entries().count() == 2
+    assert rule.evaluate_preconditions() is False
+
+    # Entries for today and yesterday, but no improvement
+    freezer.move_to("2023-10-01")
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 10, 1),
+        mood__value=-2,
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 10, 1),
+        mood__value=0,
+    )
+    timestamp = timezone.now()
+    rule = DailyAverageMoodImprovingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.evaluate_preconditions() is False
+
+    # Entries for today and yesterday, with improvement
+    freezer.move_to("2023-10-02")
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 10, 2),
+        mood__value=1,
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 10, 2),
+        mood__value=3,
+    )
+    timestamp = timezone.now()
+    rule = DailyAverageMoodImprovingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+    assert rule.triggering_allowed() is False
+
+    freezer.move_to("2023-10-03")
+    timestamp = timezone.now()
+    rule = DailyAverageMoodImprovingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+
+
+@pytest.mark.django_db
+def test_physical_activity_per_week_increasing_rule(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    MoodDiaryFactory.create(client=client)
+    rule_db = RuleFactory.create(title="Physical activity per week increasing")
+    rule_db.subscribed_clients.add(client)
+
+    # Saturday
+    timestamp = timezone.now()
+    rule = PhysicalActivityPerWeekIncreasingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+
+    # Sunday
+    freezer.move_to("2023-10-01")
+    timestamp = timezone.now()
+    rule = PhysicalActivityPerWeekIncreasingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 0
+    assert rule.evaluate_preconditions() is False
+
+    # Some entries for the current week
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-09-26",
+        activity__category__value=ActivityCategory.physical_activity_value,
+        mood__value=1,
+        start_time=datetime(2023, 9, 25, 12, 0),
+        end_time=datetime(2023, 9, 25, 13, 0),
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-09-27",
+        activity__category__value=ActivityCategory.physical_activity_value,
+        mood__value=1,
+        start_time=datetime(2023, 9, 30, 15, 0),
+        end_time=datetime(2023, 9, 30, 16, 0),
+    )
+    assert rule.get_mood_diary_entries().count() == 2
+    assert rule.evaluate_preconditions() is False
+
+    # Next week's sunday
+    freezer.move_to("2023-10-08")
+    timestamp = timezone.now()
+    rule = PhysicalActivityPerWeekIncreasingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 2
+    assert rule.evaluate_preconditions() is False
+
+    # Some entries for the next week (same amount as this week)
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-06",
+        activity__category__value=ActivityCategory.physical_activity_value,
+        mood__value=1,
+        start_time=datetime(2023, 9, 30, 12, 0),
+        end_time=datetime(2023, 9, 30, 13, 0),
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-07",
+        activity__category__value=ActivityCategory.physical_activity_value,
+        mood__value=1,
+        start_time=datetime(2023, 9, 30, 15, 0),
+        end_time=datetime(2023, 9, 30, 16, 0),
+    )
+    assert rule.get_mood_diary_entries().count() == 4
+    assert rule.evaluate_preconditions() is False
+
+    # Increase next week's amount
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-07",
+        activity__category__value=ActivityCategory.physical_activity_value,
+        mood__value=1,
+        start_time=datetime(2023, 9, 30, 17, 0),
+        end_time=datetime(2023, 9, 30, 18, 0),
+    )
+    assert rule.get_mood_diary_entries().count() == 5
+    assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+    assert rule.triggering_allowed() is False
