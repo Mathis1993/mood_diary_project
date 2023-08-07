@@ -120,6 +120,7 @@ class ActivityCategory(NormalizedStringValueModel):
 
     physical_activity_value = "Physical Activity"
     relaxing_value = "Relaxation"
+    media_usage_value = "Media Usage"
 
 
 class Strain(NormalizedScaleModel):
