@@ -15,6 +15,7 @@ from rules.rules import (
     FourteenDaysMoodAverageRule,
     FourteenDaysMoodMaximumRule,
     HighMediaUsagePerDayRule,
+    LowMediaUsagePerDayRule,
     NegativeMoodChangeBetweenActivitiesRule,
     PhysicalActivityPerWeekIncreasingRule,
     PhysicalActivityPerWeekRule,
@@ -255,6 +256,67 @@ def test_high_media_usage_per_day_rule(freezer):
 
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+
+    assert rule.triggering_allowed() is False
+
+
+@pytest.mark.django_db
+def test_low_media_usage_per_day_rule(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    rule_db = RuleFactory.create(title="Low media usage per day")
+    rule_db.subscribed_clients.add(client)
+
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 10, 0),
+        end_time=datetime(2023, 9, 30, 10, 20),
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 11, 0),
+        end_time=datetime(2023, 9, 30, 11, 5),
+    )
+
+    timestamp = timezone.now()
+    rule = LowMediaUsagePerDayRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 17, 0),
+        end_time=datetime(2023, 9, 30, 18, 0),
+    )
+
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    freezer.move_to("2023-10-01")
+    timestamp = timezone.now()
+    rule = LowMediaUsagePerDayRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-10-01",
+        start_time=datetime(2023, 9, 30, 17, 0),
+        end_time=datetime(2023, 9, 30, 17, 15),
+    )
+
     assert not Notification.objects.exists()
     assert not RuleTriggeredLog.objects.exists()
     rule.evaluate()

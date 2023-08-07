@@ -191,6 +191,25 @@ class HighMediaUsagePerDayRule(BaseRule):
         return duration_sum >= timedelta(hours=6)
 
 
+class LowMediaUsagePerDayRule(HighMediaUsagePerDayRule):
+    """
+    Rule checking if the client has spent less than 30 minutes on media usage today.
+    """
+
+    rule_title = "Low media usage per day"
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries().filter(
+            activity__category__value=ActivityCategory.media_usage_value
+        )
+        if not relevant_entries.exists():
+            return True
+        duration_sum = relevant_entries.annotate(
+            duration=models.F("end_time") - models.F("start_time")
+        ).aggregate(models.Sum("duration"))["duration__sum"]
+        return duration_sum <= timedelta(minutes=30)
+
+
 class FourteenDaysMoodAverageRule(BaseRule):
     """
     Rule checking if the client has got a mean mood value of less than 0 for at least 9
