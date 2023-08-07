@@ -109,6 +109,8 @@ class Activity(NormalizedStringValueModel):
     def __str__(self):
         return self.value
 
+    food_intake_value = "Full meal"
+
 
 class ActivityCategory(NormalizedStringValueModel):
     class Meta:
