@@ -227,3 +227,19 @@ class FourteenDaysMoodAverageRule(BaseRule):
             .count()
         )
         return days_with_mood_avg_below_zero >= 9
+
+
+# ToDo(ME-07.08.23): Less than 1 here but less than 0 for rule above?
+class FourteenDaysMoodMaximumRule(FourteenDaysMoodAverageRule):
+    """
+    Rule checking if the client has got a max mood value of less than 1 for the last 14 days.
+    """
+
+    rule_title = "Fourteen days mood maximum"
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries()
+        if not relevant_entries.exists():
+            return False
+        max_mood_value = relevant_entries.aggregate(models.Max("mood__value"))["mood__value__max"]
+        return max_mood_value < 1
