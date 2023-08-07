@@ -319,3 +319,18 @@ class PositiveMoodChangeBetweenActivitiesRule(BaseRule):
             return False
         mood_values = relevant_entries.values_list("mood__value", flat=True)
         return mood_values[0] - mood_values[1] >= 2
+
+
+class NegativeMoodChangeBetweenActivitiesRule(PositiveMoodChangeBetweenActivitiesRule):
+    """
+    Rule checking if the client has a negative mood change between two consecutive activities.
+    """
+
+    rule_title = "Negative mood change between activities"
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries()
+        if not relevant_entries.exists():
+            return False
+        mood_values = relevant_entries.values_list("mood__value", flat=True)
+        return mood_values[0] - mood_values[1] <= -2

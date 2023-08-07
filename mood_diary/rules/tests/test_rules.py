@@ -14,6 +14,7 @@ from rules.rules import (
     FourteenDaysMoodAverageRule,
     FourteenDaysMoodMaximumRule,
     HighMediaUsagePerDayRule,
+    NegativeMoodChangeBetweenActivitiesRule,
     PhysicalActivityPerWeekRule,
     PositiveMoodChangeBetweenActivitiesRule,
     RelaxingActivityRule,
@@ -505,6 +506,85 @@ def test_positive_mood_change_between_activities_rule():
     second_activity.save()
     timestamp = timezone.now()
     rule = PositiveMoodChangeBetweenActivitiesRule(client_id=client.id, requested_at=timestamp)
+    assert rule.get_mood_diary_entries().count() == 2
+    assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_negative_mood_change_between_activities_rule():
+    client = ClientFactory.create()
+    MoodDiaryFactory.create(client=client)
+    rule_db = RuleFactory.create(title="Negative mood change between activities")
+    rule_db.subscribed_clients.add(client)
+
+    # first activity
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        activity__value="a",
+        mood__value=3,
+        start_time=datetime(2023, 9, 30, 10, 0),
+        end_time=datetime(2023, 9, 30, 11, 0),
+    )
+    timestamp = timezone.now()
+    rule = NegativeMoodChangeBetweenActivitiesRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 0
+    assert rule.evaluate_preconditions() is False
+
+    # second activity
+    second_activity = MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        activity__value="b",
+        mood__value=2,
+        start_time=datetime(2023, 9, 30, 11, 0),
+        end_time=datetime(2023, 9, 30, 12, 0),
+    )
+    timestamp = timezone.now()
+    rule = NegativeMoodChangeBetweenActivitiesRule(client_id=client.id, requested_at=timestamp)
+    assert rule.get_mood_diary_entries().count() == 2
+    assert rule.evaluate_preconditions() is False
+
+    # third activity (same one as before)
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        activity__value="b",
+        mood__value=0,
+        start_time=datetime(2023, 9, 30, 12, 0),
+        end_time=datetime(2023, 9, 30, 13, 0),
+    )
+    timestamp = timezone.now()
+    rule = NegativeMoodChangeBetweenActivitiesRule(client_id=client.id, requested_at=timestamp)
+    assert rule.get_mood_diary_entries().count() == 0
+    assert rule.evaluate_preconditions() is False
+
+    # fourth activity
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        activity__value="c",
+        mood__value=-2,
+        start_time=datetime(2023, 9, 30, 13, 0),
+        end_time=datetime(2023, 9, 30, 14, 0),
+    )
+    timestamp = timezone.now()
+    rule = NegativeMoodChangeBetweenActivitiesRule(client_id=client.id, requested_at=timestamp)
+    assert rule.get_mood_diary_entries().count() == 2
+    assert rule.evaluate_preconditions() is True
+
+    # Update second activity
+    new_mood = MoodFactory.create(value=-1)
+    second_activity.mood = new_mood
+    second_activity.save()
+    timestamp = timezone.now()
+    rule = NegativeMoodChangeBetweenActivitiesRule(client_id=client.id, requested_at=timestamp)
     assert rule.get_mood_diary_entries().count() == 2
     assert rule.evaluate_preconditions() is True
     assert not Notification.objects.exists()
