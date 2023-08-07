@@ -277,3 +277,45 @@ class UnsteadyFoodIntakeRule(BaseRule):
             activity__value=Activity.food_intake_value
         )
         return relevant_entries.count() < 3
+
+
+class PositiveMoodChangeBetweenActivitiesRule(BaseRule):
+    """
+    Rule checking if the client has a positive mood change between two consecutive activities.
+    """
+
+    rule_title = "Positive mood change between activities"
+
+    def triggering_allowed(self) -> bool:
+        return True
+
+    def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
+        entry_last_edit = (
+            MoodDiary.objects.get(client_id=self.client_id)
+            .entries.filter(updated_at__lte=self.requested_at)
+            .order_by("-updated_at")
+            .first()
+        )
+        if entry_last_edit is None:
+            return MoodDiary.objects.none()
+        entry_before_last_edited_one = (
+            MoodDiary.objects.get(client_id=self.client_id)
+            .entries.filter(end_time__lt=entry_last_edit.end_time)
+            .first()
+        )
+        if entry_before_last_edited_one is None:
+            return MoodDiary.objects.none()
+        if entry_last_edit.activity == entry_before_last_edited_one.activity:
+            return MoodDiary.objects.none()
+        return (
+            MoodDiary.objects.get(client_id=self.client_id)
+            .entries.filter(id__in=[entry_last_edit.id, entry_before_last_edited_one.id])
+            .order_by("-end_time")
+        )
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries()
+        if not relevant_entries.exists():
+            return False
+        mood_values = relevant_entries.values_list("mood__value", flat=True)
+        return mood_values[0] - mood_values[1] >= 2
