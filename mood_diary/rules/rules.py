@@ -1,7 +1,7 @@
 from datetime import timedelta
 from functools import cached_property
 
-from diaries.models import ActivityCategory, Mood, MoodDiary, MoodDiaryEntry
+from diaries.models import Activity, ActivityCategory, Mood, MoodDiary, MoodDiaryEntry
 from django.db import models
 from django.utils import timezone
 from notifications.models import Notification
@@ -60,6 +60,12 @@ class BaseRule:
         """
         return self.rule.subscribed_clients.filter(id=self.client_id).exists()
 
+    def mood_diary_exists(self) -> bool:
+        """
+        Checks if the client has a mood diary.
+        """
+        return MoodDiary.objects.filter(client_id=self.client_id).exists()
+
     def persist_rule_triggering(self):
         RuleTriggeredLog.objects.create(rule=self.rule, client_id=self.client_id)
 
@@ -71,6 +77,8 @@ class BaseRule:
         if not self.client_subscribed():
             return
         if not self.triggering_allowed():
+            return
+        if not self.mood_diary_exists():
             return
         if not self.evaluate_preconditions():
             return
@@ -243,3 +251,29 @@ class FourteenDaysMoodMaximumRule(FourteenDaysMoodAverageRule):
             return False
         max_mood_value = relevant_entries.aggregate(models.Max("mood__value"))["mood__value__max"]
         return max_mood_value < 1
+
+
+class UnsteadyFoodIntakeRule(BaseRule):
+    """
+    Rule checking if the client has eaten less than 3 meals per day.
+    """
+
+    rule_title = "Unsteady food intake"
+
+    def triggering_allowed(self) -> bool:
+        return not RuleTriggeredLog.objects.filter(
+            rule=self.rule,
+            client_id=self.client_id,
+            created_at__gte=self.requested_at.date(),
+        ).exists()
+
+    def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
+        return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
+            date=self.requested_at.date(),
+        )
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries().filter(
+            activity__value=Activity.food_intake_value
+        )
+        return relevant_entries.count() < 3

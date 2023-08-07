@@ -3,8 +3,8 @@ from datetime import date, datetime, timedelta
 
 import pytest
 from clients.tests.factories import ClientFactory
-from diaries.models import ActivityCategory, MoodDiaryEntry
-from diaries.tests.factories import MoodDiaryEntryFactory
+from diaries.models import Activity, ActivityCategory, MoodDiaryEntry
+from diaries.tests.factories import MoodDiaryEntryFactory, MoodDiaryFactory
 from django.utils import timezone
 from notifications.models import Notification
 from rules.models import RuleTriggeredLog
@@ -16,15 +16,18 @@ from rules.rules import (
     HighMediaUsagePerDayRule,
     PhysicalActivityPerWeekRule,
     RelaxingActivityRule,
+    UnsteadyFoodIntakeRule,
 )
 from rules.tests.factories import RuleFactory
 
 
+@pytest.mark.django_db
 def test_base_rule():
     timestamp = timezone.now()
     rule = BaseRule(client_id=1, requested_at=timestamp)
     assert rule.client_id == 1
     assert rule.requested_at == timestamp
+    assert rule.mood_diary_exists() is False
     with pytest.raises(NotImplementedError):
         rule.rule_title
     with pytest.raises(NotImplementedError):
@@ -51,6 +54,7 @@ def test_concrete_rule():
 
     rule_db = RuleFactory.create(title="My Rule")
     client = ClientFactory.create()
+    MoodDiaryFactory.create(client=client)
     timestamp = timezone.now()
     rule = MyRule(client_id=client.id, requested_at=timestamp)
     assert rule.client_id == client.id
@@ -377,4 +381,54 @@ def test_fourteen_days_mood_maximum_rule(freezer):
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
 
+    assert rule.triggering_allowed() is False
+
+
+@pytest.mark.django_db
+def test_unsteady_food_intake_rule(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    MoodDiaryFactory.create(client=client)
+    rule_db = RuleFactory.create(title="Unsteady food intake")
+    rule_db.subscribed_clients.add(client)
+
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+    # first meal
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        activity__value=Activity.food_intake_value,
+    )
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+    # second meal
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        activity__value=Activity.food_intake_value,
+    )
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+    # third meal
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date=date(2023, 9, 30),
+        activity__value=Activity.food_intake_value,
+    )
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    freezer.move_to("2023-10-01")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
     assert rule.triggering_allowed() is False
