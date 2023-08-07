@@ -176,8 +176,8 @@ def test_mood_diary_entry_list_counselor_view(counselor_with_client, create_resp
 @pytest.mark.django_db
 def test_client_list_view(create_user, create_response):
     counselor = create_user(User.Role.COUNSELOR)
-    client = ClientFactory.create(counselor=counselor)
-    ClientFactory.create()
+    client = ClientFactory.create(counselor=counselor, active=True)
+    ClientFactory.create(active=True)
     assert Client.objects.count() == 2
     url = reverse("clients:list_clients")
 

@@ -12,6 +12,7 @@ class MoodDiary(models.Model):
     class Meta:
         db_table = "diaries_mood_diaries"
 
+    # ToDo(ME-04.08.23): Make this unique, so OneToOne field
     client = models.OneToOneField(to=Client, on_delete=models.CASCADE, related_name="mood_diary")
 
     def average_mood_scores_previous_days(self, n_days: int) -> QuerySet:
@@ -85,7 +86,7 @@ class Mood(NormalizedScaleModel):
 
     @staticmethod
     def max_value() -> int:
-        return 7
+        return 3
 
 
 class Emotion(NormalizedStringValueModel):
@@ -108,6 +109,8 @@ class Activity(NormalizedStringValueModel):
     def __str__(self):
         return self.value
 
+    food_intake_value = "Full meal"
+
 
 class ActivityCategory(NormalizedStringValueModel):
     class Meta:
@@ -116,6 +119,10 @@ class ActivityCategory(NormalizedStringValueModel):
 
     def __str__(self):
         return self.value
+
+    physical_activity_value = "Physical Activity"
+    relaxing_value = "Relaxation"
+    media_usage_value = "Media Usage"
 
 
 class Strain(NormalizedScaleModel):

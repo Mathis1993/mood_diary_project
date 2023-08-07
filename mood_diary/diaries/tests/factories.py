@@ -42,6 +42,7 @@ ACTIVITIES = {
     "Social": ["Socializing", "Partying", "Hanging out with friends"],
     "Relaxation": ["Relaxing", "Meditating", "Praying"],
     "Travel": ["Traveling", "Commuting"],
+    "Media Usage": ["Watching TV", "Playing Video Games", "Browsing the Internet"],
 }
 
 
