@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 import pytest
 from clients.tests.factories import ClientFactory
@@ -11,6 +11,7 @@ from rules.models import RuleTriggeredLog
 from rules.rules import (
     ActivityWithPeakMoodRule,
     BaseRule,
+    FourteenDaysMoodAverageRule,
     HighMediaUsagePerDayRule,
     PhysicalActivityPerWeekRule,
     RelaxingActivityRule,
@@ -250,3 +251,70 @@ def test_high_media_usage_per_day_rule(freezer):
     assert RuleTriggeredLog.objects.count() == 1
 
     assert rule.triggering_allowed() is False
+
+
+@pytest.mark.django_db
+def test_fourteen_days_mood_average_rule(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    rule_db = RuleFactory.create(title="Fourteen days mood average")
+    rule_db.subscribed_clients.add(client)
+
+    # 13 days of bad mood
+    [
+        MoodDiaryEntryFactory.create(
+            mood_diary__client=client, mood__value=-1, date=date(2023, 9, 30) - timedelta(days=i)
+        )
+        for i in range(13)
+    ]
+
+    timestamp = timezone.now()
+    rule = FourteenDaysMoodAverageRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+    assert rule.evaluate_preconditions() is True
+
+    # 14th day of bad mood
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client, mood__value=-1, date=date(2023, 9, 30) - timedelta(days=13)
+    )
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+
+    # Now 6 out of 14 days with a mood average >= 0
+    [
+        MoodDiaryEntryFactory.create(
+            mood_diary__client=client, mood__value=3, date=date(2023, 9, 30) - timedelta(days=i)
+        )
+        for i in range(6)
+    ]
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    # Now 5 out of 14 days with a mood average >= 0, so 9 with a mood average < 0
+    MoodDiaryEntryFactory.create(mood_diary__client=client, mood__value=-3, date=date(2023, 9, 30))
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+
+    assert rule.triggering_allowed() is False
+
+    freezer.move_to("2023-10-07")
+    timestamp = timezone.now()
+    rule = FourteenDaysMoodAverageRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+
+    freezer.move_to("2023-10-15")
+    timestamp = timezone.now()
+    rule = FourteenDaysMoodAverageRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+    [
+        MoodDiaryEntryFactory.create(
+            mood_diary__client=client, date=date(2023, 10, 15) - timedelta(days=i)
+        )
+        for i in range(14)
+    ]
+    assert rule.triggering_allowed() is True
