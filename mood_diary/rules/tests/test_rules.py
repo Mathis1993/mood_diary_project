@@ -213,6 +213,8 @@ def test_physical_activity_per_week_rule(freezer):
 
     freezer.move_to("2023-10-02")
 
+    timestamp = timezone.now()
+    rule = PhysicalActivityPerWeekRule(client_id=client.id, requested_at=timestamp)
     assert rule.triggering_allowed() is True
 
 
