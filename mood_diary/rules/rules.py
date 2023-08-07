@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from notifications.models import Notification
 from rules.models import Rule, RuleTriggeredLog
-from rules.utils import get_beginning_of_current_week
+from rules.utils import get_beginning_of_week
 
 
 class BaseRule:
@@ -132,12 +132,12 @@ class PhysicalActivityPerWeekRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=get_beginning_of_current_week(),
+            created_at__gte=get_beginning_of_week(self.requested_at),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
         return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
-            date__gte=get_beginning_of_current_week(),
+            date__gte=get_beginning_of_week(self.requested_at),
         )
 
     def evaluate_preconditions(self) -> bool:
@@ -163,12 +163,12 @@ class HighMediaUsagePerDayRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=timezone.now().date(),
+            created_at__gte=self.requested_at.date(),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
         return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
-            date=timezone.now().date(),
+            date=self.requested_at.date(),
         )
 
     def evaluate_preconditions(self) -> bool:
@@ -181,3 +181,49 @@ class HighMediaUsagePerDayRule(BaseRule):
             duration=models.F("end_time") - models.F("start_time")
         ).aggregate(models.Sum("duration"))["duration__sum"]
         return duration_sum >= timedelta(hours=6)
+
+
+class FourteenDaysMoodAverageRule(BaseRule):
+    """
+    Rule checking if the client has got a mean mood value of less than 0 for at least 9
+    out of the last 14 days.
+    """
+
+    rule_title = "Fourteen days mood average"
+
+    def triggering_allowed(self) -> bool:
+        # There are entries for the last 14 days
+        entries_for_last_fourteen_days = (
+            MoodDiary.objects.get(client_id=self.client_id)
+            .entries.filter(
+                date__gt=self.requested_at.date() - timedelta(days=14),
+            )
+            .values_list("date", flat=True)
+            .distinct()
+            .count()
+            == 14
+        )
+        # Rule was not triggered in the last 14 days
+        rule_not_triggered_in_previous_fourteen_days = not RuleTriggeredLog.objects.filter(
+            rule=self.rule,
+            client_id=self.client_id,
+            created_at__gt=self.requested_at.date() - timedelta(days=14),
+        ).exists()
+        return entries_for_last_fourteen_days and rule_not_triggered_in_previous_fourteen_days
+
+    def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
+        return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
+            date__gt=self.requested_at.date() - timedelta(days=14),
+        )
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries()
+        if not relevant_entries.exists():
+            return False
+        days_with_mood_avg_below_zero = (
+            relevant_entries.values("date")
+            .annotate(mood_avg=models.Avg("mood__value"))
+            .filter(mood_avg__lt=0)
+            .count()
+        )
+        return days_with_mood_avg_below_zero >= 9
