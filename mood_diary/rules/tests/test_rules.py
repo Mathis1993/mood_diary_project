@@ -364,7 +364,7 @@ def test_fourteen_days_mood_average_rule(freezer):
     assert rule.evaluate_preconditions() is False
 
     # Now 5 out of 14 days with a mood average >= 0, so 9 with a mood average < 0
-    MoodDiaryEntryFactory.create(mood_diary__client=client, mood__value=-3, date=date(2023, 9, 30))
+    MoodDiaryEntryFactory.create(mood_diary__client=client, mood__value=-3, date="2023-09-30")
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is True
     assert not Notification.objects.exists()
@@ -423,7 +423,7 @@ def test_fourteen_days_mood_maximum_rule(freezer):
     assert rule.evaluate_preconditions() is True
 
     # Add a good mood day
-    MoodDiaryEntryFactory.create(mood_diary__client=client, mood__value=3, date=date(2023, 9, 27))
+    MoodDiaryEntryFactory.create(mood_diary__client=client, mood__value=3, date="2023-09-27")
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is False
 
@@ -467,7 +467,7 @@ def test_unsteady_food_intake_rule(freezer):
     # first meal
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value=Activity.food_intake_value,
     )
     assert rule.triggering_allowed() is True
@@ -475,7 +475,7 @@ def test_unsteady_food_intake_rule(freezer):
     # second meal
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value=Activity.food_intake_value,
     )
     assert rule.triggering_allowed() is True
@@ -483,7 +483,7 @@ def test_unsteady_food_intake_rule(freezer):
     # third meal
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value=Activity.food_intake_value,
     )
     assert rule.triggering_allowed() is True
@@ -512,7 +512,7 @@ def test_positive_mood_change_between_activities_rule():
     # first activity
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="a",
         mood__value=-3,
         start_time=datetime(2023, 9, 30, 10, 0),
@@ -527,7 +527,7 @@ def test_positive_mood_change_between_activities_rule():
     # second activity
     second_activity = MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="b",
         mood__value=-2,
         start_time=datetime(2023, 9, 30, 11, 0),
@@ -541,7 +541,7 @@ def test_positive_mood_change_between_activities_rule():
     # third activity (same one as before)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="b",
         mood__value=0,
         start_time=datetime(2023, 9, 30, 12, 0),
@@ -555,7 +555,7 @@ def test_positive_mood_change_between_activities_rule():
     # fourth activity
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="c",
         mood__value=2,
         start_time=datetime(2023, 9, 30, 13, 0),
@@ -591,7 +591,7 @@ def test_negative_mood_change_between_activities_rule():
     # first activity
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="a",
         mood__value=3,
         start_time=datetime(2023, 9, 30, 10, 0),
@@ -606,7 +606,7 @@ def test_negative_mood_change_between_activities_rule():
     # second activity
     second_activity = MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="b",
         mood__value=2,
         start_time=datetime(2023, 9, 30, 11, 0),
@@ -620,7 +620,7 @@ def test_negative_mood_change_between_activities_rule():
     # third activity (same one as before)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="b",
         mood__value=0,
         start_time=datetime(2023, 9, 30, 12, 0),
@@ -634,7 +634,7 @@ def test_negative_mood_change_between_activities_rule():
     # fourth activity
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         activity__value="c",
         mood__value=-2,
         start_time=datetime(2023, 9, 30, 13, 0),
@@ -677,12 +677,12 @@ def test_daily_average_mood_improving_rule(freezer):
     # Only entries for today, not for yesterday
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         mood__value=-1,
     )
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 9, 30),
+        date="2023-09-30",
         mood__value=1,
     )
     assert rule.get_mood_diary_entries().count() == 2
@@ -692,12 +692,12 @@ def test_daily_average_mood_improving_rule(freezer):
     freezer.move_to("2023-10-01")
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 10, 1),
+        date="2023-10-01",
         mood__value=-2,
     )
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 10, 1),
+        date="2023-10-01",
         mood__value=0,
     )
     timestamp = timezone.now()
@@ -708,12 +708,12 @@ def test_daily_average_mood_improving_rule(freezer):
     freezer.move_to("2023-10-02")
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 10, 2),
+        date="2023-10-02",
         mood__value=1,
     )
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        date=date(2023, 10, 2),
+        date="2023-10-02",
         mood__value=3,
     )
     timestamp = timezone.now()
