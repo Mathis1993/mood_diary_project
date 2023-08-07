@@ -150,3 +150,34 @@ class PhysicalActivityPerWeekRule(BaseRule):
             duration=models.F("end_time") - models.F("start_time")
         ).aggregate(models.Sum("duration"))["duration__sum"]
         return duration_sum >= timedelta(minutes=150)
+
+
+class HighMediaUsagePerDayRule(BaseRule):
+    """
+    Rule checking if the client has spent more than 6 hours on media usage today.
+    """
+
+    rule_title = "High media usage per day"
+
+    def triggering_allowed(self) -> bool:
+        return not RuleTriggeredLog.objects.filter(
+            rule=self.rule,
+            client_id=self.client_id,
+            created_at__gte=timezone.now().date(),
+        ).exists()
+
+    def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
+        return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
+            date=timezone.now().date(),
+        )
+
+    def evaluate_preconditions(self) -> bool:
+        relevant_entries = self.get_mood_diary_entries().filter(
+            activity__category__value=ActivityCategory.media_usage_value
+        )
+        if not relevant_entries.exists():
+            return False
+        duration_sum = relevant_entries.annotate(
+            duration=models.F("end_time") - models.F("start_time")
+        ).aggregate(models.Sum("duration"))["duration__sum"]
+        return duration_sum >= timedelta(hours=6)

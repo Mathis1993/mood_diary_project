@@ -11,6 +11,7 @@ from rules.models import RuleTriggeredLog
 from rules.rules import (
     ActivityWithPeakMoodRule,
     BaseRule,
+    HighMediaUsagePerDayRule,
     PhysicalActivityPerWeekRule,
     RelaxingActivityRule,
 )
@@ -203,3 +204,49 @@ def test_physical_activity_per_week_rule(freezer):
     freezer.move_to("2023-10-02")
 
     assert rule.triggering_allowed() is True
+
+
+@pytest.mark.django_db
+def test_high_media_usage_per_day_rule(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    rule_db = RuleFactory.create(title="High media usage per day")
+    rule_db.subscribed_clients.add(client)
+
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 10, 0),
+        end_time=datetime(2023, 9, 30, 13, 0),
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 14, 0),
+        end_time=datetime(2023, 9, 30, 16, 0),
+    )
+
+    timestamp = timezone.now()
+    rule = HighMediaUsagePerDayRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 17, 0),
+        end_time=datetime(2023, 9, 30, 18, 0),
+    )
+
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is True
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+
+    assert rule.triggering_allowed() is False
