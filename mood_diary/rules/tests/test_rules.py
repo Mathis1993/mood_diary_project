@@ -60,6 +60,7 @@ def test_concrete_rule():
     rule_db = RuleFactory.create(title="My Rule")
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
+    MoodDiaryEntryFactory.create(mood_diary__client=client)
     timestamp = timezone.now()
     rule = MyRule(client_id=client.id, requested_at=timestamp)
     assert rule.client_id == client.id
