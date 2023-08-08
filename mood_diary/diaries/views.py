@@ -66,7 +66,7 @@ class MoodDiaryEntryCreateView(AuthenticatedClientRoleMixin, CreateView):
                 entry.end_time = end_time
             entry.mood_diary = (client := self.request.user.client).mood_diary
             entry.save()
-            # ToDo(ME-08.08.23): Test
+            # Trigger evaluation of event-based rules
             msg = RuleMessage(client_id=client.id, timestamp=entry.created_at)
             task_event_based_rules_evaluation.delay(msg)
         return redirect("diaries:list_mood_diary_entries")
@@ -85,7 +85,7 @@ class MoodDiaryEntryUpdateView(
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        # ToDo(ME-08.08.23): Test
+        # Trigger evaluation of event-based rules
         msg = RuleMessage(client_id=self.request.user.client.id, timestamp=self.object.created_at)
         task_event_based_rules_evaluation.delay(msg)
 
