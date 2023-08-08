@@ -324,7 +324,9 @@ class PositiveMoodChangeBetweenActivitiesRule(BaseRule):
             return MoodDiary.objects.none()
         entry_before_last_edited_one = (
             MoodDiary.objects.get(client_id=self.client_id)
-            .entries.filter(end_time__lt=entry_last_edit.end_time)
+            .entries.filter(date__lte=entry_last_edit.date, end_time__lte=entry_last_edit.end_time)
+            .exclude(id=entry_last_edit.id)
+            .order_by("-end_time")
             .first()
         )
         if entry_before_last_edited_one is None:
