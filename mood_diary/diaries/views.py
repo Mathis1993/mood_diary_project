@@ -1,6 +1,7 @@
 from core.views import AuthenticatedClientRoleMixin
 from diaries.forms import MoodDiaryEntryCreateForm, MoodDiaryEntryForm
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
+from diaries.tasks import task_event_based_rules_evaluation
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -8,6 +9,7 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
 from el_pagination.views import AjaxListView
+from rules.utils import RuleMessage
 
 
 class RestrictMoodDiaryEntryToOwnerMixin:
@@ -62,8 +64,11 @@ class MoodDiaryEntryCreateView(AuthenticatedClientRoleMixin, CreateView):
                 entry.start_time = start_time
             if index == days_between:
                 entry.end_time = end_time
-            entry.mood_diary = self.request.user.client.mood_diary
+            entry.mood_diary = (client := self.request.user.client).mood_diary
             entry.save()
+            # ToDo(ME-08.08.23): Test
+            msg = RuleMessage(client_id=client.id, timestamp=entry.created_at)
+            task_event_based_rules_evaluation.delay(msg)
         return redirect("diaries:list_mood_diary_entries")
 
 
@@ -76,6 +81,15 @@ class MoodDiaryEntryUpdateView(
 
     def get_success_url(self):
         return reverse_lazy("diaries:get_mood_diary_entry", kwargs={"pk": self.object.id})
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # ToDo(ME-08.08.23): Test
+        msg = RuleMessage(client_id=self.request.user.client.id, timestamp=self.object.created_at)
+        task_event_based_rules_evaluation.delay(msg)
+
+        return response
 
 
 class MoodDiaryEntryDeleteView(
