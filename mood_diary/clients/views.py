@@ -10,6 +10,7 @@ from django.utils.crypto import get_random_string
 from django.views import View
 from django.views.generic import DetailView
 from el_pagination.views import AjaxListView
+from rules.models import Rule
 
 User = get_user_model()
 
@@ -43,6 +44,7 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
                 user=client_user, identifier=identifier, counselor=counselor
             )
             MoodDiary.objects.create(client=client)
+            client.subscribed_rules.add(*Rule.objects.all())
 
             return render(
                 request, self.success_template_name, {"email": email, "password": password}

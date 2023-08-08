@@ -8,6 +8,8 @@ from diaries.models import MoodDiary, MoodDiaryEntry
 from diaries.tests.factories import MoodDiaryEntryFactory
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from rules.models import RuleClient
+from rules.tests.factories import RuleFactory
 from users.tests.factories import UserFactory
 
 User = get_user_model()
@@ -41,6 +43,9 @@ def test_create_client_view_get(create_user, create_response):
 
 @pytest.mark.django_db
 def test_create_client_view_post_valid_form(create_user, create_response):
+    RuleFactory.create(title="rule1")
+    RuleFactory.create(title="rule2")
+    RuleFactory.create(title="rule3")
     counselor = create_user(User.Role.COUNSELOR)
     url = reverse("clients:create_client")
 
@@ -57,6 +62,10 @@ def test_create_client_view_post_valid_form(create_user, create_response):
     assert User.objects.filter(email="test@example.com", role=User.Role.CLIENT).exists()
     assert Client.objects.filter(identifier="client1", counselor=counselor).exists()
     assert MoodDiary.objects.filter(client__identifier="client1").exists()
+    assert RuleClient.objects.count() == 3
+    assert (
+        Client.objects.get(identifier="client1", counselor=counselor).subscribed_rules.count() == 3
+    )
 
 
 @pytest.mark.django_db
