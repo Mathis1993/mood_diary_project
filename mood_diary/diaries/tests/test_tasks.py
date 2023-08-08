@@ -22,10 +22,10 @@ def test_task_time_based_rules_init(mocker: MockerFixture, freezer):
     task_time_based_rules_init()
     assert mocked_method.call_count == 2
     assert mocked_method.call_args_list[0][0][0].timestamp == timezone.datetime(
-        2023, 9, 30, 23, 59, 59, 999999, tzinfo=timezone.utc
+        2023, 9, 30, 23, 59, 59, 999999
     )
     assert mocked_method.call_args_list[1][0][0].timestamp == timezone.datetime(
-        2023, 9, 30, 23, 59, 59, 999999, tzinfo=timezone.utc
+        2023, 9, 30, 23, 59, 59, 999999
     )
 
 
