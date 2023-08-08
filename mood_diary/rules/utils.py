@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import NamedTuple
 
 from django.utils import timezone
 
@@ -19,3 +20,12 @@ def get_end_of_week(today: timezone.datetime = None) -> timezone.datetime:
     today = today or timezone.now()
     monday = today + timedelta(days=7 - today.weekday() - 1)
     return monday.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+
+class RuleMessage(NamedTuple):
+    """
+    An object bundling all information passed around
+    during asynchronous task processing for rules."""
+
+    client_id: int
+    timestamp: timezone.datetime
