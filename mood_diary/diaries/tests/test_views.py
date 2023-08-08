@@ -14,6 +14,7 @@ from diaries.tests.factories import (
 )
 from django.urls import reverse
 from django.utils import timezone
+from pytest_mock import MockerFixture
 
 
 @pytest.fixture
@@ -73,7 +74,8 @@ def test_mood_diary_entry_create_view_get(user, create_response):
 
 
 @pytest.mark.django_db
-def test_mood_diary_entry_create_view_post(user, create_response):
+def test_mood_diary_entry_create_view_post(user, create_response, mocker: MockerFixture):
+    mocked_task = mocker.patch("diaries.views.task_event_based_rules_evaluation.delay")
     MoodDiaryFactory.create(client=user.client)
     mood = MoodFactory.create(value=0)
     activity = ActivityFactory.create()
@@ -97,10 +99,15 @@ def test_mood_diary_entry_create_view_post(user, create_response):
     assert response.status_code == http.HTTPStatus.FOUND
     assert response.url == reverse("diaries:list_mood_diary_entries")
     assert MoodDiaryEntry.objects.count() == 1
+    assert mocked_task.call_count == 1
+    assert mocked_task.call_args_list[0][0][0].client_id == user.client.id
 
 
 @pytest.mark.django_db
-def test_mood_diary_entry_create_view_post_multiple_days(user, create_response):
+def test_mood_diary_entry_create_view_post_multiple_days(
+    user, create_response, mocker: MockerFixture
+):
+    mocked_task = mocker.patch("diaries.views.task_event_based_rules_evaluation.delay")
     MoodDiaryFactory.create(client=user.client)
     mood = MoodFactory.create(value=0)
     activity = ActivityFactory.create()
@@ -135,6 +142,10 @@ def test_mood_diary_entry_create_view_post_multiple_days(user, create_response):
     assert entries[2].date == date.today() + timezone.timedelta(days=2)
     assert entries[2].start_time == datetime.time(0, 0, 0)
     assert entries[2].end_time == datetime.time(13, 0, 0)
+    assert mocked_task.call_count == 3
+    assert mocked_task.call_args_list[0][0][0].client_id == user.client.id
+    assert mocked_task.call_args_list[1][0][0].client_id == user.client.id
+    assert mocked_task.call_args_list[2][0][0].client_id == user.client.id
 
 
 @pytest.mark.django_db
@@ -150,7 +161,8 @@ def test_mood_diary_entry_update_view_get(user, entry, create_response):
 
 
 @pytest.mark.django_db
-def test_mood_diary_entry_update_view_post(user, entry, create_response):
+def test_mood_diary_entry_update_view_post(user, entry, create_response, mocker: MockerFixture):
+    mocked_task = mocker.patch("diaries.views.task_event_based_rules_evaluation.delay")
     MoodFactory.create(value=0)
     url = reverse("diaries:update_mood_diary_entry", kwargs={"pk": entry.pk})
 
@@ -172,6 +184,8 @@ def test_mood_diary_entry_update_view_post(user, entry, create_response):
     entry.refresh_from_db()
     assert entry.start_time.strftime("%H:%M") == "12:00"
     assert entry.end_time.strftime("%H:%M") == "13:00"
+    assert mocked_task.call_count == 1
+    assert mocked_task.call_args_list[0][0][0].client_id == user.client.id
 
 
 @pytest.mark.django_db
