@@ -7,7 +7,7 @@ from diaries.models import Activity, ActivityCategory, MoodDiaryEntry
 from diaries.tests.factories import MoodDiaryEntryFactory, MoodDiaryFactory, MoodFactory
 from django.utils import timezone
 from notifications.models import Notification
-from rules.models import RuleTriggeredLog
+from rules.models import RuleClient, RuleTriggeredLog
 from rules.rules import (
     ActivityWithPeakMoodRule,
     BaseRule,
@@ -81,6 +81,10 @@ def test_concrete_rule():
     rule.evaluate()  # creates notification and log
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+    rule_client_obj = RuleClient.objects.get(client=client, rule=rule_db)
+    rule_client_obj.active = False
+    rule_client_obj.save()
+    assert rule.client_subscribed() is False
 
     class MyOtherRule(MyRule):
         def triggering_allowed(self):

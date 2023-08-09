@@ -28,11 +28,13 @@ class Rule(TrackCreationAndUpdates):
 class RuleClient(TrackCreationAndUpdates):
     class Meta:
         db_table = "rules_rules_clients"
+        ordering = ["-active", "rule__title"]
 
     rule = models.ForeignKey(Rule, on_delete=models.RESTRICT, related_name="rule_users")
     client = models.ForeignKey(
         "clients.Client", on_delete=models.CASCADE, related_name="rule_users"
     )
+    active = models.BooleanField(default=True)
 
 
 class RuleTriggeredLog(TrackCreation):

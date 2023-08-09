@@ -5,6 +5,7 @@ from django.db import models
 class Notification(TrackCreationAndUpdates):
     class Meta:
         db_table = "notifications_notifications"
+        ordering = ["viewed", "-created_at"]
 
     client = models.ForeignKey(
         "clients.Client",

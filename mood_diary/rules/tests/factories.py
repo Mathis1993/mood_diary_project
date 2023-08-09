@@ -35,7 +35,8 @@ class RuleClientFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("rule", "client")
 
     rule = factory.SubFactory(RuleFactory)
-    user = factory.SubFactory("clients.tests.factories.ClientFactory")
+    client = factory.SubFactory("clients.tests.factories.ClientFactory")
+    active = True
 
 
 class RuleTriggeredLogFactory(factory.django.DjangoModelFactory):

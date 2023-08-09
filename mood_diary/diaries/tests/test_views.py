@@ -17,17 +17,6 @@ from django.utils import timezone
 from pytest_mock import MockerFixture
 
 
-@pytest.fixture
-def user():
-    client = ClientFactory.create()
-    return client.user
-
-
-@pytest.fixture
-def entry(user):
-    return MoodDiaryEntryFactory.create(mood_diary__client=user.client, released=False)
-
-
 @pytest.mark.django_db
 def test_mood_diary_entry_detail_view(user, entry, create_response):
     url = reverse("diaries:get_mood_diary_entry", kwargs={"pk": entry.pk})

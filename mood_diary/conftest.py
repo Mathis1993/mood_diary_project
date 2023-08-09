@@ -1,4 +1,6 @@
 import pytest
+from clients.tests.factories import ClientFactory
+from diaries.tests.factories import MoodDiaryEntryFactory
 
 
 @pytest.fixture
@@ -9,3 +11,14 @@ def create_response(client):
         return response
 
     return _create_response
+
+
+@pytest.fixture
+def user():
+    client = ClientFactory.create()
+    return client.user
+
+
+@pytest.fixture
+def entry(user):
+    return MoodDiaryEntryFactory.create(mood_diary__client=user.client, released=False)

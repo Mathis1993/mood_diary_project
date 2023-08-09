@@ -12,7 +12,6 @@ class MoodDiary(models.Model):
     class Meta:
         db_table = "diaries_mood_diaries"
 
-    # ToDo(ME-04.08.23): Make this unique, so OneToOne field
     client = models.OneToOneField(to=Client, on_delete=models.CASCADE, related_name="mood_diary")
 
     def average_mood_scores_previous_days(self, n_days: int) -> QuerySet:
