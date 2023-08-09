@@ -8,7 +8,7 @@ from notifications.tests.factories import NotificationFactory
 
 
 @pytest.mark.django_db
-def test_mood_diary_entry_detail_view(user, create_response):
+def test_notification_detail_view(user, create_response):
     notification = NotificationFactory.create(client=user.client)
     url = reverse("notifications:get_notification", kwargs={"pk": notification.pk})
     response = create_response(user, url)
@@ -18,7 +18,7 @@ def test_mood_diary_entry_detail_view(user, create_response):
 
 
 @pytest.mark.django_db
-def test_mood_diary_entry_detail_view_restricted(user, create_response):
+def test_notification_detail_view_restricted(user, create_response):
     other_client = ClientFactory.create()
     notification = NotificationFactory.create(client=user.client)
     url = reverse("notifications:get_notification", kwargs={"pk": notification.pk})
@@ -29,7 +29,7 @@ def test_mood_diary_entry_detail_view_restricted(user, create_response):
 
 
 @pytest.mark.django_db
-def test_mood_diary_entry_list_view(user, create_response):
+def test_notification_list_view(user, create_response):
     notification = NotificationFactory.create(client=user.client)
     other_client = ClientFactory.create()
     NotificationFactory.create(client=other_client)
