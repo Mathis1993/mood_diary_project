@@ -58,7 +58,7 @@ class BaseRule:
         """
         Checks if the client is subscribed to the rule at the moment.
         """
-        return self.rule.subscribed_clients.filter(id=self.client_id).exists()
+        return self.rule.rule_users.filter(client_id=self.client_id, active=True).exists()
 
     def mood_diary_exists(self) -> bool:
         """

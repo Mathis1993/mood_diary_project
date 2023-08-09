@@ -63,28 +63,6 @@
                 </a>
 
             {% endfor %}
-{#            <a class="dropdown-item d-flex align-items-center" href="#">#}
-{#                <div class="mr-3">#}
-{#                    <div class="icon-circle bg-success">#}
-{#                        <i class="fas fa-donate text-white"></i>#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div>#}
-{#                    <div class="small text-gray-500">December 7, 2019</div>#}
-{#                    $290.29 has been deposited into your account!#}
-{#                </div>#}
-{#            </a>#}
-{#            <a class="dropdown-item d-flex align-items-center" href="#">#}
-{#                <div class="mr-3">#}
-{#                    <div class="icon-circle bg-warning">#}
-{#                        <i class="fas fa-exclamation-triangle text-white"></i>#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div>#}
-{#                    <div class="small text-gray-500">December 2, 2019</div>#}
-{#                    Spending Alert: We've noticed unusually high spending for your account.#}
-{#                </div>#}
-{#            </a>#}
         {% endif %}
 
             <a class="dropdown-item text-center small text-gray-500" href="{% url 'notifications:get_all_notifications' %}">Show All Notifications</a>
@@ -92,5 +70,14 @@
     </li>
 
     <div class="topbar-divider d-none d-sm-block"></div>
+
+{% endblock %}
+
+{% block rules %}
+
+    <a class="dropdown-item" href="{% url 'rules:get_all_rules' %}">
+        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+        Rules
+    </a>
 
 {% endblock %}

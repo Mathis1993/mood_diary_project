@@ -26,5 +26,6 @@ urlpatterns = [
     path("dashboards/", include("dashboards.urls", namespace="dashboards")),
     path("diaries/", include("diaries.urls", namespace="diaries")),
     path("notifications/", include("notifications.urls", namespace="notifications")),
+    path("rules/", include("rules.urls", namespace="rules")),
     path("users/", include("users.urls", namespace="users")),
 ]

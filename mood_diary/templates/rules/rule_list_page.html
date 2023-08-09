@@ -1,0 +1,104 @@
+{% load el_pagination_tags %}
+
+{% lazy_paginate rules %}
+{% for entry in rules %}
+    {% if not entry.active %}
+
+         <div class="col-xl-5 col-md-6 mb-4">
+            <div class="card border-left-secondary grey h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">
+                                Rule</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-500">{{ entry.rule.title }}</div>
+{#                            <div class="text-gray-400">{{ entry.created_at }}</div>#}
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-fw fa-gear fa-2x text-gray-300"></i>
+                        </div>
+                        <div class="col-auto ml-3">
+                        <a class="btn btn-success btn-circle btn-sm" data-toggle="modal" data-target="#activeRuleModal{{ entry.id }}">
+                            <i class="fas fa-volume-mute"></i>
+                        </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+    {% else %}
+
+         <div class="col-xl-5 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Rule</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ entry.rule.title }}</div>
+{#                            <div class="text-gray-500">{{ entry.created_at }}</div>#}
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-fw fa-gear fa-2x text-gray-500"></i>
+                        </div>
+                        <div class="col-auto ml-3">
+                        <a class="btn btn-success btn-circle btn-sm" data-toggle="modal" data-target="#inactiveRuleModal{{ entry.id }}">
+                            <i class="fas fa-volume-mute"></i>
+                        </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+    {% endif %}
+
+    <!-- Set Rule to inactive Modal-->
+    <div class="modal fade" id="inactiveRuleModal{{ entry.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Deactivate this rule?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Confirm" below if you wish to deactivate the rule "{{ entry.rule.title }}".</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <form method="post" action="{% url 'rules:update_to_inactive' pk=entry.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set Rule to active Modal-->
+    <div class="modal fade" id="activeRuleModal{{ entry.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Reactivate this rule?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Confirm" below if you wish to activate the rule "{{ entry.rule.title }}" again.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <form method="post" action="{% url 'rules:update_to_active' pk=entry.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+{% show_more %}
