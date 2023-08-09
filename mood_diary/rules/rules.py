@@ -76,7 +76,7 @@ class BaseRule:
 
     def create_notification(self):
         message = self.rule.conclusion_message
-        Notification.objects.create(client_id=self.client_id, message=message)
+        Notification.objects.create(client_id=self.client_id, message=message, rule_id=self.rule.id)
 
     def evaluate(self):
         if not self.client_subscribed():
