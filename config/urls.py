@@ -25,5 +25,6 @@ urlpatterns = [
     path("clients/", include("clients.urls", namespace="clients")),
     path("dashboards/", include("dashboards.urls", namespace="dashboards")),
     path("diaries/", include("diaries.urls", namespace="diaries")),
+    path("notifications/", include("notifications.urls", namespace="notifications")),
     path("users/", include("users.urls", namespace="users")),
 ]
