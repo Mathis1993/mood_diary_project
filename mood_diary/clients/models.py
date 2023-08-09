@@ -30,3 +30,11 @@ class Client(TrackCreationAndUpdates):
             raise IntegrityError("The counselor user must have the counselor role")
 
         super().save(*args, **kwargs)
+
+    # ToDo(ME-09.08.23): Test
+    def new_notifications_count(self):
+        return self.notifications.filter(viewed=False).count()
+
+    # ToDo(ME-09.08.23): Test
+    def get_newest_notifications(self):
+        return self.notifications.filter(viewed=False).all()[:3]
