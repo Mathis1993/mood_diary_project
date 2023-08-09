@@ -9,7 +9,6 @@ class RestrictNotificationToOwnerMixin:
         return self.model.objects.filter(client_id=self.request.user.client.id).all()
 
 
-# ToDo(ME-09.08.23): Test
 class NotificationListView(
     AuthenticatedClientRoleMixin, RestrictNotificationToOwnerMixin, AjaxListView
 ):
@@ -19,7 +18,6 @@ class NotificationListView(
     context_object_name = "notifications"
 
 
-# ToDo(ME-09.08.23): Test
 class NotificationDetailView(
     AuthenticatedClientRoleMixin, RestrictNotificationToOwnerMixin, DetailView
 ):
