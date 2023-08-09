@@ -15,3 +15,6 @@ redis==4.6.0
 
 # ENVIRONMENT
 python-dotenv==1.0.0
+
+# EMAILS
+sendgrid==6.10.0

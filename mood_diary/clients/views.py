@@ -1,5 +1,6 @@
 from clients.forms import ClientCreationForm
 from clients.models import Client
+from clients.utils import send_account_creation_email
 from core.views import AuthenticatedCounselorRoleMixin
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.contrib.auth import get_user_model
@@ -18,7 +19,7 @@ User = get_user_model()
 class CreateClientView(AuthenticatedCounselorRoleMixin, View):
     form_class = ClientCreationForm
     template_name = "clients/client_create.html"
-    success_template_name = "clients/client_login_details.html"
+    success_template_name = "clients/client_creation_success.html"
 
     def get(self, request):
         form = self.form_class()
@@ -30,13 +31,20 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
             counselor = request.user
             email = form.cleaned_data["email"]
             identifier = form.cleaned_data["identifier"]
+            password = get_random_string(length=15)
 
             client_user, created = User.objects.get_or_create(email=email, role=User.Role.CLIENT)
             if not created:
                 form.add_error("email", ValidationError("client already exists"))
                 return render(request, self.template_name, {"form": form})
 
-            password = get_random_string(length=15)
+            try:
+                send_account_creation_email(email, request.get_host(), request.scheme, password)
+            except Exception:
+                form.add_error("email", ValidationError("could not send email"))
+                client_user.delete()
+                return render(request, self.template_name, {"form": form})
+
             client_user.set_password(password)
             client_user.save()
 
@@ -46,9 +54,7 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
             MoodDiary.objects.create(client=client)
             client.subscribed_rules.add(*Rule.objects.all())
 
-            return render(
-                request, self.success_template_name, {"email": email, "password": password}
-            )
+            return render(request, self.success_template_name, {"email": email})
 
         return render(request, self.template_name, {"form": form})
 

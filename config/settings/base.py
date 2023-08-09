@@ -159,6 +159,15 @@ CELERY_TIMEZONE = "Europe/Berlin"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+# Email
+FROM_EMAIL = os.getenv("FROM_EMAIL")  # Must be a verified sender at sendgrid
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 # PWA
 PWA_APP_NAME = "Mood Diary"
 PWA_APP_DESCRIPTION = "Mood Diary"
