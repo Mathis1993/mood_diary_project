@@ -6,8 +6,11 @@ from clients.models import Client
 from clients.tests.factories import ClientFactory
 from diaries.models import MoodDiary, MoodDiaryEntry
 from diaries.tests.factories import MoodDiaryEntryFactory
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.urls import reverse
+from pytest_mock import MockerFixture
 from rules.models import RuleClient
 from rules.tests.factories import RuleFactory
 from users.tests.factories import UserFactory
@@ -66,6 +69,9 @@ def test_create_client_view_post_valid_form(create_user, create_response):
     assert (
         Client.objects.get(identifier="client1", counselor=counselor).subscribed_rules.count() == 3
     )
+    assert len(mail.outbox) == 1
+    assert mail.outbox[0].to[0] == "test@example.com"
+    assert mail.outbox[0].from_email == settings.FROM_EMAIL
 
 
 @pytest.mark.django_db
@@ -83,6 +89,27 @@ def test_create_client_view_post_invalid_email(create_user, create_response):
     assert response.status_code == http.HTTPStatus.OK
     assert isinstance(response.context["form"], ClientCreationForm)
     assert "email" in response.context["form"].errors
+
+
+@pytest.mark.django_db
+def test_create_client_view_post_email_sending_fails(
+    mocker: MockerFixture, create_user, create_response
+):
+    mocker.patch("clients.utils.send_account_creation_email", side_effect=Exception)
+    counselor = create_user(User.Role.COUNSELOR)
+    url = reverse("clients:create_client")
+
+    response = create_response(
+        user=counselor,
+        url=url,
+        method="POST",
+        data={"email": "test@example.com", "identifier": "client1"},
+    )
+
+    assert response.status_code == http.HTTPStatus.OK
+    assert isinstance(response.context["form"], ClientCreationForm)
+    assert "could not send email" in response.context["form"].errors["email"]
+    assert not Client.objects.exists()
 
 
 @pytest.mark.django_db
