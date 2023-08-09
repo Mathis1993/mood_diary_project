@@ -62,16 +62,21 @@ class BaseRule:
 
     def mood_diary_exists(self) -> bool:
         """
-        Checks if the client has a mood diary.
+        Checks if the client has a mood diary and logged any entries.
         """
-        return MoodDiary.objects.filter(client_id=self.client_id).exists()
+        return (
+            MoodDiary.objects.filter(client_id=self.client_id).exists()
+            and MoodDiary.objects.get(client_id=self.client_id).entries.exists()
+        )
 
     def persist_rule_triggering(self):
-        RuleTriggeredLog.objects.create(rule=self.rule, client_id=self.client_id)
+        RuleTriggeredLog.objects.create(
+            rule=self.rule, client_id=self.client_id, created_at=self.requested_at
+        )
 
     def create_notification(self):
         message = self.rule.conclusion_message
-        Notification.objects.create(client_id=self.client_id, message=message)
+        Notification.objects.create(client_id=self.client_id, message=message, rule_id=self.rule.id)
 
     def evaluate(self):
         if not self.client_subscribed():
@@ -319,7 +324,9 @@ class PositiveMoodChangeBetweenActivitiesRule(BaseRule):
             return MoodDiary.objects.none()
         entry_before_last_edited_one = (
             MoodDiary.objects.get(client_id=self.client_id)
-            .entries.filter(end_time__lt=entry_last_edit.end_time)
+            .entries.filter(date__lte=entry_last_edit.date, end_time__lte=entry_last_edit.end_time)
+            .exclude(id=entry_last_edit.id)
+            .order_by("-end_time")
             .first()
         )
         if entry_before_last_edited_one is None:
@@ -437,3 +444,22 @@ class PhysicalActivityPerWeekIncreasingRule(BaseRule):
         if duration_sum_last_week is None or duration_sum_current_week is None:
             return False
         return duration_sum_current_week > duration_sum_last_week
+
+
+TIME_BASED_RULES = [
+    LowMediaUsagePerDayRule,
+    FourteenDaysMoodAverageRule,
+    FourteenDaysMoodMaximumRule,
+    UnsteadyFoodIntakeRule,
+    DailyAverageMoodImprovingRule,
+    PhysicalActivityPerWeekIncreasingRule,
+]
+
+EVENT_BASED_RULES = [
+    ActivityWithPeakMoodRule,
+    RelaxingActivityRule,
+    PhysicalActivityPerWeekRule,
+    HighMediaUsagePerDayRule,
+    PositiveMoodChangeBetweenActivitiesRule,
+    NegativeMoodChangeBetweenActivitiesRule,
+]

@@ -1,7 +1,4 @@
-from datetime import timedelta
-
 import factory.fuzzy
-from django.utils import timezone
 from rules.models import Rule, RuleClient, RuleTriggeredLog
 
 RULE_TITLES = [
@@ -47,4 +44,3 @@ class RuleTriggeredLogFactory(factory.django.DjangoModelFactory):
 
     rule = factory.SubFactory(RuleFactory)
     client = factory.SubFactory("clients.tests.factories.ClientFactory")
-    created_at = factory.fuzzy.FuzzyDateTime(start_dt=timezone.now() - timedelta(days=30))

@@ -13,3 +13,8 @@ class Notification(TrackCreationAndUpdates):
     )
     message = models.TextField()
     viewed = models.BooleanField(default=False)
+    rule = models.ForeignKey(
+        "rules.Rule",
+        on_delete=models.RESTRICT,
+        related_name="notifications",
+    )

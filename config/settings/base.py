@@ -13,6 +13,10 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent / "mood_diary"
 sys.path.append(str(BASE_DIR))
@@ -116,7 +120,8 @@ TIME_ZONE = "Europe/Berlin"
 
 USE_I18N = True
 
-USE_TZ = True
+# Users are and always will be only in Germany
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
