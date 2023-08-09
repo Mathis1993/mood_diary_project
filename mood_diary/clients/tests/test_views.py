@@ -95,7 +95,7 @@ def test_create_client_view_post_invalid_email(create_user, create_response):
 def test_create_client_view_post_email_sending_fails(
     mocker: MockerFixture, create_user, create_response
 ):
-    mocker.patch("clients.utils.send_account_creation_email", side_effect=Exception)
+    mocker.patch("clients.views.send_account_creation_email", side_effect=Exception)
     counselor = create_user(User.Role.COUNSELOR)
     url = reverse("clients:create_client")
 
