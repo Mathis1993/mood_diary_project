@@ -29,18 +29,19 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.django-nginx.entrypoints=http"
       - "traefik.http.routers.django-nginx.priority=1"
-      - "traefik.http.routers.django-nginx.rule=Host(`mood-diary.jabba.crossbow.de`)"
+      - "traefik.http.routers.django-nginx.rule=Host(`stage.mood-diary.de`)"
       - "traefik.http.routers.django-nginx.middlewares=traefik-https-redirect"
       - "traefik.http.routers.django-nginx-secure.entrypoints=https"
       - "traefik.http.routers.django-nginx-secure.priority=1"
-      - "traefik.http.routers.django-nginx-secure.rule=Host(`mood-diary.jabba.crossbow.de`)"
+      - "traefik.http.routers.django-nginx-secure.rule=Host(`stage.mood-diary.de`)"
       - "traefik.http.routers.django-nginx-secure.tls=true"
       - "traefik.http.routers.django-nginx-secure.tls.certresolver=dnsimple"
-      - "traefik.http.routers.django-nginx-secure.tls.domains[0].main=jabba.crossbow.de"
-      - "traefik.http.routers.django-nginx-secure.tls.domains[0].sans=*.jabba.crossbow.de"
+      - "traefik.http.routers.django-nginx-secure.tls.domains[0].main=mood-diary.de"
+      - "traefik.http.routers.django-nginx-secure.tls.domains[0].sans=*.mood-diary.de"
       - "traefik.http.services.django-nginx.loadbalancer.server.port=8000"
 
   celery_consumer:
+    restart: always
     restart: always
     image: ${APP_TEST_IMAGE}
     networks:
