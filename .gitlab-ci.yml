@@ -1,8 +1,7 @@
 variables:
   GIT_STRATEGY: fetch
-
   # BASE IMAGE (kind of the folder for all images)
-  BASE_IMAGE: gitlab.com/mathis1993/mood_diary_project/mood_diary
+  BASE_IMAGE: registry.gitlab.com/mathis1993/mood_diary_project
 
   # APPLICATION IMAGES
   IMAGE_APP: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
