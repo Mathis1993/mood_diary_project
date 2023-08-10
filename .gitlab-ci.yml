@@ -39,7 +39,9 @@ deploy_to_staging:
       - shell
     script:
       - cp infra/staging/docker-compose.yml ${DEPLOY_TARGET_DIR}/docker-compose.yml
+      - cd ${DEPLOY_TARGET_DIR}
       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
       - docker compose pull && docker compose up -d
+#      - docker compose exec backend_django python manage.py create
     variables:
       DEPLOY_TARGET_DIR: /home/docker/mood_diary
