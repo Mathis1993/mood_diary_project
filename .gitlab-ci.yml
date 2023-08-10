@@ -38,14 +38,8 @@ deploy_to_staging:
     tags:
       - shell
     script:
-      - pwd
-      - ls -la
-#      - scp docker-compose.yml ${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}:${DEPLOY_TARGET_DIR}
-#        cd $DEPLOY_TARGET_DIR &&
-#        docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY &&
-#        docker-compose pull &&
-#        docker-compose up -d "
-#    variables:
-#      DEPLOY_SSH_USER: root
-#      DEPLOY_SSH_HOST: my-domain.de
-#      DEPLOY_TARGET_DIR: /home/docker/deployment
+      - cp infra/staging/docker-compose.yml ${DEPLOY_TARGET_DIR}/docker-compose.yml
+      - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker-compose pull && docker-compose up -d
+    variables:
+      DEPLOY_TARGET_DIR: /home/docker/mood_diary
