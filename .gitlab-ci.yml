@@ -5,6 +5,7 @@ variables:
 
   # APPLICATION IMAGES
   APP_IMAGE: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
+  APP_TEST_IMAGE: $APP_IMAGE.test
 
 stages:
   - build
@@ -20,12 +21,12 @@ build_mood_diary:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - docker build --tag ${APP_IMAGE}.test --target=staging .
-    - docker push ${APP_IMAGE}.test
+    - docker build --tag $APP_TEST_IMAGE --target=staging .
+    - docker push $APP_TEST_IMAGE
 
 #test_mood_diary:
 #  stage: test
-#  image: ${APP_IMAGE}.test
+#  image: $APP_TEST_IMAGE
 #  tags:
 #    - docker  # runner with docker executor
 #  before_script:

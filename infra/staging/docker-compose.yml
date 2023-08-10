@@ -19,7 +19,7 @@ services:
 
   backend_django:
     restart: always
-    image: ${APP_IMAGE}
+    image: ${APP_TEST_IMAGE}
     networks:
       - overlay
       - web
