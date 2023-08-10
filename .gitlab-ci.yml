@@ -7,8 +7,6 @@ variables:
   APP_IMAGE: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
   APP_TEST_IMAGE: $APP_IMAGE.test
 
-
-
 stages:
   - build
   - test
