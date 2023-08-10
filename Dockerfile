@@ -13,7 +13,7 @@ COPY . .
 
 # Ensure ownership and permissions (first linux user has usually id 1000)
 RUN chown -R 1000:1000 /app && \
-    chmod +x /app/scripts/startup_django.sh \
+    chmod +x /app/scripts/startup_django.sh
 
 CMD ["scripts/startup_django.sh"]
 
