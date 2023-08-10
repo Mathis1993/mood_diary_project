@@ -47,7 +47,7 @@ services:
       - overlay
     env_file:
       - /home/docker/mood_diary/.env
-    command: celery -A mood_diary worker -l info
+    command: bash scripts/infra/staging/startup_celery_consumer.sh
 
   celery_beat:
     restart: always
@@ -56,7 +56,7 @@ services:
       - overlay
     env_file:
       - /home/docker/mood_diary/.env
-    command: celery -A mood_diary beat -l info
+    command: bash scripts/infra/staging/startup_celery_consumer.sh
 
 networks:
   overlay:
