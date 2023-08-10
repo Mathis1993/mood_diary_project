@@ -7,6 +7,12 @@ variables:
   APP_IMAGE: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
   APP_TEST_IMAGE: $APP_IMAGE.test
 
+  # ENVIRONMENT VARIABLES FOR TESTS
+  POSTGRES_USER: test
+  POSTGRES_PASSWORD: "test"
+  POSTGRES_DB: mood_diary_dev
+
+
 stages:
   - build
 #  - test
@@ -24,15 +30,20 @@ build_mood_diary:
     - docker build --tag $APP_TEST_IMAGE --target=staging .
     - docker push $APP_TEST_IMAGE
 
-#test_mood_diary:
-#  stage: test
-#  image: $APP_TEST_IMAGE
-#  tags:
-#    - docker  # runner with docker executor
-#  before_script:
-#    - cd /app
-#  script:
-#    - pytest
+test_mood_diary:
+  stage: test
+  image: $APP_TEST_IMAGE
+  tags:
+    - docker  # runner with docker executor
+  before_script:
+    - cd /app
+  script:
+    - pytest
+  services:
+    - name: postgres:15
+      command: [ "postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "random_page_cost=1.0" ]
+      alias: postgres
+    - redis
 
 deploy_to_staging:
     stage: deploy
@@ -46,3 +57,5 @@ deploy_to_staging:
       - docker compose exec backend_django python manage.py migrate
     variables:
       DEPLOY_TARGET_DIR: /home/docker/mood_diary
+    only:
+        - develop  # only deploy staging when pushing to develop branch
