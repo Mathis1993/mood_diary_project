@@ -62,6 +62,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "mood_diary.core.middleware.NoCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
