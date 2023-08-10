@@ -42,7 +42,6 @@ services:
 
   celery_consumer:
     restart: always
-    restart: always
     image: ${APP_TEST_IMAGE}
     networks:
       - overlay
