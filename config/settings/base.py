@@ -31,10 +31,12 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-ry1=u862==y3t)lm!kw53*06ug)50(sz$8og2=g6a-z-xw=+w7"
 
+# ToDo(ME-10.08.23): Not in production
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ToDo(ME-10.08.23): As env variable
+ALLOWED_HOSTS = ["mood-diary.jabba.crossbow.de"]
 
 
 # Application definition
