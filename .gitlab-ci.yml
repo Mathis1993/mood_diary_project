@@ -45,7 +45,7 @@ test_mood_diary:
     POSTGRES_HOST_AUTH_METHOD: trust
   script:
     - pytest -n auto --dist loadfile --cov --cov-config=pyproject.toml --cov-report=xml:coverage.xml --record-mode=none
-    - sed -i "s=<source>.*</source>=<source></source>=g" coverage.xml
+    - sed -i "s=<source>.*</source>=<source>/mood_diary_project</source>=g" coverage.xml
   after_script:
     - cd /app && coverage report
     - mkdir -p /builds/Mathis1993/mood_diary_project/
