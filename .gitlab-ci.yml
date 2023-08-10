@@ -32,9 +32,10 @@ test_mood_diary:
   before_script:
     - cd /app
   services:
-    - name: postgres:15
-      command: [ "postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "random_page_cost=1.0" ]
-      alias: postgres
+#    - name: postgres:15
+#      command: [ "postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "random_page_cost=1.0" ]
+#      alias: postgres
+    - postgres
     - redis
   variables:
     POSTGRES_USER: test
