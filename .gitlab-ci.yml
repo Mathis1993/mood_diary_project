@@ -4,7 +4,7 @@ variables:
   BASE_IMAGE: registry.gitlab.com/mathis1993/mood_diary_project
 
   # APPLICATION IMAGES
-  IMAGE_APP: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
+  APP_IMAGE: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
 
 stages:
   - build
