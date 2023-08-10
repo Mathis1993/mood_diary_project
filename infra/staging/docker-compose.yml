@@ -23,8 +23,6 @@ services:
     networks:
       - overlay
       - web
-    volumes:
-      - /home/docker/mood_diary/static:/app/mood_diary/static
     env_file:
       - /home/docker/mood_diary/.env
     labels:
