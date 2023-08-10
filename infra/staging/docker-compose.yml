@@ -44,6 +44,5 @@ services:
 
 networks:
   overlay:
-    external: true
   web:
     external: true
