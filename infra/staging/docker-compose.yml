@@ -5,8 +5,10 @@ services:
     image: postgres:15
     networks:
       - overlay
-    env_file:
-      - /home/docker/mood_diary/.env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: mood_diary
     volumes:
       - /home/docker/mood_diary/postgres_data:/var/lib/postgresql/data
 
