@@ -9,7 +9,7 @@ variables:
 
   # ENVIRONMENT VARIABLES FOR TESTS
   POSTGRES_USER: test
-  POSTGRES_PASSWORD: "test"
+  POSTGRES_PASSWORD: test
   POSTGRES_DB: mood_diary_dev
 
 
@@ -37,13 +37,13 @@ test_mood_diary:
     - docker  # runner with docker executor
   before_script:
     - cd /app
-  script:
-    - pytest
   services:
     - name: postgres:15
       command: [ "postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "random_page_cost=1.0" ]
       alias: postgres
     - redis
+  script:
+    - pytest
 
 deploy_to_staging:
     stage: deploy
