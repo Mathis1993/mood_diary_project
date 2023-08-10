@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    networks:
+      - overlay
+    env_file:
+      - /home/docker/mood_diary/.env
+    volumes:
+      - /home/docker/mood_diary/postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - overlay
+    volumes:
+      - /home/docker/mood_diary/redis/data:/var/lib/redis/data
+
+  backend_django:
+    restart: always
+    image: ${APP_IMAGE}
+    networks:
+      - overlay
+      - web
+    volumes:
+      - /home/docker/mood_diary/static:/app/mood_diary/static
+    env_file:
+      - /home/docker/mood_diary/.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.django-nginx.entrypoints=http"
+      - "traefik.http.routers.django-nginx.priority=1"
+      - "traefik.http.routers.django-nginx.rule=Host(`mood-diary.jabba.crossbow.de`)"
+      - "traefik.http.routers.django-nginx.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.django-nginx-secure.entrypoints=https"
+      - "traefik.http.routers.django-nginx-secure.priority=1"
+      - "traefik.http.routers.django-nginx-secure.rule=Host(`mood-diary.jabba.crossbow.de`)"
+      - "traefik.http.routers.django-nginx-secure.tls=true"
+      - "traefik.http.routers.django-nginx-secure.tls.certresolver=dnsimple"
+      - "traefik.http.routers.django-nginx-secure.tls.domains[0].main=jabba.crossbow.de"
+      - "traefik.http.routers.django-nginx-secure.tls.domains[0].sans=*.jabba.crossbow.de"
+      - "traefik.http.services.django-nginx.loadbalancer.server.port=80"
+
+networks:
+  overlay:
+    external: true
+  web:
+    external: true
