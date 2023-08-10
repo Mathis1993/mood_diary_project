@@ -17,7 +17,7 @@ services:
     volumes:
       - /home/docker/mood_diary/redis/data:/var/lib/redis/data
 
-  backend_django:
+  django:
     restart: always
     image: ${APP_TEST_IMAGE}
     networks:
@@ -47,7 +47,7 @@ services:
       - overlay
     env_file:
       - /home/docker/mood_diary/.env
-    command: bash scripts/infra/staging/startup_celery_consumer.sh
+    command: bash scripts/startup_celery_consumer.sh
 
   celery_beat:
     restart: always
@@ -56,7 +56,7 @@ services:
       - overlay
     env_file:
       - /home/docker/mood_diary/.env
-    command: bash scripts/infra/staging/startup_celery_consumer.sh
+    command: bash scripts/startup_celery_scheduler.sh
 
 networks:
   overlay:
