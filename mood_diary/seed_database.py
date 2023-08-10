@@ -1,9 +1,11 @@
 from clients.tests.factories import ClientFactory
 from diaries.tests.factories import (
     ACTIVITIES,
+    MOOD_SCALE,
     ActivityFactory,
     MoodDiaryEntryFactory,
     MoodDiaryFactory,
+    MoodFactory,
 )
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -43,3 +45,20 @@ def seed_database():
     mood_diary = MoodDiaryFactory.create(client=client)
     for _ in range(25):
         MoodDiaryEntryFactory.create(mood_diary=mood_diary)
+
+
+def seed_staging_database():
+    [MoodFactory.create(value=value, label=label) for value, label in MOOD_SCALE.items()]
+    [
+        ActivityFactory.create(category__value=category, value=activity)
+        for category, activities in ACTIVITIES.items()
+        for activity in activities
+    ]
+    [
+        RuleFactory.create(title=rule.rule_title, evaluation=Rule.Evaluation.EVENT_BASED)
+        for rule in EVENT_BASED_RULES
+    ]
+    [
+        RuleFactory.create(title=rule.rule_title, evaluation=Rule.Evaluation.TIME_BASED)
+        for rule in TIME_BASED_RULES
+    ]
