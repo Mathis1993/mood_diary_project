@@ -40,7 +40,7 @@ services:
       - "traefik.http.routers.django-nginx-secure.tls.certresolver=dnsimple"
       - "traefik.http.routers.django-nginx-secure.tls.domains[0].main=jabba.crossbow.de"
       - "traefik.http.routers.django-nginx-secure.tls.domains[0].sans=*.jabba.crossbow.de"
-      - "traefik.http.services.django-nginx.loadbalancer.server.port=80"
+      - "traefik.http.services.django-nginx.loadbalancer.server.port=8000"
 
 networks:
   overlay:
