@@ -1,0 +1,50 @@
+variables:
+  GIT_STRATEGY: fetch
+
+  # BASE IMAGE (kind of the folder for all images)
+  BASE_IMAGE: gitlab.com/mathis1993/mood_diary_project
+
+  # APPLICATION IMAGES
+  IMAGE_APP: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
+
+stages:
+  - build
+  - test
+  # - deploy
+
+build_mood_diary:
+  stage: build
+  image: docker:git
+  # The runner defines a tag and will only pick up jobs with this tag
+  tags:
+    - docker
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - docker build --tag $IMAGE_APP.test --target=staging .
+    - docker push $IMAGE_APP.test
+
+test_mood_diary:
+  stage: test
+  image: $IMAGE_APP.test
+  tags:
+    - docker
+  before_script:
+    - cd /app
+  script:
+    - pytest
+
+#deploy_to_prod:
+#    stage: deploy
+#    image: openssh-client
+#    script:
+#      - scp docker-compose.yml ${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}:${DEPLOY_TARGET_DIR}
+#      - ssh -l $DEPLOY_SSH_USER $DEPLOY_SSH_HOST "
+#        cd $DEPLOY_TARGET_DIR &&
+#        docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY &&
+#        docker-compose pull &&
+#        docker-compose up -d "
+#    variables:
+#      DEPLOY_SSH_USER: root
+#      DEPLOY_SSH_HOST: my-domain.de
+#      DEPLOY_TARGET_DIR: /home/docker/deployment
