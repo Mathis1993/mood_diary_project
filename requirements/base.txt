@@ -21,3 +21,6 @@ sendgrid==6.10.0
 
 # DEPLOYMENT
 gunicorn==21.1.0
+
+# Django Development Utilities
+django-extensions==3.2.3
