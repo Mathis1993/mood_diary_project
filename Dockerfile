@@ -4,7 +4,7 @@ FROM python:3.11 AS base
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY ./requirements/. ./
+COPY ./requirements/. ./requirements/
 
 # Install dependencies
 RUN pip install -r requirements/base.txt
