@@ -1,0 +1,7 @@
+docker-compose.yml
+.env
+.envrc
+.env-sample
+celerybeat-schedule
+.docker
+.pytest_cache
