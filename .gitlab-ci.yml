@@ -20,12 +20,12 @@ build_mood_diary:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - docker build --tag $IMAGE_APP.test --target=staging .
-    - docker push $IMAGE_APP.test
+    - docker build --tag ${APP_IMAGE}.test --target=staging .
+    - docker push ${APP_IMAGE}.test
 
 #test_mood_diary:
 #  stage: test
-#  image: $IMAGE_APP.test
+#  image: ${APP_IMAGE}.test
 #  tags:
 #    - docker  # runner with docker executor
 #  before_script:
