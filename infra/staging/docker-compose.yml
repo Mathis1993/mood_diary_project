@@ -40,6 +40,24 @@ services:
       - "traefik.http.routers.django-nginx-secure.tls.domains[0].sans=*.jabba.crossbow.de"
       - "traefik.http.services.django-nginx.loadbalancer.server.port=8000"
 
+  celery_consumer:
+    restart: always
+    image: ${APP_TEST_IMAGE}
+    networks:
+      - overlay
+    env_file:
+      - /home/docker/mood_diary/.env
+    command: celery -A mood_diary worker -l info
+
+  celery_beat:
+    restart: always
+    image: ${APP_TEST_IMAGE}
+    networks:
+      - overlay
+    env_file:
+      - /home/docker/mood_diary/.env
+    command: celery -A mood_diary beat -l info
+
 networks:
   overlay:
   web:
