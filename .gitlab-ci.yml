@@ -7,22 +7,22 @@ variables:
   APP_IMAGE: $BASE_IMAGE:django.$CI_COMMIT_REF_SLUG
 
 stages:
-  - deploy
-#  - build
+  - build
 #  - test
   # - release
+  - deploy
 
-#build_mood_diary:
-#  stage: build
-#  # The runner defines a tag and will only pick up jobs with this tag
-#  tags:
-#    - shell  # runner with shell executor
-#  before_script:
-#    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-#  script:
-#    - docker build --tag $IMAGE_APP.test --target=staging .
-#    - docker push $IMAGE_APP.test
-#
+build_mood_diary:
+  stage: build
+  # The runner defines a tag and will only pick up jobs with this tag
+  tags:
+    - shell  # runner with shell executor
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - docker build --tag $IMAGE_APP.test --target=staging .
+    - docker push $IMAGE_APP.test
+
 #test_mood_diary:
 #  stage: test
 #  image: $IMAGE_APP.test
@@ -40,6 +40,6 @@ deploy_to_staging:
     script:
       - cp infra/staging/docker-compose.yml ${DEPLOY_TARGET_DIR}/docker-compose.yml
       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker-compose pull && docker-compose up -d
+      - docker compose pull && docker compose up -d
     variables:
       DEPLOY_TARGET_DIR: /home/docker/mood_diary
