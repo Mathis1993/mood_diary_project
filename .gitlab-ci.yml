@@ -13,10 +13,9 @@ stages:
 
 build_mood_diary:
   stage: build
-  image: docker:git
   # The runner defines a tag and will only pick up jobs with this tag
   tags:
-    - docker
+    - shell  # runner with shell executor
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
@@ -27,7 +26,7 @@ test_mood_diary:
   stage: test
   image: $IMAGE_APP.test
   tags:
-    - docker
+    - docker  # runner with docker executor
   before_script:
     - cd /app
   script:
