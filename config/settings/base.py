@@ -38,6 +38,7 @@ DEBUG = True
 
 # ToDo(ME-10.08.23): As env variable
 ALLOWED_HOSTS = ["mood-diary.jabba.crossbow.de"]
+CSRF_TRUSTED_ORIGINS = ["https://mood-diary.jabba.crossbow.de"]
 
 
 # Application definition
