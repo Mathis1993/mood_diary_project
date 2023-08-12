@@ -68,7 +68,7 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
         self.order_fields(["date", "end_date"])
 
     end_date = forms.DateField(
-        initial=date.today(),
+        initial=date.today,
         required=False,
         widget=forms.DateInput(
             attrs={"placeholder": "Select an end date", "type": "date"},
