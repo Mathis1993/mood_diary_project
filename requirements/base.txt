@@ -20,7 +20,7 @@ python-dotenv==1.0.0
 sendgrid==6.10.0
 
 # DEPLOYMENT
-gunicorn==21.1.0
+gunicorn==21.2.0
 
 # DJANGO DEVELOPMENT UTILITIES
 django-extensions==3.2.3
