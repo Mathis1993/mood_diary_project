@@ -45,3 +45,4 @@ class RuleTriggeredLog(TrackCreation):
     client = models.ForeignKey(
         "clients.Client", on_delete=models.CASCADE, related_name="rules_triggered_logs"
     )
+    requested_at = models.DateTimeField()

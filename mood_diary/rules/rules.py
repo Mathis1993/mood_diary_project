@@ -73,7 +73,7 @@ class BaseRule:
 
     def persist_rule_triggering(self):
         RuleTriggeredLog.objects.create(
-            rule=self.rule, client_id=self.client_id, created_at=self.requested_at
+            rule=self.rule, client_id=self.client_id, requested_at=self.requested_at
         )
 
     def create_notification(self):
@@ -83,9 +83,9 @@ class BaseRule:
     def evaluate(self):
         if not self.client_subscribed():
             return
-        if not self.triggering_allowed():
-            return
         if not self.mood_diary_exists():
+            return
+        if not self.triggering_allowed():
             return
         if not self.evaluate_preconditions():
             return
@@ -148,7 +148,7 @@ class PhysicalActivityPerWeekRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=get_beginning_of_week(self.requested_at),
+            requested_at__gte=get_beginning_of_week(self.requested_at),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
@@ -179,7 +179,7 @@ class HighMediaUsagePerDayRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=self.requested_at.date(),
+            requested_at__gte=self.requested_at.date(),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
@@ -242,7 +242,7 @@ class FourteenDaysMoodAverageRule(BaseRule):
         rule_not_triggered_in_previous_fourteen_days = not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gt=self.requested_at.date() - timedelta(days=14),
+            requested_at__gt=self.requested_at.date() - timedelta(days=14),
         ).exists()
         return entries_for_last_fourteen_days and rule_not_triggered_in_previous_fourteen_days
 
@@ -291,7 +291,7 @@ class UnsteadyFoodIntakeRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=self.requested_at.date(),
+            requested_at__gte=self.requested_at.date(),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
@@ -376,7 +376,7 @@ class DailyAverageMoodImprovingRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=self.requested_at.date(),
+            requested_at__gte=self.requested_at.date(),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
@@ -413,7 +413,7 @@ class PhysicalActivityPerWeekIncreasingRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            created_at__gte=get_beginning_of_week(self.requested_at),
+            requested_at__gte=get_beginning_of_week(self.requested_at),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
