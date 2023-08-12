@@ -1,6 +1,10 @@
+import logging
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+
+logger = logging.getLogger("mood_diary.core.utils")
 
 
 def send_account_creation_email(to_email: str, host: str, scheme: str, initial_password: str):
@@ -41,11 +45,16 @@ Initial password: {initial_password}
         "password": initial_password,
     }
     html_content = render_to_string("users/registration_email.html", context)
-    send_mail(
-        "Registration for the Mood Diary",
-        fallback_message,
-        settings.FROM_EMAIL,
-        [to_email],
-        fail_silently=False,
-        html_message=html_content,
-    )
+    try:
+        send_mail(
+            "Registration for the Mood Diary",
+            fallback_message,
+            settings.FROM_EMAIL,
+            [to_email],
+            fail_silently=False,
+            html_message=html_content,
+        )
+    except Exception as e:
+        logger.exception(
+            f"Could not send registration email to {to_email}. Failed with exception: {e}"
+        )
