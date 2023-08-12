@@ -1,9 +1,10 @@
 {% extends "base_client_role.html" %}
+{% load i18n %}
 
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Mood Diary Entries</h1>
+    <h1 class="h3 mb-0 text-gray-800">{% translate "Mood Diary Entries" %}</h1>
     </div>
 
     <div class="row">
@@ -13,7 +14,7 @@
   {% if entries %}
     {% include page_template %}
   {% else %}
-    <p>No mood diary entries found.</p>
+    <p>{% translate "No mood diary entries found." %}</p>
   {% endif %}
   </div>
     </div>
@@ -37,17 +38,17 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Release all Entries?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% translate "Release all Entries?" %}</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Release" below if you are ready to release all new mood diary entries to your counselor.</div>
+                <div class="modal-body">{% translate "Select 'Release' below if you are ready to release all new mood diary entries to your counselor." %}</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">{% translate "Cancel" %}</button>
                     <form method="post" action="{% url 'diaries:release_mood_diary_entries' %}">
                     {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Release</button>
+                    <button class="btn btn-primary" type="submit">{% translate "Release" %}</button>
                     </form>
                 </div>
             </div>

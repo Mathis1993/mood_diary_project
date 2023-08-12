@@ -1,9 +1,10 @@
 {% extends "base_counselor_role.html" %}
+{% load i18n %}
 
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Mood Diary Entry</h1>
+    <h1 class="h3 mb-0 text-gray-800">{% translate "Mood Diary Entry" %}</h1>
     </div>
 
     <div class="row">
@@ -14,11 +15,11 @@
             <h6 class="m-0 font-weight-bold text-secondary">({{ entry.start_time }} - {{ entry.end_time }})</h6>
             </div>
             <div class="card-body">
-                <h4 class="text-md-left">Activity</h4>
+                <h4 class="text-md-left">{% translate "Activity" %}</h4>
                 <div class="text">
                     <p>{{ entry.activity.value }}</p>
                 </div>
-                <h4 class="text-md-left">Mood</h4>
+                <h4 class="text-md-left">{% translate "Mood" %}</h4>
                 <div class="stepper-container mb-5">
               <div class="stepper-wrapper mb-4">
                 <div class="stepper-progress"></div>

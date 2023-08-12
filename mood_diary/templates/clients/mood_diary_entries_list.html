@@ -1,8 +1,9 @@
 {% extends "base_counselor_role.html" %}
+{% load i18n %}
 
 {% block content %}
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Mood Diary Entries</h1>
+    <h1 class="h3 mb-0 text-gray-800">{% translate "Mood Diary Entries" %}</h1>
     </div>
 
     <div class="row">
@@ -12,7 +13,7 @@
   {% if entries %}
     {% include page_template %}
   {% else %}
-    <p>No mood diary entries released yet.</p>
+    <p>{% translate "No mood diary entries released yet." %}</p>
   {% endif %}
   </div>
     </div>

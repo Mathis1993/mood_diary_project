@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Mood Diary - Login</title>
+    <title>{% translate "Mood Diary - Login" %}</title>
 
     <!-- Custom fonts for this template-->
     <link href="{% static 'theme/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -27,7 +28,7 @@
 <body class="bg-gradient-primary">
     {% block content %}
     {% if next %}
-      <p>Please login to see this page.</p>
+      <p>{% translate "Please login to see this page." %}</p>
     {% endif %}
 
     <div class="container">
@@ -50,25 +51,17 @@
                                     <form class="user" method="post" action="{% url 'users:login' %}">
                                         {% csrf_token %}
                                         <div class="form-group">
-                                        {{ form.username }}
+                                            <input type="email" name="{{ form.username.name }}" class="form-control form-control-user" id="{{ form.username.id_for_label }}" placeholder="{% translate 'Enter Email Address...' %}" value="{{ form.username.value|default:'' }}" required>
                                         </div>
                                         <div class="form-group">
-                                            {{ form.password }}
+                                            <input type="password" name="{{ form.password.name }}" class="form-control form-control-user" id="{{ form.password.id_for_label }}" placeholder="{% translate 'Enter Password...' %}" required>
                                         </div>
                                         {% if form.errors %}
                                         <div class="alert alert-danger">
                                             {{ form.non_field_errors }}
                                         </div>
                                         {% endif %}
-{#                                        ToDo: Add this later#}
-{#                                        <div class="form-group">#}
-{#                                            <div class="custom-control custom-checkbox small">#}
-{#                                                <input type="checkbox" class="custom-control-input" id="customCheck">#}
-{#                                                <label class="custom-control-label" for="customCheck">Remember#}
-{#                                                    Me</label>#}
-{#                                            </div>#}
-{#                                        </div>#}
-                                        <input type="submit" value="Login" class="btn btn-primary btn-user btn-block">
+                                        <input type="submit" value="{% translate 'Login' %}" class="btn btn-primary btn-user btn-block">
                                         <input type="hidden" name="next" value="{{ next }}">
                                     </form>
                                 </div>

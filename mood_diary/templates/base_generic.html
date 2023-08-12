@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -57,7 +58,7 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'users:index' %}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Home</span></a>
+                    <span>{% translate "Home" %}</span></a>
             </li>
 
             {% endblock %}
@@ -107,14 +108,14 @@
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
+                                    {% translate "Profile" %}
                                 </a>
                                 {% block rules %}
                                 {% endblock %}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    {% translate "Logout" %}
                                 </a>
                             </div>
                         </li>
@@ -138,7 +139,7 @@
                 <span class="page-links">
                   {% if page_obj.has_previous %}
                     <a href="{{ request.path }}?page=1">&laquo; first</a>
-                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">{% translate "previous" %}</a>
                   {% endif %}
 
                   <span class="page-current">
@@ -146,8 +147,8 @@
                   </span>
 
                   {% if page_obj.has_next %}
-                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
-                    <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">{% translate "next" %}</a>
+                    <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}">{% translate "last" %} &raquo;</a>
                   {% endif %}
                 </span>
               </div>
@@ -172,17 +173,17 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Want to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% translate "Want to Leave?" %}</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">{% translate "Select 'Logout' below if you are ready to end your current session." %}</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">{% translate "Cancel" %}</button>
                     <form method="post" action="{% url 'users:perform_logout' %}">
                     {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Logout</button>
+                    <button class="btn btn-primary" type="submit">{% translate "Logout" %}</button>
                     </form>
                 </div>
             </div>

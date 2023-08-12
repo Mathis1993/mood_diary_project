@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load el_pagination_tags %}
 
 {% lazy_paginate rules %}
@@ -10,7 +11,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-gray-500 text-uppercase mb-1">
-                                Rule</div>
+                                {% translate "Rule" %}</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-500">{{ entry.rule.title }}</div>
 {#                            <div class="text-gray-400">{{ entry.created_at }}</div>#}
                         </div>
@@ -35,7 +36,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Rule</div>
+                                {% translate "Rule" %}</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ entry.rule.title }}</div>
 {#                            <div class="text-gray-500">{{ entry.created_at }}</div>#}
                         </div>
@@ -60,17 +61,17 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Deactivate this rule?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% translate "Deactivate this rule?" %}</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Confirm" below if you wish to deactivate the rule "{{ entry.rule.title }}".</div>
+                <div class="modal-body">{% blocktranslate with rule_title=entry.rule.title %}Select "Confirm" below if you wish to deactivate the rule "{{ rule_title }}".{% endblocktranslate %}</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">{% translate "Cancel" %}</button>
                     <form method="post" action="{% url 'rules:update_to_inactive' pk=entry.id %}">
                     {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Confirm</button>
+                    <button class="btn btn-primary" type="submit">{% translate "Confirm" %}</button>
                     </form>
                 </div>
             </div>
@@ -83,17 +84,17 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Reactivate this rule?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% translate "Reactivate this rule?" %}</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Confirm" below if you wish to activate the rule "{{ entry.rule.title }}" again.</div>
+                <div class="modal-body">{% blocktranslate with rule_title=entry.rule.title %}Select "Confirm" below if you wish to activate the rule "{{ rule_title }}" again.{% endblocktranslate %}</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">{% translate "Cancel" %}</button>
                     <form method="post" action="{% url 'rules:update_to_active' pk=entry.id %}">
                     {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Confirm</button>
+                    <button class="btn btn-primary" type="submit">{% translate "Confirm" %}</button>
                     </form>
                 </div>
             </div>

@@ -1,9 +1,10 @@
 {% extends "base_client_role.html" %}
+{% load i18n %}
 
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Notification</h1>
+    <h1 class="h3 mb-0 text-gray-800">{% translate "Notification" %}</h1>
     </div>
 
     <div class="row">
@@ -13,11 +14,11 @@
             <h6 class="m-0 font-weight-bold text-primary">{{ notification.created_at }} </h6>
             </div>
             <div class="card-body">
-                <h4 class="text-md-left">Pattern</h4>
+                <h4 class="text-md-left">{% translate "Pattern" %}</h4>
                 <div class="text">
                     <p>{{ notification.rule.title }}</p>
                 </div>
-                <h4 class="text-md-left">Description</h4>
+                <h4 class="text-md-left">{% translate "Description" %}</h4>
                 <div class="text">
                     <p>{{ notification.message }}</p>
                 </div>

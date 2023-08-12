@@ -1,8 +1,9 @@
 {% extends "base_client_role.html" %}
+{% load i18n %}
 
 {% block content %}
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Create Mood Diary Entry</h1>
+    <h1 class="h3 mb-0 text-gray-800">{% translate "Create Mood Diary Entry" %}</h1>
     </div>
 
 <div class="row">
@@ -10,7 +11,7 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
   </form>
     </div>
 </div>

@@ -1,9 +1,10 @@
 {% extends "base_client_role.html" %}
+{% load i18n %}
 
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Notifications</h1>
+    <h1 class="h3 mb-0 text-gray-800">{% translate "Notifications" %}</h1>
     </div>
 
     <div class="row">
@@ -13,7 +14,7 @@
   {% if notifications %}
     {% include page_template %}
   {% else %}
-    <p>No notifications found.</p>
+    <p>{% translate "No notifications found." %}</p>
   {% endif %}
   </div>
     </div>
