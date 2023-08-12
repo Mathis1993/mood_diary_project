@@ -1,4 +1,4 @@
-from clients.utils import send_account_creation_email
+from core.utils import send_account_creation_email
 from django.conf import settings
 from django.core import mail
 

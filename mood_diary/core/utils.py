@@ -40,7 +40,7 @@ Initial password: {initial_password}
         "url": url,
         "password": initial_password,
     }
-    html_content = render_to_string("clients/registration_email.html", context)
+    html_content = render_to_string("users/registration_email.html", context)
     send_mail(
         "Registration for the Mood Diary",
         fallback_message,
