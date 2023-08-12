@@ -3,16 +3,16 @@
 
 {% block content %}
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">{% translate "Update Mood Diary Entry" %}</h1>
+        <h1 class="h3 mb-0 text-gray-800">{% translate "Update Mood Diary Entry" %}</h1>
     </div>
 
     <div class="row">
-    <div class="col-xl-5 col-md-6 mb-4">
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">{% translate "Update" %}</button>
-  </form>
+        <div class="col-xl-5 col-md-6 mb-4">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">{% translate "Update" %}</button>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -4,19 +4,19 @@
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">{% translate "Notifications" %}</h1>
+        <h1 class="h3 mb-0 text-gray-800">{% translate "Notifications" %}</h1>
     </div>
 
     <div class="row">
-  <div class="col-lg-10">
+        <div class="col-lg-10">
 
 
-  {% if notifications %}
-    {% include page_template %}
-  {% else %}
-    <p>{% translate "No notifications found." %}</p>
-  {% endif %}
-  </div>
+            {% if notifications %}
+                {% include page_template %}
+            {% else %}
+                <p>{% translate "No notifications found." %}</p>
+            {% endif %}
+        </div>
     </div>
 
 {% endblock %}
@@ -24,6 +24,6 @@
 {% block scripts %}
     {{ block.super }}
     {% load static %}
-    <script src="{% static 'el-pagination/js/el-pagination.js'  %}"></script>
+    <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
     <script>$.endlessPaginate({paginateOnScroll: true, paginateOnScrollMargin: 20});</script>
 {% endblock %}

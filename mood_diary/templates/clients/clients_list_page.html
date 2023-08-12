@@ -39,7 +39,9 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">{% blocktranslate with identifier=client.identifier %}Select "Confirm" below if you are ready to set client {{ identifier }} to inactive to remove them from this list.{% endblocktranslate %}</div>
+                <div class="modal-body">{% blocktranslate with identifier=client.identifier %}Select "Confirm" below if
+                    you are ready to set client {{ identifier }} to inactive to remove them from this
+                    list.{% endblocktranslate %}</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">{% translate "Cancel" %}</button>
                     <form method="post" action="{% url 'clients:update_to_inactive' pk=client.id %}">

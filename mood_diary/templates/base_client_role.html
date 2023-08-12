@@ -2,11 +2,11 @@
 {% load i18n %}
 
 {% block sidebar %}
-<ul class="sidebar-nav">
-  <li><a href="{% url 'users:index' %}">{% translate "Home" %}</a></li>
-  <li><a href="{% url 'diaries:list_mood_diary_entries' %}">{% translate "Diary" %}</a></li>
-  <li><a href="{% url 'users:logout' %}">Logout</a></li>
-</ul>
+    <ul class="sidebar-nav">
+        <li><a href="{% url 'users:index' %}">{% translate "Home" %}</a></li>
+        <li><a href="{% url 'diaries:list_mood_diary_entries' %}">{% translate "Diary" %}</a></li>
+        <li><a href="{% url 'users:logout' %}">Logout</a></li>
+    </ul>
 {% endblock %}
 
 {% block navigation_items %}
@@ -27,46 +27,48 @@
 
 {% endblock %}
 
-{%  block alerts %}
+{% block alerts %}
 
     <!-- Nav Item - Alerts -->
     <li class="nav-item dropdown no-arrow mx-1">
         <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-bell fa-fw"></i>
             <!-- Counter - Alerts -->
             {% if user.client.new_notifications_count > 0 %}
 
-            <span class="badge badge-danger badge-counter">{{ user.client.new_notifications_count }}</span>
+                <span class="badge badge-danger badge-counter">{{ user.client.new_notifications_count }}</span>
 
             {% endif %}
         </a>
         <!-- Dropdown - Alerts -->
         <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-        aria-labelledby="alertsDropdown">
-        <h6 class="dropdown-header">
-            {% translate "Notifications Center" %}
-        </h6>
+             aria-labelledby="alertsDropdown">
+            <h6 class="dropdown-header">
+                {% translate "Notifications Center" %}
+            </h6>
 
-        {% if user.client.new_notifications_count > 0 %}
-            {% for notification in user.client.get_newest_notifications %}
+            {% if user.client.new_notifications_count > 0 %}
+                {% for notification in user.client.get_newest_notifications %}
 
-                <a class="dropdown-item d-flex align-items-center" href="{% url 'notifications:get_notification' pk=notification.id %}">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-warning">
-                            <i class="fas fa-file-alt text-white"></i>
+                    <a class="dropdown-item d-flex align-items-center"
+                       href="{% url 'notifications:get_notification' pk=notification.id %}">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-warning">
+                                <i class="fas fa-file-alt text-white"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">{{ notification.created_at }}</div>
-                        <span class="font-weight-bold">{{ notification.rule.title }}</span>
-                    </div>
-                </a>
+                        <div>
+                            <div class="small text-gray-500">{{ notification.created_at }}</div>
+                            <span class="font-weight-bold">{{ notification.rule.title }}</span>
+                        </div>
+                    </a>
 
-            {% endfor %}
-        {% endif %}
+                {% endfor %}
+            {% endif %}
 
-            <a class="dropdown-item text-center small text-gray-500" href="{% url 'notifications:get_all_notifications' %}">{% translate "Show All Notifications" %}</a>
+            <a class="dropdown-item text-center small text-gray-500"
+               href="{% url 'notifications:get_all_notifications' %}">{% translate "Show All Notifications" %}</a>
         </div>
     </li>
 
