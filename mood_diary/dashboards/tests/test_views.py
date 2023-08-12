@@ -7,7 +7,6 @@ from clients.tests.factories import ClientFactory
 from diaries.models import Activity, Mood, MoodDiary, MoodDiaryEntry
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from users.tests.factories import UserFactory
 
 User = get_user_model()
 
@@ -82,13 +81,3 @@ def test_dashboard_client_view(
     assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
     assert response.context["mood_scores_values"] == [8, 9, 10]
     assert response.context["mood_highlights"] == mock_highlights.return_value
-
-
-@pytest.mark.django_db
-def test_dashboard_counselor_view(create_response):
-    counselor = UserFactory.create(role=User.Role.COUNSELOR)
-    url = reverse("dashboards:dashboard_counselor")
-
-    response = create_response(counselor, url)
-
-    assert response.status_code == http.HTTPStatus.OK

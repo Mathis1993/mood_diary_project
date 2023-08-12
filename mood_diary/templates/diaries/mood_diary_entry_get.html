@@ -15,14 +15,14 @@
             </div>
             <div class="card-body">
                 <h4 class="text-md-left">Activity</h4>
-                <div class="text">
+                <div class="text mb-4">
                     <p>{{ entry.activity.value }}</p>
                 </div>
 {#                <h4 class="text-md-left">Mood <span class="float-right small">{{ entry.mood.value }}/{{ entry.mood.max_value }}</span></h4>#}
                 <h4 class="text-md-left">Mood</h4>
-                <div class="stepper-container mb-5">
-              <div class="stepper-wrapper mb-4">
-                <div class="stepper-progress"></div>
+            <div class="stepper-container mb-4">
+              <div class="circle-and-label-container"> <!-- New container -->
+                <div class="stepper-wrapper mb-4">
                   {% for mood in moods %}
                     {% if mood.value == entry.mood.value %}
                       <div class="stepper-screen-indicator stepper-completed">{{ mood.value }}</div>
@@ -30,11 +30,11 @@
                       <div class="stepper-screen-indicator">{{ mood.value }}</div>
                     {% endif %}
                   {% endfor %}
-                <div class="stepper-label-left">{{ label_left }}</div>
-                <div class="stepper-label-right">{{ label_right }}</div>
+                </div>
+                <!-- Active mood label centered below the circles -->
+                <div class="active-mood-label">{{ entry.mood.label }}</div>
               </div>
             </div>
-
                 {% if entry.mood_and_emotion_info %}
                 <h4 class="text-md-left">Info</h4>
                 <div class="text">
@@ -47,11 +47,11 @@
     </div>
 
     <!-- Delete Entry Button-->
-    <a class="btn btn-warning btn-circle btn-lg button-lower-right-corner-1" data-toggle="modal" data-target="#deleteModal">
+    <a class="btn btn-warning btn-circle btn-lg button-lower-right-corner-0" data-toggle="modal" data-target="#deleteModal">
         <i class="fas fa-trash"></i>
     </a>
     <!-- Update Entry Button-->
-    <a href="{% url 'diaries:update_mood_diary_entry' pk=entry.id %}" class="btn btn-success btn-circle btn-lg button-lower-right-corner-2">
+    <a href="{% url 'diaries:update_mood_diary_entry' pk=entry.id %}" class="btn btn-success btn-circle btn-lg button-lower-right-corner-1">
         <i class="fas fa-pen"></i>
     </a>
 {% endblock %}

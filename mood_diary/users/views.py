@@ -19,7 +19,7 @@ def index(request: HttpRequest) -> HttpResponse:
         return redirect("admin:index")
 
     if user.role == User.Role.COUNSELOR:
-        return redirect("dashboards:dashboard_counselor")
+        return redirect("clients:list_clients")
 
     if user.role == User.Role.CLIENT:
         return redirect("dashboards:dashboard_client")
