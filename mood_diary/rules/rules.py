@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 from functools import cached_property
 
@@ -26,6 +27,7 @@ class BaseRule:
     def __init__(self, client_id: int, requested_at: timezone.datetime):
         self.client_id = client_id
         self.requested_at = requested_at
+        self.logger = logging.getLogger("mood_diary.rules")
 
     @property
     def rule_title(self) -> str:
@@ -87,6 +89,7 @@ class BaseRule:
             return
         if not self.evaluate_preconditions():
             return
+        self.logger.info(f"Rule triggered for client {self.client_id}: {self.rule_title}")
         self.persist_rule_triggering()
         self.create_notification()
 
