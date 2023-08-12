@@ -2,7 +2,7 @@
 
 {% lazy_paginate entries %}
 {% for entry in entries %}
-     <div class="col-xl-5 col-md-6 mb-4">
+    <div class="col-xl-5 col-md-6 mb-4">
         <a href="{% url 'clients:get_mood_diary_entry_client' client_pk=entry.mood_diary.client_id entry_pk=entry.id %}">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
@@ -20,6 +20,6 @@
                 </div>
             </div>
         </a>
-        </div>
+    </div>
 {% endfor %}
 {% show_more %}

@@ -27,3 +27,6 @@ django-extensions==3.2.3
 
 # STATIC FILES
 whitenoise==6.5.0
+
+# TRANSLATIONS
+django-modeltranslation==0.18.11

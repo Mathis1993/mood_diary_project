@@ -2,10 +2,10 @@
 {% load i18n %}
 
 {% block form_top %}
-  {% if not is_popup %}
-    <p>{% translate 'Enter an email address and a role. The created user will then receive an email with login information.' %}</p>
-    <p>{% translate 'Please only create counselor users here. Counselors will in turn create client users.' %}</p>
-  {% else %}
-    <p>{% translate "Enter a username and password." %}</p>
-  {% endif %}
+    {% if not is_popup %}
+        <p>{% translate 'Enter an email address and a role. The created user will then receive an email with login information.' %}</p>
+        <p>{% translate 'Please only create counselor users here. Counselors will in turn create client users.' %}</p>
+    {% else %}
+        <p>{% translate "Enter a username and password." %}</p>
+    {% endif %}
 {% endblock %}

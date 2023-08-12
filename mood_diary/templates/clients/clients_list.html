@@ -1,25 +1,26 @@
 {% extends "base_counselor_role.html" %}
+{% load i18n %}
 
 {% block content %}
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Your Clients</h1>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{% translate "Your Clients" %}</h1>
     </div>
 
     <div class="row">
-  <div class="col-lg-10">
+        <div class="col-lg-10">
 
 
-  {% if clients %}
-    {% include page_template %}
-  {% else %}
-    <p>No clients yet.</p>
-  {% endif %}
-  </div>
+            {% if clients %}
+                {% include page_template %}
+            {% else %}
+                <p>{% translate "No clients yet." %}</p>
+            {% endif %}
+        </div>
     </div>
 
     <!-- Create New CLIENT Button-->
     <a href="{% url 'clients:create_client' %}" class="btn btn-success btn-circle btn-lg button-lower-right-corner-0">
-    <i class="fas fa-plus"></i>
+        <i class="fas fa-plus"></i>
     </a>
 
 {% endblock %}
@@ -27,6 +28,6 @@
 {% block scripts %}
     {{ block.super }}
     {% load static %}
-    <script src="{% static 'el-pagination/js/el-pagination.js'  %}"></script>
+    <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
     <script>$.endlessPaginate({paginateOnScroll: true, paginateOnScrollMargin: 20});</script>
 {% endblock %}
