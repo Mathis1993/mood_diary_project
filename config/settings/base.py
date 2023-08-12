@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "el_pagination",
     "pwa",
     "django_extensions",
+    "modeltranslation",
     # custom
     "clients",
     "core",
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -119,12 +121,26 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
+LANGUAGES = [
+    ("en", "English"),
+    ("de", "German"),
+]
+
+# Fallback language english for django-modeltranslation
+# Run python manage.py update_translation_fields to copy original
+# values to default language fields
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("en",)
+
 TIME_ZONE = "Europe/Berlin"
 
 USE_I18N = True
 
 # Users are and always will be only in Germany
 USE_TZ = False
+
+# Directory for storing translation files
+# Run python manage.py makemessages -l de to create translation files
+LOCALE_PATHS = (BASE_DIR / "locale",)
 
 
 # Static files (CSS, JavaScript, Images)
