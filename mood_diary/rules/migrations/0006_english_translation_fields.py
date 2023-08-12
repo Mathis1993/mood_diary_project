@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rules', '0005_rule_conclusion_message_de_rule_title_de'),
+        ('rules', '0005_german_translation_fields'),
     ]
 
     operations = [

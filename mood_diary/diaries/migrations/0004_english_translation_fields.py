@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('diaries', '0003_activity_value_de_activitycategory_value_de_and_more'),
+        ('diaries', '0003_german_translation_fields'),
     ]
 
     operations = [

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0003_notification_message_de'),
+        ('notifications', '0003_german_translation_fields'),
     ]
 
     operations = [
