@@ -58,3 +58,4 @@ Initial password: {initial_password}
         logger.exception(
             f"Could not send registration email to {to_email}. Failed with exception: {e}"
         )
+    logger.info(f"Sent registration email to {to_email}.")
