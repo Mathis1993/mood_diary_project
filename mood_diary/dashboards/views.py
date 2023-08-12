@@ -1,4 +1,4 @@
-from core.views import AuthenticatedClientRoleMixin, AuthenticatedCounselorRoleMixin
+from core.views import AuthenticatedClientRoleMixin
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from django.views import View
@@ -39,10 +39,3 @@ class DashboardClientView(AuthenticatedClientRoleMixin, View):
                 "mood_highlights": mood_highlights,
             },
         )
-
-
-class DashboardCounselorView(AuthenticatedCounselorRoleMixin, View):
-    template_name = "dashboards/dashboard_counselor.html"
-
-    def get(self, request):
-        return render(request, self.template_name, None)

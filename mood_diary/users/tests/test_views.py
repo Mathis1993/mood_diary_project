@@ -39,7 +39,7 @@ def test_index_with_first_login_completed_counselor(client):
     response = client.get(url)
 
     assert response.status_code == http.HTTPStatus.FOUND
-    assert response.url == reverse("dashboards:dashboard_counselor")
+    assert response.url == reverse("clients:list_clients")
 
 
 @pytest.mark.django_db
