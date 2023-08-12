@@ -1,6 +1,6 @@
 from clients.forms import ClientCreationForm
 from clients.models import Client
-from clients.utils import send_account_creation_email
+from core.utils import send_account_creation_email
 from core.views import AuthenticatedCounselorRoleMixin
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.contrib.auth import get_user_model
