@@ -3,6 +3,7 @@ from datetime import date
 from core.forms import GroupedModelChoiceField
 from diaries.models import Activity, Mood, MoodDiaryEntry
 from django import forms
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -72,6 +73,15 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["date"].label = _("Start date")
+        # self.fields["end_date"].initial = timezone.now().date()
+        # self.fields["start_time"].initial = timezone.now()
+        # self.fields["end_time"].initial = timezone.now()
+
+        # ToDo(ME-13.08.23): Handle initial value for date fields
+        now = timezone.now().time()
+        self.fields["start_time"].initial = now.strftime("%H:%M")
+        self.fields["end_time"].initial = now.strftime("%H:%M")
+
         self.order_fields(["date", "end_date"])
 
     end_date = forms.DateField(
