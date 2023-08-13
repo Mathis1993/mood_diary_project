@@ -11,7 +11,7 @@ ACTIVITIES_DE_EN = {
         "Sonstiges": "Other",
         "Restaurant": "Restaurant",
     },
-    "Studium/Study": {
+    "Studium/Studies": {
         "Vorlesung": "Lecture",
         "Seminar": "Seminar",
         "Lehrveranstaltung": "Course",
@@ -98,13 +98,13 @@ ACTIVITIES_DE_EN = {
         "Alkohol-/Drogenkonsum": "Alcohol/Drug consumption",
         "Sonstiges Problemverhalten": "Other problematic behavior",
     },
-    "Transport": {
+    "Transport/Transportation": {
         "Auto fahren": "Driving in a car",
         "Zug fahren": "Taking the train",
         "Fliegen": "Flying",
         "Sonstiges": "Other",
     },
-    "Zusätzliches/Additional": {
+    "Zusätzliches/Other": {
         "Andere Aktivität": "Other activity",
     },
 }
