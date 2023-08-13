@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-12 19:49+0200\n"
+"POT-Creation-Date: 2023-08-13 10:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,66 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mood_diary/diaries/forms.py:22
+msgid "Select a date"
+msgstr "Wähle ein Datum aus"
+
+#: mood_diary/diaries/forms.py:25
+msgid "Select a start time"
+msgstr "Wähle eine Startzeit aus"
+
+#: mood_diary/diaries/forms.py:28
+msgid "Select an end time"
+msgstr "Wähle eine Endzeit aus"
+
+#: mood_diary/diaries/forms.py:33
+#: mood_diary/templates/clients/mood_diary_entry_get.html:18
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:18
+msgid "Activity"
+msgstr "Aktivität"
+
+#: mood_diary/diaries/forms.py:42
+msgid "Date"
+msgstr "Datum"
+
+#: mood_diary/diaries/forms.py:43
+msgid "Start time"
+msgstr "Startzeit"
+
+#: mood_diary/diaries/forms.py:44
+msgid "End time"
+msgstr "Endzeit"
+
+#: mood_diary/diaries/forms.py:46
+#: mood_diary/templates/clients/mood_diary_entry_get.html:22
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:23
+msgid "Mood"
+msgstr "Stimmung"
+
+#: mood_diary/diaries/forms.py:49
+msgid "Additional info"
+msgstr "Zusätzliche Informationen"
+
+#: mood_diary/diaries/forms.py:51
+msgid "Enter any additional info here"
+msgstr "Gib hier zusätzliche Informationen ein"
+
+#: mood_diary/diaries/forms.py:74
+msgid "Start date"
+msgstr "Startdatum"
+
+#: mood_diary/diaries/forms.py:80
+msgid "End date"
+msgstr "Enddatum"
+
+#: mood_diary/diaries/forms.py:82
+msgid "Select an end date"
+msgstr "Wähle ein Enddatum aus"
+
+#: mood_diary/diaries/forms.py:96
+msgid "End date must be after start date."
+msgstr "Startdatum muss vor dem Enddatum liegen"
 
 #: mood_diary/templates/admin/add_form.html:6
 msgid ""
@@ -153,7 +213,9 @@ msgid ""
 "                    you are ready to set client %(identifier)s to inactive "
 "to remove them from this\n"
 "                    list."
-msgstr "Wählen \"Bestätigen\" unten, wenn du bereit bist, Klient*in %(identifier)s auf inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
+msgstr ""
+"Wählen \"Bestätigen\" unten, wenn du bereit bist, Klient*in %(identifier)s "
+"auf inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
 
 #: mood_diary/templates/clients/clients_list_page.html:49
 #: mood_diary/templates/rules/rule_list_page.html:79
@@ -174,16 +236,6 @@ msgstr "Noch keine Tagebucheinträge freigegeben."
 #: mood_diary/templates/diaries/mood_diary_entry_get.html:7
 msgid "Mood Diary Entry"
 msgstr "Tagebucheintrag"
-
-#: mood_diary/templates/clients/mood_diary_entry_get.html:18
-#: mood_diary/templates/diaries/mood_diary_entry_get.html:18
-msgid "Activity"
-msgstr "Aktivität"
-
-#: mood_diary/templates/clients/mood_diary_entry_get.html:22
-#: mood_diary/templates/diaries/mood_diary_entry_get.html:23
-msgid "Mood"
-msgstr "Stimmung"
 
 #: mood_diary/templates/dashboards/dashboard_client.html:16
 msgid "Mood Overview"
@@ -309,7 +361,9 @@ msgstr "Diese Regel deaktivieren?"
 msgid ""
 "Select \"Confirm\" below if\n"
 "                    you wish to deactivate the rule \"%(rule_title)s\"."
-msgstr "Wähle \"Bestätigen\" unten, wenn du die Regel \"%(rule_title)s\" deaktivieren möchtest."
+msgstr ""
+"Wähle unten \"Bestätigen\", wenn du die Regel \"%(rule_title)s\" "
+"deaktivieren möchtest."
 
 #: mood_diary/templates/rules/rule_list_page.html:93
 msgid "Reactivate this rule?"
@@ -320,7 +374,9 @@ msgstr "Diese Regel wieder aktivieren?"
 msgid ""
 "Select \"Confirm\" below if\n"
 "                    you wish to activate the rule \"%(rule_title)s\" again."
-msgstr "Wählen \"Bestätigen\" unten, wenn du die Regel \"%(rule_title)s\" wieder aktivieren möchtest."
+msgstr ""
+"Wählen unten \"Bestätigen\", wenn du die Regel \"%(rule_title)s\" wieder "
+"aktivieren möchtest."
 
 #: mood_diary/templates/rules/rules_list.html:13
 msgid ""
