@@ -1,12 +1,13 @@
 const labels = JSON.parse(document.getElementById('chart-labels').textContent);
 const data = JSON.parse(document.getElementById('chart-data').textContent);
+const dataName = JSON.parse(document.getElementById('chart-data-name').textContent);
 const ctx = document.getElementById("moodOverviewChart")
 const myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
     labels: labels,
     datasets: [{
-      label: "Average Mood",
+      label: dataName,
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",

@@ -66,6 +66,7 @@
 {% block scripts %}
     {{ mood_scores_dates|json_script:"chart-labels" }}
     {{ mood_scores_values|json_script:"chart-data" }}
+    {{ mood_score_data_name|json_script:"chart-data-name" }}
     {% load static %}
     <script src="{% static 'js/average_mood_chart.js' %}"></script>
 {% endblock %}

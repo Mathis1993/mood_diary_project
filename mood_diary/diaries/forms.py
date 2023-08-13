@@ -3,6 +3,7 @@ from datetime import date
 from core.forms import GroupedModelChoiceField
 from diaries.models import Activity, Mood, MoodDiaryEntry
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 
 class MoodDiaryEntryForm(forms.ModelForm):
@@ -18,17 +19,19 @@ class MoodDiaryEntryForm(forms.ModelForm):
         ]
         widgets = {
             "date": forms.DateInput(
-                attrs={"placeholder": "Select a date", "type": "date"},
+                attrs={"placeholder": _("Select a date"), "type": "date"},
             ),
             "start_time": forms.TimeInput(
-                attrs={"placeholder": "Select a start time", "type": "time"},
+                attrs={"placeholder": _("Select a start time"), "type": "time"},
             ),
             "end_time": forms.TimeInput(
-                attrs={"placeholder": "Select an end time", "type": "time"},
+                attrs={"placeholder": _("Select an end time"), "type": "time"},
             ),
         }
 
-    activity = GroupedModelChoiceField(queryset=Activity.objects.all(), choices_group_by="category")
+    activity = GroupedModelChoiceField(
+        queryset=Activity.objects.all(), choices_group_by="category", label=_("Activity")
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -36,12 +39,16 @@ class MoodDiaryEntryForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({"class": "form-control"})
             for field in self.fields.keys()
         ]
+        self.fields["date"].label = _("Date")
+        self.fields["start_time"].label = _("Start time")
+        self.fields["end_time"].label = _("End time")
         self.fields["activity"].empty_label = None
+        self.fields["mood"].label = _("Mood")
         self.fields["mood"].empty_label = None
         self.fields["mood"].initial = Mood.objects.get(value=0)
-        self.fields["mood_and_emotion_info"].label = "Additional info"
+        self.fields["mood_and_emotion_info"].label = _("Additional info")
         self.fields["mood_and_emotion_info"].widget.attrs.update(
-            {"rows": 5, "placeholder": "Enter any additional info here"}
+            {"rows": 5, "placeholder": _("Enter any additional info here")}
         )
 
     def clean(self):
@@ -64,14 +71,15 @@ class MoodDiaryEntryForm(forms.ModelForm):
 class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["date"].label = "Start date"
+        self.fields["date"].label = _("Start date")
         self.order_fields(["date", "end_date"])
 
     end_date = forms.DateField(
         initial=date.today,
         required=False,
+        label=_("End date"),
         widget=forms.DateInput(
-            attrs={"placeholder": "Select an end date", "type": "date"},
+            attrs={"placeholder": _("Select an end date"), "type": "date"},
         ),
     )
 
@@ -85,6 +93,6 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
         end_date = cleaned_data.get("end_date")
         if start_date and end_date:
             if start_date > end_date:
-                self.add_error("end_date", "End date must be after start date.")
+                self.add_error("end_date", _("End date must be after start date."))
 
         return cleaned_data
