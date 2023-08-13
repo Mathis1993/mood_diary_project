@@ -209,12 +209,12 @@ msgstr "Diese*n Klient*in auf inaktiv setzen?"
 #: mood_diary/templates/clients/clients_list_page.html:42
 #, python-format
 msgid ""
-"Select \"Confirm\" below if\n"
+"Select 'Confirm' below if\n"
 "                    you are ready to set client %(identifier)s to inactive "
 "to remove them from this\n"
 "                    list."
 msgstr ""
-"Wählen \"Bestätigen\" unten, wenn du bereit bist, Klient*in %(identifier)s "
+"Wählen 'Bestätigen' unten, wenn du bereit bist, Klient*in %(identifier)s "
 "auf inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
 
 #: mood_diary/templates/clients/clients_list_page.html:49
@@ -359,10 +359,10 @@ msgstr "Diese Regel deaktivieren?"
 #: mood_diary/templates/rules/rule_list_page.html:72
 #, python-format
 msgid ""
-"Select \"Confirm\" below if\n"
-"                    you wish to deactivate the rule \"%(rule_title)s\"."
+"Select 'Confirm' below if\n"
+"                    you wish to deactivate the rule '%(rule_title)s'."
 msgstr ""
-"Wähle unten \"Bestätigen\", wenn du die Regel \"%(rule_title)s\" "
+"Wähle unten 'Bestätigen', wenn du die Regel '%(rule_title)s' "
 "deaktivieren möchtest."
 
 #: mood_diary/templates/rules/rule_list_page.html:93
@@ -372,10 +372,10 @@ msgstr "Diese Regel wieder aktivieren?"
 #: mood_diary/templates/rules/rule_list_page.html:98
 #, python-format
 msgid ""
-"Select \"Confirm\" below if\n"
-"                    you wish to activate the rule \"%(rule_title)s\" again."
+"Select 'Confirm' below if\n"
+"                    you wish to activate the rule '%(rule_title)s' again."
 msgstr ""
-"Wählen unten \"Bestätigen\", wenn du die Regel \"%(rule_title)s\" wieder "
+"Wählen unten 'Bestätigen', wenn du die Regel '%(rule_title)s' wieder "
 "aktivieren möchtest."
 
 #: mood_diary/templates/rules/rules_list.html:13
