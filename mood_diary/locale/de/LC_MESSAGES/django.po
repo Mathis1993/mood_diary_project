@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-13 10:03+0200\n"
+"POT-Creation-Date: 2023-08-13 10:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mood_diary/clients/views.py:39
+msgid "Client already exists"
+msgstr "Klient*in existiert bereits"
+
+#: mood_diary/clients/views.py:45
+msgid "Could not send email"
+msgstr "Email konnte nicht gesendet werden"
 
 #: mood_diary/diaries/forms.py:22
 msgid "Select a date"
@@ -214,8 +222,8 @@ msgid ""
 "to remove them from this\n"
 "                    list."
 msgstr ""
-"Wählen 'Bestätigen' unten, wenn du bereit bist, Klient*in %(identifier)s "
-"auf inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
+"Wählen 'Bestätigen' unten, wenn du bereit bist, Klient*in %(identifier)s auf "
+"inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
 
 #: mood_diary/templates/clients/clients_list_page.html:49
 #: mood_diary/templates/rules/rule_list_page.html:79
@@ -362,8 +370,8 @@ msgid ""
 "Select 'Confirm' below if\n"
 "                    you wish to deactivate the rule '%(rule_title)s'."
 msgstr ""
-"Wähle unten 'Bestätigen', wenn du die Regel '%(rule_title)s' "
-"deaktivieren möchtest."
+"Wähle unten 'Bestätigen', wenn du die Regel '%(rule_title)s' deaktivieren "
+"möchtest."
 
 #: mood_diary/templates/rules/rule_list_page.html:93
 msgid "Reactivate this rule?"

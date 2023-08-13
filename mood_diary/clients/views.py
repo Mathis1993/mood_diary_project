@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import DetailView
 from el_pagination.views import AjaxListView
@@ -35,13 +36,13 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
 
             client_user, created = User.objects.get_or_create(email=email, role=User.Role.CLIENT)
             if not created:
-                form.add_error("email", ValidationError("client already exists"))
+                form.add_error("email", ValidationError(_("Client already exists")))
                 return render(request, self.template_name, {"form": form})
 
             try:
                 send_account_creation_email(email, request.get_host(), request.scheme, password)
             except Exception:
-                form.add_error("email", ValidationError("could not send email"))
+                form.add_error("email", ValidationError(_("Could not send email")))
                 client_user.delete()
                 return render(request, self.template_name, {"form": form})
 
