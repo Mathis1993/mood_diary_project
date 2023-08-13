@@ -108,7 +108,7 @@ def test_create_client_view_post_email_sending_fails(
 
     assert response.status_code == http.HTTPStatus.OK
     assert isinstance(response.context["form"], ClientCreationForm)
-    assert "could not send email" in response.context["form"].errors["email"]
+    assert "Could not send email" in response.context["form"].errors["email"]
     assert not Client.objects.exists()
 
 
