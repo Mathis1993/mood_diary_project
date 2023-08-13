@@ -47,7 +47,7 @@ def seed_database():
         MoodDiaryEntryFactory.create(mood_diary=mood_diary)
 
 
-def seed_staging_database():
+def seed_database_staging():
     [MoodFactory.create(value=value, label=label) for value, label in MOOD_SCALE.items()]
     [
         ActivityFactory.create(category__value=category, value=activity)

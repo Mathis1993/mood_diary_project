@@ -1,2 +1,2 @@
 export DJANGO_SETTINGS_MODULE=config.settings.base
-celery -A mood_diary worker
+celery -A mood_diary worker -l INFO

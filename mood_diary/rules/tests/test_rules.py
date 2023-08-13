@@ -823,3 +823,42 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
     assert rule.triggering_allowed() is False
+
+
+@pytest.mark.django_db
+def test_rule_evaluation_two_consecutive_days(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    rule_db = RuleFactory.create(title="Low media usage per day")
+    rule_db.subscribed_clients.add(client)
+
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 10, 0),
+        end_time=datetime(2023, 9, 30, 10, 20),
+    )
+
+    freezer.move_to("2023-10-01 06:00:00")
+    timestamp = (timezone.now() - timedelta(days=1)).replace(
+        hour=23, minute=59, second=59, microsecond=999999
+    )
+    rule = LowMediaUsagePerDayRule(client_id=client.id, requested_at=timestamp)
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+
+    # No media usage entries for the 1st of October
+    freezer.move_to("2023-10-02 06:00:00")
+    timestamp = (timezone.now() - timedelta(days=1)).replace(
+        hour=23, minute=59, second=59, microsecond=999999
+    )
+    rule = LowMediaUsagePerDayRule(client_id=client.id, requested_at=timestamp)
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+    rule.evaluate()
+    assert Notification.objects.count() == 2
+    assert RuleTriggeredLog.objects.count() == 2
