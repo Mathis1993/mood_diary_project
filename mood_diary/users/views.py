@@ -101,7 +101,6 @@ class CustomPasswordChangeView(
         return form
 
 
-# ToDo(ME-13.08.23): Test
 class ProfilePageView(LoginRequiredMixin, View):
     template_name = "users/profile.html"
 
@@ -117,7 +116,6 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-# ToDo(ME-13.08.23): Test
 class EmailUpdateView(LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, UpdateView):
     model = User
     form_class = UserEmailForm
