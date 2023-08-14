@@ -1,6 +1,7 @@
 import pytest
-from diaries.forms import MoodDiaryEntryCreateForm, MoodDiaryEntryForm
+from diaries.forms import ActivityWidget, MoodDiaryEntryCreateForm, MoodDiaryEntryForm
 from diaries.tests.factories import ActivityFactory, MoodFactory
+from django.urls import reverse
 
 
 @pytest.fixture
@@ -75,3 +76,25 @@ def test_mood_diary_entry_create_form_clean(valid_mood_diary_entry_form_data):
 #     form = MoodDiaryEntryForm(data=valid_form_data)
 #     assert not form.is_valid()
 #     assert "strain_info" in form.errors
+
+
+def test_activity_widget_search_fields():
+    widget = ActivityWidget()
+    expected_search_fields = [
+        "value_de__icontains",
+        "value_en__icontains",
+        "category__value_de__icontains",
+        "category__value_en__icontains",
+    ]
+    assert widget.search_fields == expected_search_fields
+
+
+def test_activity_widget_data_url():
+    widget = ActivityWidget()
+    expected_url = reverse("diaries:mood_diary_entries_create_auto_select")
+    assert widget.data_url == expected_url
+
+
+def test_activity_widget_attrs():
+    widget = ActivityWidget()
+    assert widget.attrs["data-minimum-input-length"] == 0
