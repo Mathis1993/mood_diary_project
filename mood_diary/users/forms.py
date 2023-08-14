@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-# ToDo(ME-13.08.23): Test
 class UserEmailForm(forms.ModelForm):
     class Meta:
         model = User

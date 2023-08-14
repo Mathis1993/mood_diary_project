@@ -86,3 +86,53 @@ def test_custom_password_change_view_valid_form_submission(client):
     assert response.url == reverse("users:index")
     user.refresh_from_db()
     assert user.first_login_completed is True
+
+
+@pytest.mark.django_db
+def test_profile_page_view_base_template_for_client(client):
+    user = UserFactory(role=User.Role.CLIENT)
+    client.force_login(user)
+    response = client.get(reverse("users:profile"))
+    assert response.status_code == 200
+    assert response.context["base_template"] == "base_client_role.html"
+
+
+@pytest.mark.django_db
+def test_profile_page_view_base_template_for_counselor(client):
+    user = UserFactory(role=User.Role.COUNSELOR)
+    client.force_login(user)
+    response = client.get(reverse("users:profile"))
+    assert response.status_code == 200
+    assert response.context["base_template"] == "base_counselor_role.html"
+
+
+@pytest.mark.django_db
+def test_email_update_view_base_template_for_client(client):
+    user = UserFactory(role=User.Role.CLIENT)
+    client.force_login(user)
+    response = client.get(reverse("users:change_email", kwargs={"pk": user.id}))
+    assert response.status_code == 200
+    assert response.context["base_template"] == "base_client_role.html"
+
+
+@pytest.mark.django_db
+def test_email_update_view_base_template_for_counselor(client):
+    user = UserFactory(role=User.Role.COUNSELOR)
+    client.force_login(user)
+    response = client.get(reverse("users:change_email", kwargs={"pk": user.id}))
+    assert response.status_code == 200
+    assert response.context["base_template"] == "base_counselor_role.html"
+
+
+@pytest.mark.django_db
+def test_email_update_view(client):
+    user = UserFactory(email="old_email@example.com")
+    client.force_login(user)
+    response = client.post(
+        reverse("users:change_email", kwargs={"pk": user.id}),
+        {"email": "new_email@example.com"},
+    )
+    assert response.status_code == 302
+    assert response.url == reverse("users:index")
+    user.refresh_from_db()
+    assert user.email == "new_email@example.com"
