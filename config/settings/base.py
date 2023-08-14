@@ -48,10 +48,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # third-party
-    "el_pagination",
-    "pwa",
     "django_extensions",
+    "django_select2",
+    "el_pagination",
     "modeltranslation",
+    "pwa",
     # custom
     "clients",
     "core",
@@ -172,6 +173,19 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT"),
     },
 }
+
+# Caches
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("REDIS_CACHE_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "MAX_CONNECTIONS": 500,
+        },
+    },
+}
+SELECT2_CACHE_BACKEND = "default"
 
 # Celery Configuration Options
 CELERY_TIMEZONE = "Europe/Berlin"

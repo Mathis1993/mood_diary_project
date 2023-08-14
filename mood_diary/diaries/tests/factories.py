@@ -1,6 +1,7 @@
 from datetime import date
 
 import factory.fuzzy
+from diaries.content.moods import MOOD_SCALE_DE_EN
 from diaries.models import (
     Activity,
     ActivityCategory,
@@ -13,14 +14,20 @@ from diaries.models import (
 )
 from django.utils import timezone
 
-MOOD_SCALE = {
-    -3: "Extremely Unhappy",
-    -2: "Unhappy",
-    -1: "Somewhat Unhappy",
-    0: "Neutral",
-    1: "Somewhat Happy",
-    2: "Happy",
-    3: "Extremely Happy",
+ACTIVITIES = {
+    "Sleep": ["Sleeping"],
+    "Food": ["Meal"],
+    "Studies": ["Lecture"],
+    "Work": ["Part-time job"],
+    "Social": ["Meeting friends"],
+    "Physical Activity": ["Sports"],
+    "Relaxation": ["Meditation"],
+    "Media": ["PC Gaming"],
+    "Errands": ["Shopping"],
+    "Culture and Creativity": ["Listening to music"],
+    "Problematic Behavior": ["Ruminating"],
+    "Transportation": ["Driving in a car"],
+    "Other": ["Other activity"],
 }
 
 STRAIN_SCALE = {
@@ -31,18 +38,6 @@ STRAIN_SCALE = {
     5: "Moderate-High Strain",
     6: "High Strain",
     7: "Very High Strain",
-}
-
-ACTIVITIES = {
-    "Eating": ["Eating", "Drinking"],
-    "Sleep": ["Sleeping", "Napping"],
-    "Work": ["Working", "School", "Volunteering"],
-    "Studies": ["Studying", "Reading", "Homework"],
-    "Physical Activity": ["Exercise", "Sports", "Yoga"],
-    "Social": ["Socializing", "Partying", "Hanging out with friends"],
-    "Relaxation": ["Relaxing", "Meditating", "Praying"],
-    "Travel": ["Traveling", "Commuting"],
-    "Media Usage": ["Watching TV", "Playing Video Games", "Browsing the Internet"],
 }
 
 
@@ -78,7 +73,7 @@ class MoodFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("value",)
 
     value = factory.fuzzy.FuzzyChoice([-3, -2, -1, 0, 1, 2, 3])
-    label = factory.LazyAttribute(lambda obj: MOOD_SCALE[obj.value])
+    label = factory.LazyAttribute(lambda obj: list(MOOD_SCALE_DE_EN[obj.value].keys())[0])
 
 
 class EmotionFactory(factory.django.DjangoModelFactory):

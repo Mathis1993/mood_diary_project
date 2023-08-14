@@ -562,7 +562,7 @@ def test_positive_mood_change_between_activities_rule():
         mood_diary__client=client,
         date="2023-09-30",
         activity__value="c",
-        mood__value=2,
+        mood__value=3,
         start_time=datetime(2023, 9, 30, 13, 0),
         end_time=datetime(2023, 9, 30, 14, 0),
     )
@@ -641,7 +641,7 @@ def test_negative_mood_change_between_activities_rule():
         mood_diary__client=client,
         date="2023-09-30",
         activity__value="c",
-        mood__value=-2,
+        mood__value=-3,
         start_time=datetime(2023, 9, 30, 13, 0),
         end_time=datetime(2023, 9, 30, 14, 0),
     )

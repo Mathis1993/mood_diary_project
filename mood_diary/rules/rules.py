@@ -280,6 +280,7 @@ class FourteenDaysMoodMaximumRule(FourteenDaysMoodAverageRule):
         return max_mood_value < 1
 
 
+# ToDo(ME-13.08.23): Wenn innerhalb der letzten drei Tage jeweils weniger als 3 Mahlzeiten
 class UnsteadyFoodIntakeRule(BaseRule):
     """
     Rule checking if the client has eaten less than 3 meals per day.
@@ -347,7 +348,7 @@ class PositiveMoodChangeBetweenActivitiesRule(BaseRule):
         if not relevant_entries.exists():
             return False
         mood_values = relevant_entries.values_list("mood__value", flat=True)
-        return mood_values[0] - mood_values[1] >= 2
+        return mood_values[0] - mood_values[1] >= 3
 
 
 class NegativeMoodChangeBetweenActivitiesRule(PositiveMoodChangeBetweenActivitiesRule):
@@ -362,7 +363,7 @@ class NegativeMoodChangeBetweenActivitiesRule(PositiveMoodChangeBetweenActivitie
         if not relevant_entries.exists():
             return False
         mood_values = relevant_entries.values_list("mood__value", flat=True)
-        return mood_values[0] - mood_values[1] <= -2
+        return mood_values[0] - mood_values[1] <= -3
 
 
 class DailyAverageMoodImprovingRule(BaseRule):

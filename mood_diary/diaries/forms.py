@@ -1,9 +1,26 @@
 from datetime import date
 
-from core.forms import GroupedModelChoiceField
-from diaries.models import Activity, Mood, MoodDiaryEntry
+from diaries.models import Mood, MoodDiaryEntry
 from django import forms
+from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django_select2.forms import ModelSelect2Widget
+
+
+class ActivityWidget(ModelSelect2Widget):
+    search_fields = [
+        "value_de__icontains",
+        "value_en__icontains",
+        "category__value_de__icontains",
+        "category__value_en__icontains",
+    ]
+    data_url = reverse_lazy("diaries:mood_diary_entries_create_auto_select")
+    max_results = 200
+
+    def __init__(self, *args, **kwargs):
+        kwargs["attrs"] = {"data-minimum-input-length": 0}
+        super().__init__(*args, **kwargs)
 
 
 class MoodDiaryEntryForm(forms.ModelForm):
@@ -27,11 +44,8 @@ class MoodDiaryEntryForm(forms.ModelForm):
             "end_time": forms.TimeInput(
                 attrs={"placeholder": _("Select an end time"), "type": "time"},
             ),
+            "activity": ActivityWidget(),
         }
-
-    activity = GroupedModelChoiceField(
-        queryset=Activity.objects.all(), choices_group_by="category", label=_("Activity")
-    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -72,6 +86,15 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["date"].label = _("Start date")
+        # self.fields["end_date"].initial = timezone.now().date()
+        # self.fields["start_time"].initial = timezone.now()
+        # self.fields["end_time"].initial = timezone.now()
+
+        # ToDo(ME-13.08.23): Handle initial value for date fields
+        now = timezone.now().time()
+        self.fields["start_time"].initial = now.strftime("%H:%M")
+        self.fields["end_time"].initial = now.strftime("%H:%M")
+
         self.order_fields(["date", "end_date"])
 
     end_date = forms.DateField(
