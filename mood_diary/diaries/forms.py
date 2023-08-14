@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 
 
-# ToDo(ME-14.08.23): Test
 class ActivityWidget(ModelSelect2Widget):
     search_fields = [
         "value_de__icontains",
@@ -17,6 +16,7 @@ class ActivityWidget(ModelSelect2Widget):
         "category__value_en__icontains",
     ]
     data_url = reverse_lazy("diaries:mood_diary_entries_create_auto_select")
+    max_results = 200
 
     def __init__(self, *args, **kwargs):
         kwargs["attrs"] = {"data-minimum-input-length": 0}

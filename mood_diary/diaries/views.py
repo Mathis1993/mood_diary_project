@@ -127,7 +127,6 @@ class MoodDiaryEntryReleaseDoneView(AuthenticatedClientRoleMixin, View):
         return render(request, self.template_name)
 
 
-# ToDo(ME-14.08.23): Test
 class ActivitySelect2QuerySetView(AutoResponseView):
     def get(self, request, *args, **kwargs):
         """
