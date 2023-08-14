@@ -90,7 +90,7 @@ def test_custom_password_change_view_valid_form_submission(client):
 
 @pytest.mark.django_db
 def test_profile_page_view_base_template_for_client(client):
-    user = UserFactory(role=User.Role.CLIENT)
+    user = UserFactory.create(role=User.Role.CLIENT)
     client.force_login(user)
     response = client.get(reverse("users:profile"))
     assert response.status_code == 200
@@ -99,7 +99,7 @@ def test_profile_page_view_base_template_for_client(client):
 
 @pytest.mark.django_db
 def test_profile_page_view_base_template_for_counselor(client):
-    user = UserFactory(role=User.Role.COUNSELOR)
+    user = UserFactory.create(role=User.Role.COUNSELOR)
     client.force_login(user)
     response = client.get(reverse("users:profile"))
     assert response.status_code == 200
@@ -108,7 +108,7 @@ def test_profile_page_view_base_template_for_counselor(client):
 
 @pytest.mark.django_db
 def test_email_update_view_base_template_for_client(client):
-    user = UserFactory(role=User.Role.CLIENT)
+    user = UserFactory.create(role=User.Role.CLIENT)
     client.force_login(user)
     response = client.get(reverse("users:change_email", kwargs={"pk": user.id}))
     assert response.status_code == 200
@@ -117,7 +117,7 @@ def test_email_update_view_base_template_for_client(client):
 
 @pytest.mark.django_db
 def test_email_update_view_base_template_for_counselor(client):
-    user = UserFactory(role=User.Role.COUNSELOR)
+    user = UserFactory.create(role=User.Role.COUNSELOR)
     client.force_login(user)
     response = client.get(reverse("users:change_email", kwargs={"pk": user.id}))
     assert response.status_code == 200
@@ -126,7 +126,7 @@ def test_email_update_view_base_template_for_counselor(client):
 
 @pytest.mark.django_db
 def test_email_update_view(client):
-    user = UserFactory(email="old_email@example.com")
+    user = UserFactory.create(email="old_email@example.com")
     client.force_login(user)
     response = client.post(
         reverse("users:change_email", kwargs={"pk": user.id}),
