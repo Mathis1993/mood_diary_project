@@ -98,7 +98,7 @@ class EmotionFactory(factory.django.DjangoModelFactory):
 class ActivityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Activity
-        django_get_or_create = ("value",)
+        django_get_or_create = ("value", "category")
 
     category = factory.SubFactory("diaries.tests.factories.ActivityCategoryFactory")
     value = factory.LazyAttribute(

@@ -28,9 +28,9 @@ ACTIVITIES_DE_EN = {
     },
     "Soziales/Social": {
         "Freund*innen treffen": "Meeting friends",
-        "Parter*in treffen": "Meeting partner",
+        "Partner*in treffen": "Meeting partner",
         "Telekommunikation Freund*innen": "Telecommunication with friends",
-        "Telekommunikation Parter*in": "Telecommunication with partner",
+        "Telekommunikation Partner*in": "Telecommunication with partner",
         "Familie treffen": "Meeting family",
         "Telekommunikation Familie": "Telecommunication with family",
         "Ausgehen/Party": "Going out/Partying",
