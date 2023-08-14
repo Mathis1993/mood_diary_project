@@ -99,7 +99,7 @@ class Emotion(NormalizedStringValueModel):
 class Activity(NormalizedStringValueModel):
     class Meta:
         db_table = "diaries_activities"
-        ordering = ["category__value", "value"]
+        ordering = ["category__value_de", "value_de"]
 
     category = models.ForeignKey(
         to="diaries.ActivityCategory", on_delete=models.CASCADE, related_name="activities"
@@ -121,7 +121,7 @@ class ActivityCategory(NormalizedStringValueModel):
 
     physical_activity_value = "Physical Activity"
     relaxing_value = "Relaxation"
-    media_usage_value = "Media Usage"
+    media_usage_value = "Media"
 
 
 class Strain(NormalizedScaleModel):

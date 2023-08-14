@@ -1,0 +1,17 @@
+{% extends base_template %}
+{% load i18n %}
+
+{% block content %}
+    <h1 class="h3 mb-4 text-gray-800">{% translate "Profile Settings" %}</h1>
+    <p>
+        <!-- Change Password Button-->
+        <a href="{% url 'users:change_password' %}"
+           class="btn mb-2 btn-primary">{% translate "Change Password" %}</a>
+    </p>
+
+    <!-- Change Email Button-->
+        <a href="{% url 'users:change_email' pk=user.id %}"
+           class="btn btn-primary">{% translate "Change Email" %}</a>
+
+
+{% endblock %}

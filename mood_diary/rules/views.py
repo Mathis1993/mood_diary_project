@@ -6,7 +6,6 @@ from el_pagination.views import AjaxListView
 from rules.models import RuleClient
 
 
-# ToDo(ME-09.08.23): Test
 class RuleListView(AuthenticatedClientRoleMixin, AjaxListView):
     model = RuleClient
     template_name = "rules/rules_list.html"
@@ -17,7 +16,6 @@ class RuleListView(AuthenticatedClientRoleMixin, AjaxListView):
         return self.model.objects.filter(client_id=self.request.user.client.id).all()
 
 
-# ToDo(ME-09.08.23): Test
 class RuleClientUpdateToInactiveView(AuthenticatedClientRoleMixin, View):
     def post(self, request, pk):
         rule_client_obj = RuleClient.objects.get(id=pk)
@@ -28,7 +26,6 @@ class RuleClientUpdateToInactiveView(AuthenticatedClientRoleMixin, View):
         return redirect(reverse_lazy("rules:get_all_rules"))
 
 
-# ToDo(ME-09.08.23): Test
 class RuleClientUpdateToActiveView(AuthenticatedClientRoleMixin, View):
     def post(self, request, pk):
         rule_client_obj = RuleClient.objects.get(id=pk)

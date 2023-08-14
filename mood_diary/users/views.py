@@ -3,10 +3,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import UpdateView
+from users.forms import UserEmailForm
 
 User = get_user_model()
+
+
+class SetBaseTemplateBasedOnUserRoleMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        base_template = (
+            "base_client_role.html"
+            if self.request.user.role == User.Role.CLIENT
+            else "base_counselor_role.html"
+        )
+        context["base_template"] = base_template
+
+        return context
 
 
 @login_required(login_url="users:login")
@@ -46,7 +63,9 @@ class CustomLoginView(LoginView):
         return form
 
 
-class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+class CustomPasswordChangeView(
+    LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, PasswordChangeView
+):
     template_name = "users/password_change.html"
     success_url = reverse_lazy("users:index")
 
@@ -80,3 +99,27 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
             }
         )
         return form
+
+
+class ProfilePageView(LoginRequiredMixin, View):
+    template_name = "users/profile.html"
+
+    def get(self, request):
+        base_template = (
+            "base_client_role.html"
+            if request.user.role == User.Role.CLIENT
+            else "base_counselor_role.html"
+        )
+
+        context = {"base_template": base_template}
+
+        return render(request, self.template_name, context)
+
+
+class EmailUpdateView(LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, UpdateView):
+    model = User
+    form_class = UserEmailForm
+    template_name = "users/email_update.html"
+
+    def get_success_url(self):
+        return reverse_lazy("users:index")

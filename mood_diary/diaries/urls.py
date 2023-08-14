@@ -39,4 +39,9 @@ urlpatterns = [
         views.MoodDiaryEntryReleaseDoneView.as_view(),
         name="release_mood_diary_entries_done",
     ),
+    path(
+        "mood_diary_entries/auto_select/auto.json",
+        views.ActivitySelect2QuerySetView.as_view(),
+        name="mood_diary_entries_create_auto_select",
+    ),
 ]

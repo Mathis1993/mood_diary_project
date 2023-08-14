@@ -1,13 +1,9 @@
-{% extends "base_client_role.html" %}
+{% extends base_template %}
 {% load i18n %}
-
-{% block extrahead %}
-    {{ form.media.css }}
-{% endblock %}
 
 {% block content %}
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{% translate "Update Mood Diary Entry" %}</h1>
+        <h1 class="h3 mb-0 text-gray-800">{% translate "Update Email" %}</h1>
     </div>
 
     <div class="row">
@@ -19,8 +15,4 @@
             </form>
         </div>
     </div>
-{% endblock %}
-
-{% block scripts %}
-    {{ form.media.js }}
 {% endblock %}
