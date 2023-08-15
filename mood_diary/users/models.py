@@ -34,6 +34,7 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
     email = models.EmailField(db_index=True, unique=True, max_length=255)
     role = models.CharField(choices=Role.choices, max_length=255)
     first_login_completed = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     # The `is_staff` flag is expected by Django to determine who can and cannot
     # log into the Django admin site
