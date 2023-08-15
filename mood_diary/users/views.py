@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import UpdateView
 from users.forms import UserEmailForm
@@ -45,23 +46,6 @@ def index(request: HttpRequest) -> HttpResponse:
 class CustomLoginView(LoginView):
     template_name = "users/login.html"
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["username"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "aria-describedby": "emailHelp",
-                "placeholder": "Enter Email Address...",
-            }
-        )
-        form.fields["password"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "placeholder": "Enter Password...",
-            }
-        )
-        return form
-
 
 class CustomPasswordChangeView(
     LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, PasswordChangeView
@@ -83,19 +67,19 @@ class CustomPasswordChangeView(
         form.fields["old_password"].widget.attrs.update(
             {
                 "class": "form-control form-control-user",
-                "placeholder": "Enter Old Password...",
+                "placeholder": _("Enter Old Password..."),
             }
         )
         form.fields["new_password1"].widget.attrs.update(
             {
                 "class": "form-control form-control-user",
-                "placeholder": "Enter New Password...",
+                "placeholder": _("Enter New Password..."),
             }
         )
         form.fields["new_password2"].widget.attrs.update(
             {
                 "class": "form-control form-control-user",
-                "placeholder": "Confirm New Password...",
+                "placeholder": _("Confirm New Password..."),
             }
         )
         return form
