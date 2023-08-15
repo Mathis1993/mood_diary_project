@@ -1,5 +1,6 @@
 from datetime import date
 
+from core.forms import BaseModelForm
 from diaries.models import Mood, MoodDiaryEntry
 from django import forms
 from django.urls import reverse_lazy
@@ -23,7 +24,7 @@ class ActivityWidget(ModelSelect2Widget):
         super().__init__(*args, **kwargs)
 
 
-class MoodDiaryEntryForm(forms.ModelForm):
+class MoodDiaryEntryForm(BaseModelForm):
     class Meta:
         model = MoodDiaryEntry
         fields = [
@@ -49,10 +50,6 @@ class MoodDiaryEntryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        [
-            self.fields[field].widget.attrs.update({"class": "form-control"})
-            for field in self.fields.keys()
-        ]
         self.fields["date"].label = _("Date")
         self.fields["start_time"].label = _("Start time")
         self.fields["end_time"].label = _("End time")

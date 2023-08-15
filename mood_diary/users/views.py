@@ -5,10 +5,9 @@ from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import UpdateView
-from users.forms import UserEmailForm
+from users.forms import CustomPasswordChangeForm, UserEmailForm
 
 User = get_user_model()
 
@@ -50,6 +49,7 @@ class CustomLoginView(LoginView):
 class CustomPasswordChangeView(
     LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, PasswordChangeView
 ):
+    form_class = CustomPasswordChangeForm
     template_name = "users/password_change.html"
     success_url = reverse_lazy("users:index")
 
@@ -61,28 +61,6 @@ class CustomPasswordChangeView(
         user.save()
 
         return response
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["old_password"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "placeholder": _("Enter Old Password..."),
-            }
-        )
-        form.fields["new_password1"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "placeholder": _("Enter New Password..."),
-            }
-        )
-        form.fields["new_password2"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "placeholder": _("Confirm New Password..."),
-            }
-        )
-        return form
 
 
 class ProfilePageView(LoginRequiredMixin, View):
