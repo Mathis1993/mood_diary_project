@@ -162,7 +162,7 @@ msgstr "Möchtest du gehen?"
 #: mood_diary/templates/base_generic.html:183
 msgid "Select 'Logout' below if you are ready to end your current session."
 msgstr ""
-"Wähle 'Abmelden' unten, wenn du deine aktuelle Sitzung beenden möchtest."
+"Wähle unten 'Abmelden', wenn du deine aktuelle Sitzung beenden möchtest."
 
 #: mood_diary/templates/base_generic.html:186
 #: mood_diary/templates/clients/clients_list_page.html:46
@@ -222,7 +222,7 @@ msgid ""
 "to remove them from this\n"
 "                    list."
 msgstr ""
-"Wählen 'Bestätigen' unten, wenn du bereit bist, Klient*in %(identifier)s auf "
+"Wählen unten 'Bestätigen', wenn du bereit bist, Klient*in %(identifier)s auf "
 "inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
 
 #: mood_diary/templates/clients/clients_list_page.html:49
@@ -271,7 +271,7 @@ msgid ""
 "Select 'Release' below if you are ready to release all new mood diary "
 "entries to your counselor."
 msgstr ""
-"Wähle 'Freigeben' unten, wenn du bereit bist, alle neuen Tagebucheinträge "
+"Wähle unten 'Freigeben', wenn du bereit bist, alle neuen Tagebucheinträge "
 "deinem*deiner Berater*in freizugeben."
 
 #: mood_diary/templates/diaries/mood_diary_entries_list.html:54
@@ -309,7 +309,7 @@ msgstr "Diesen Eintrag löschen?"
 
 #: mood_diary/templates/diaries/mood_diary_entry_get.html:75
 msgid "Select 'Delete' below if you are ready to delete this entry."
-msgstr "Wähle 'Löschen' unten, wenn du diesen Eintrag löschen möchtest."
+msgstr "Wähle unten 'Löschen', wenn du diesen Eintrag löschen möchtest."
 
 #: mood_diary/templates/diaries/mood_diary_entry_release.html:5
 msgid "Release Mood Diary Entries"
