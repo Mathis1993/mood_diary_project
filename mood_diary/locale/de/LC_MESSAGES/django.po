@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-13 14:08+0200\n"
+"POT-Creation-Date: 2023-08-15 10:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,63 +30,59 @@ msgstr "Email konnte nicht gesendet werden"
 msgid "Average Mood"
 msgstr "Durschnittliche Stimmung"
 
-#: mood_diary/diaries/forms.py:22
+#: mood_diary/diaries/forms.py:39
 msgid "Select a date"
 msgstr "Wähle ein Datum aus"
 
-#: mood_diary/diaries/forms.py:25
+#: mood_diary/diaries/forms.py:42
 msgid "Select a start time"
 msgstr "Wähle eine Startzeit aus"
 
-#: mood_diary/diaries/forms.py:28
+#: mood_diary/diaries/forms.py:45
 msgid "Select an end time"
 msgstr "Wähle eine Endzeit aus"
 
-#: mood_diary/diaries/forms.py:33
-#: mood_diary/templates/clients/mood_diary_entry_get.html:18
-#: mood_diary/templates/diaries/mood_diary_entry_get.html:18
-msgid "Activity"
-msgstr "Aktivität"
-
-#: mood_diary/diaries/forms.py:42
+#: mood_diary/diaries/forms.py:56
 msgid "Date"
 msgstr "Datum"
 
-#: mood_diary/diaries/forms.py:43
+#: mood_diary/diaries/forms.py:57
 msgid "Start time"
 msgstr "Startzeit"
 
-#: mood_diary/diaries/forms.py:44
+#: mood_diary/diaries/forms.py:58
 msgid "End time"
 msgstr "Endzeit"
 
-#: mood_diary/diaries/forms.py:46
+#: mood_diary/diaries/forms.py:60
 #: mood_diary/templates/clients/mood_diary_entry_get.html:22
 #: mood_diary/templates/diaries/mood_diary_entry_get.html:23
 msgid "Mood"
 msgstr "Stimmung"
 
-#: mood_diary/diaries/forms.py:49
+#: mood_diary/diaries/forms.py:63
 msgid "Additional info"
 msgstr "Zusätzliche Informationen"
 
-#: mood_diary/diaries/forms.py:51
-msgid "Enter any additional info here"
+#: mood_diary/diaries/forms.py:65
+#, fuzzy
+#| msgid "Enter any additional info here"
+msgid "Enter any additional info here..."
 msgstr "Gib hier zusätzliche Informationen ein"
 
-#: mood_diary/diaries/forms.py:74
+#: mood_diary/diaries/forms.py:88
 msgid "Start date"
 msgstr "Startdatum"
 
-#: mood_diary/diaries/forms.py:80
+#: mood_diary/diaries/forms.py:103
 msgid "End date"
 msgstr "Enddatum"
 
-#: mood_diary/diaries/forms.py:82
+#: mood_diary/diaries/forms.py:105
 msgid "Select an end date"
 msgstr "Wähle ein Enddatum aus"
 
-#: mood_diary/diaries/forms.py:96
+#: mood_diary/diaries/forms.py:119
 msgid "End date must be after start date."
 msgstr "Startdatum muss vor dem Enddatum liegen"
 
@@ -112,7 +108,7 @@ msgstr "Gib einen Benutzernamen und ein Passwort ein."
 
 #: mood_diary/templates/base_client_role.html:6
 #: mood_diary/templates/base_client_role.html:18
-#: mood_diary/templates/base_generic.html:61
+#: mood_diary/templates/base_generic.html:63
 msgid "Home"
 msgstr "Startseite"
 
@@ -138,37 +134,37 @@ msgstr "Regeln"
 msgid "Clients"
 msgstr "Klient*innen"
 
-#: mood_diary/templates/base_generic.html:111
+#: mood_diary/templates/base_generic.html:113
 msgid "Profile"
 msgstr "Profil"
 
-#: mood_diary/templates/base_generic.html:118
-#: mood_diary/templates/base_generic.html:187
+#: mood_diary/templates/base_generic.html:120
+#: mood_diary/templates/base_generic.html:189
 msgid "Logout"
 msgstr "Abmelden"
 
-#: mood_diary/templates/base_generic.html:142
+#: mood_diary/templates/base_generic.html:144
 msgid "previous"
 msgstr "vorherige"
 
-#: mood_diary/templates/base_generic.html:150
+#: mood_diary/templates/base_generic.html:152
 msgid "next"
 msgstr "nächste"
 
-#: mood_diary/templates/base_generic.html:151
+#: mood_diary/templates/base_generic.html:153
 msgid "last"
 msgstr "letzte"
 
-#: mood_diary/templates/base_generic.html:176
+#: mood_diary/templates/base_generic.html:178
 msgid "Want to Leave?"
 msgstr "Möchtest du gehen?"
 
-#: mood_diary/templates/base_generic.html:181
+#: mood_diary/templates/base_generic.html:183
 msgid "Select 'Logout' below if you are ready to end your current session."
 msgstr ""
-"Wähle 'Abmelden' unten, wenn du deine aktuelle Sitzung beenden möchtest."
+"Wähle unten 'Abmelden', wenn du deine aktuelle Sitzung beenden möchtest."
 
-#: mood_diary/templates/base_generic.html:184
+#: mood_diary/templates/base_generic.html:186
 #: mood_diary/templates/clients/clients_list_page.html:46
 #: mood_diary/templates/diaries/mood_diary_entries_list.html:51
 #: mood_diary/templates/diaries/mood_diary_entry_delete.html:10
@@ -226,7 +222,7 @@ msgid ""
 "to remove them from this\n"
 "                    list."
 msgstr ""
-"Wählen 'Bestätigen' unten, wenn du bereit bist, Klient*in %(identifier)s auf "
+"Wählen unten 'Bestätigen', wenn du bereit bist, Klient*in %(identifier)s auf "
 "inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
 
 #: mood_diary/templates/clients/clients_list_page.html:49
@@ -249,6 +245,11 @@ msgstr "Noch keine Tagebucheinträge freigegeben."
 msgid "Mood Diary Entry"
 msgstr "Tagebucheintrag"
 
+#: mood_diary/templates/clients/mood_diary_entry_get.html:18
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:18
+msgid "Activity"
+msgstr "Aktivität"
+
 #: mood_diary/templates/dashboards/dashboard_client.html:16
 msgid "Mood Overview"
 msgstr "Stimmungsübersicht"
@@ -270,18 +271,18 @@ msgid ""
 "Select 'Release' below if you are ready to release all new mood diary "
 "entries to your counselor."
 msgstr ""
-"Wähle 'Freigeben' unten, wenn du bereit bist, alle neuen Tagebucheinträge "
+"Wähle unten 'Freigeben', wenn du bereit bist, alle neuen Tagebucheinträge "
 "deinem*deiner Berater*in freizugeben."
 
 #: mood_diary/templates/diaries/mood_diary_entries_list.html:54
 msgid "Release"
 msgstr "Freigeben"
 
-#: mood_diary/templates/diaries/mood_diary_entry_create.html:6
+#: mood_diary/templates/diaries/mood_diary_entry_create.html:10
 msgid "Create Mood Diary Entry"
 msgstr "Tagebucheintrag erstellen"
 
-#: mood_diary/templates/diaries/mood_diary_entry_create.html:14
+#: mood_diary/templates/diaries/mood_diary_entry_create.html:18
 msgid "Save"
 msgstr "Speichern"
 
@@ -308,7 +309,7 @@ msgstr "Diesen Eintrag löschen?"
 
 #: mood_diary/templates/diaries/mood_diary_entry_get.html:75
 msgid "Select 'Delete' below if you are ready to delete this entry."
-msgstr "Wähle 'Löschen' unten, wenn du diesen Eintrag löschen möchtest."
+msgstr "Wähle unten 'Löschen', wenn du diesen Eintrag löschen möchtest."
 
 #: mood_diary/templates/diaries/mood_diary_entry_release.html:5
 msgid "Release Mood Diary Entries"
@@ -326,11 +327,11 @@ msgstr "Einträge freigeben"
 msgid "Mood Diary Entries released."
 msgstr "Tagebucheinträge freigegeben."
 
-#: mood_diary/templates/diaries/mood_diary_entry_update.html:6
+#: mood_diary/templates/diaries/mood_diary_entry_update.html:10
 msgid "Update Mood Diary Entry"
 msgstr "Tagebucheintrag aktualisieren"
 
-#: mood_diary/templates/diaries/mood_diary_entry_update.html:14
+#: mood_diary/templates/diaries/mood_diary_entry_update.html:18
 msgid "Update"
 msgstr "Aktualisieren"
 
@@ -402,6 +403,11 @@ msgstr ""
 msgid "No rules found."
 msgstr "Keine Regeln gefunden."
 
+#: mood_diary/templates/users/email_update.html:6
+#: mood_diary/templates/users/email_update.html:14
+msgid "Update Email"
+msgstr "Email ändern"
+
 #: mood_diary/templates/users/login.html:15
 msgid "Mood Diary - Login"
 msgstr "Mood Diary - Anmeldung"
@@ -424,9 +430,41 @@ msgstr "Anmelden"
 
 #: mood_diary/templates/users/password_change.html:6
 #: mood_diary/templates/users/password_change.html:14
+#: mood_diary/templates/users/profile.html:9
 msgid "Change Password"
 msgstr "Passwort ändern"
 
 #: mood_diary/templates/users/password_change_done.html:5
 msgid "Your password was changed."
 msgstr "Dein Passwort wurde geändert."
+
+#: mood_diary/templates/users/profile.html:5
+#, fuzzy
+#| msgid "Profile"
+msgid "Profile Settings"
+msgstr "Profileinstellungen"
+
+#: mood_diary/templates/users/profile.html:14
+msgid "Change Email"
+msgstr "Email ändern"
+
+#: mood_diary/users/forms.py:28
+msgid "Enter Old Password..."
+msgstr "Altes Passwort eingeben..."
+
+#: mood_diary/users/forms.py:31
+msgid "Enter New Password..."
+msgstr "Neues Passwort eingeben..."
+
+#: mood_diary/users/forms.py:34
+msgid "Confirm New Password..."
+msgstr "Neues Passwort bestätigen..."
+
+#: mood_diary/templates/users/password_reset.html:6
+#: mood_diary/templates/users/password_reset_confirm.html:9
+msgid "Password Reset"
+msgstr "Passwort zurücksetzen"
+
+#: mood_diary/templates/users/login.html:76
+msgid "Forgot Password?"
+msgstr "Passwort vergessen?"

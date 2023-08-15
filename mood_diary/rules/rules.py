@@ -4,6 +4,7 @@ from functools import cached_property
 
 from diaries.models import Activity, ActivityCategory, Mood, MoodDiary, MoodDiaryEntry
 from django.db import models
+from django.db.models import Count
 from django.utils import timezone
 from notifications.models import Notification
 from rules.models import Rule, RuleTriggeredLog
@@ -280,10 +281,9 @@ class FourteenDaysMoodMaximumRule(FourteenDaysMoodAverageRule):
         return max_mood_value < 1
 
 
-# ToDo(ME-13.08.23): Wenn innerhalb der letzten drei Tage jeweils weniger als 3 Mahlzeiten
 class UnsteadyFoodIntakeRule(BaseRule):
     """
-    Rule checking if the client has eaten less than 3 meals per day.
+    Rule checking if the client has eaten less than 3 meals per day each for the last 3 days.
     """
 
     rule_title = "Unsteady food intake"
@@ -292,19 +292,22 @@ class UnsteadyFoodIntakeRule(BaseRule):
         return not RuleTriggeredLog.objects.filter(
             rule=self.rule,
             client_id=self.client_id,
-            requested_at__gte=self.requested_at.date(),
+            requested_at__gte=self.requested_at.date() - timedelta(days=2),
         ).exists()
 
     def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
         return MoodDiary.objects.get(client_id=self.client_id).entries.filter(
-            date=self.requested_at.date(),
+            date__gte=self.requested_at.date() - timedelta(days=2),
         )
 
     def evaluate_preconditions(self) -> bool:
-        relevant_entries = self.get_mood_diary_entries().filter(
-            activity__value=Activity.food_intake_value
+        relevant_entries_per_day = (
+            self.get_mood_diary_entries()
+            .filter(activity__value=Activity.food_intake_value)
+            .values("date")
+            .annotate(count_meals=Count("id"))
         )
-        return relevant_entries.count() < 3
+        return all(entry["count_meals"] < 3 for entry in relevant_entries_per_day)
 
 
 class PositiveMoodChangeBetweenActivitiesRule(BaseRule):

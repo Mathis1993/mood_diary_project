@@ -498,6 +498,18 @@ def test_unsteady_food_intake_rule(freezer):
     timestamp = timezone.now()
     rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
     assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    freezer.move_to("2023-10-02")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    freezer.move_to("2023-10-03")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is True
     assert not Notification.objects.exists()
     assert not RuleTriggeredLog.objects.exists()
@@ -505,6 +517,37 @@ def test_unsteady_food_intake_rule(freezer):
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
     assert rule.triggering_allowed() is False
+
+    freezer.move_to("2023-10-04")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+
+    freezer.move_to("2023-10-05")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-05",
+        activity__value=Activity.food_intake_value,
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-05",
+        activity__value=Activity.food_intake_value,
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-05",
+        activity__value=Activity.food_intake_value,
+    )
+
+    freezer.move_to("2023-10-06")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
 
 
 @pytest.mark.django_db
