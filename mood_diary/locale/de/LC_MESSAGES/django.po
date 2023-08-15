@@ -459,3 +459,12 @@ msgstr "Neues Passwort eingeben..."
 #: mood_diary/users/forms.py:34
 msgid "Confirm New Password..."
 msgstr "Neues Passwort bestätigen..."
+
+#: mood_diary/templates/users/password_reset.html:6
+#: mood_diary/templates/users/password_reset_confirm.html:9
+msgid "Password Reset"
+msgstr "Passwort zurücksetzen"
+
+#: mood_diary/templates/users/login.html:76
+msgid "Forgot Password?"
+msgstr "Passwort vergessen?"
