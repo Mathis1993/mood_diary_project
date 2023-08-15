@@ -70,6 +70,11 @@
                                         {% endif %}
                                         <input type="submit" value="{% translate 'Login' %}"
                                                class="btn btn-primary btn-user btn-block">
+                                        <hr> <!-- This adds a horizontal line for separation -->
+                                        <div class="text-center">
+                                            <a class="small"
+                                               href="{% url 'users:reset_password' %}">{% translate "Forgot Password?" %}</a>
+                                        </div>
                                         <input type="hidden" name="next" value="{{ next }}">
                                     </form>
                                 </div>
