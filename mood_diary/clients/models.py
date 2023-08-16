@@ -23,10 +23,10 @@ class Client(TrackCreationAndUpdates):
         """
         Validate user roles.
         """
-        if not self.user.role == User.Role.CLIENT:
+        if not self.user.is_client():
             raise IntegrityError("The client user must have the client role")
 
-        if not self.counselor.role == User.Role.COUNSELOR:
+        if not self.counselor.is_counselor():
             raise IntegrityError("The counselor user must have the counselor role")
 
         super().save(*args, **kwargs)

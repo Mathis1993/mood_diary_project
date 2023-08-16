@@ -17,9 +17,7 @@ class SetBaseTemplateBasedOnUserRoleMixin:
         context = super().get_context_data(**kwargs)
 
         base_template = (
-            "base_client_role.html"
-            if self.request.user.role == User.Role.CLIENT
-            else "base_counselor_role.html"
+            "base_client_role.html" if self.request.user.is_client() else "base_counselor_role.html"
         )
         context["base_template"] = base_template
 
@@ -32,13 +30,13 @@ def index(request: HttpRequest) -> HttpResponse:
     if not (user.first_login_completed or user.is_superuser):
         return redirect("users:change_password")
 
-    if user.role == User.Role.ADMIN:
+    if user.is_admin():
         return redirect("admin:index")
 
-    if user.role == User.Role.COUNSELOR:
+    if user.is_counselor():
         return redirect("clients:list_clients")
 
-    if user.role == User.Role.CLIENT:
+    if user.is_client():
         return redirect("dashboards:dashboard_client")
 
 
@@ -68,9 +66,7 @@ class ProfilePageView(LoginRequiredMixin, View):
 
     def get(self, request):
         base_template = (
-            "base_client_role.html"
-            if request.user.role == User.Role.CLIENT
-            else "base_counselor_role.html"
+            "base_client_role.html" if request.user.is_client() else "base_counselor_role.html"
         )
 
         context = {"base_template": base_template}

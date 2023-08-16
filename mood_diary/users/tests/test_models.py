@@ -27,7 +27,7 @@ def test_create_superuser():
 
     assert user.email == email
     assert user.check_password(password)
-    assert user.role == User.Role.ADMIN
+    assert user.is_admin()
     assert user.is_staff is True
     assert user.is_superuser is True
     assert user.first_login_completed is True
@@ -100,9 +100,11 @@ def test_user_model_authentication():
 
 @pytest.mark.django_db
 def test_user_model_authorization_checks():
+    admin = UserFactory.create(role=User.Role.ADMIN)
     counselor = UserFactory.create(role=User.Role.COUNSELOR)
     client_user = UserFactory.create(role=User.Role.CLIENT)
 
+    assert admin.is_admin()
     assert counselor.is_counselor()
     assert client_user.is_client()
     assert not counselor.is_client()
