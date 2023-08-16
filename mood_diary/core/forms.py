@@ -3,7 +3,29 @@ from itertools import groupby
 from operator import attrgetter
 
 import django.db.models
+from django import forms
 from django.forms.models import ModelChoiceField, ModelChoiceIterator
+
+
+class FormWithUIClassMixin:
+    """
+    Mixin for forms that adds the class "form-control" to all fields.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        [
+            self.fields[field].widget.attrs.update({"class": "form-control"})
+            for field in self.fields.keys()
+        ]
+
+
+class BaseForm(FormWithUIClassMixin, forms.Form):
+    pass
+
+
+class BaseModelForm(FormWithUIClassMixin, forms.ModelForm):
+    pass
 
 
 # https://simpleisbetterthancomplex.com/tutorial/2019/01/02/how-to-implement-grouped-model-choice-field.html

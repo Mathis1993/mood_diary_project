@@ -5,10 +5,9 @@ from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import UpdateView
-from users.forms import UserEmailForm
+from users.forms import CustomPasswordChangeForm, UserEmailForm
 
 User = get_user_model()
 
@@ -18,9 +17,7 @@ class SetBaseTemplateBasedOnUserRoleMixin:
         context = super().get_context_data(**kwargs)
 
         base_template = (
-            "base_client_role.html"
-            if self.request.user.role == User.Role.CLIENT
-            else "base_counselor_role.html"
+            "base_client_role.html" if self.request.user.is_client() else "base_counselor_role.html"
         )
         context["base_template"] = base_template
 
@@ -33,13 +30,13 @@ def index(request: HttpRequest) -> HttpResponse:
     if not (user.first_login_completed or user.is_superuser):
         return redirect("users:change_password")
 
-    if user.role == User.Role.ADMIN:
+    if user.is_admin():
         return redirect("admin:index")
 
-    if user.role == User.Role.COUNSELOR:
+    if user.is_counselor():
         return redirect("clients:list_clients")
 
-    if user.role == User.Role.CLIENT:
+    if user.is_client():
         return redirect("dashboards:dashboard_client")
 
 
@@ -50,6 +47,7 @@ class CustomLoginView(LoginView):
 class CustomPasswordChangeView(
     LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, PasswordChangeView
 ):
+    form_class = CustomPasswordChangeForm
     template_name = "users/password_change.html"
     success_url = reverse_lazy("users:index")
 
@@ -62,37 +60,13 @@ class CustomPasswordChangeView(
 
         return response
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["old_password"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "placeholder": _("Enter Old Password..."),
-            }
-        )
-        form.fields["new_password1"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "placeholder": _("Enter New Password..."),
-            }
-        )
-        form.fields["new_password2"].widget.attrs.update(
-            {
-                "class": "form-control form-control-user",
-                "placeholder": _("Confirm New Password..."),
-            }
-        )
-        return form
-
 
 class ProfilePageView(LoginRequiredMixin, View):
     template_name = "users/profile.html"
 
     def get(self, request):
         base_template = (
-            "base_client_role.html"
-            if request.user.role == User.Role.CLIENT
-            else "base_counselor_role.html"
+            "base_client_role.html" if request.user.is_client() else "base_counselor_role.html"
         )
 
         context = {"base_template": base_template}

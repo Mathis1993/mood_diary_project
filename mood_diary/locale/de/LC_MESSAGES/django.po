@@ -65,10 +65,9 @@ msgid "Additional info"
 msgstr "Zusätzliche Informationen"
 
 #: mood_diary/diaries/forms.py:65
-#, fuzzy
 #| msgid "Enter any additional info here"
 msgid "Enter any additional info here..."
-msgstr "Gib hier zusätzliche Informationen ein"
+msgstr "Gib hier zusätzliche Informationen ein..."
 
 #: mood_diary/diaries/forms.py:88
 msgid "Start date"
@@ -439,8 +438,6 @@ msgid "Your password was changed."
 msgstr "Dein Passwort wurde geändert."
 
 #: mood_diary/templates/users/profile.html:5
-#, fuzzy
-#| msgid "Profile"
 msgid "Profile Settings"
 msgstr "Profileinstellungen"
 

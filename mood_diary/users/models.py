@@ -48,6 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
     # `USERNAME_FIELD` property during authentication
     objects = UserManager()
 
+    def is_admin(self):
+        """Used as authorization check."""
+        return self.role == User.Role.ADMIN
+
     def is_client(self):
         """Used as authorization check."""
         return self.role == User.Role.CLIENT

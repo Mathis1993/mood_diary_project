@@ -76,7 +76,7 @@ class UserAdmin(BaseUserAdmin):
         # Do not execute any further logic on updating a user
         # or if the user is not a counselor.
         user = form.instance
-        if change or user.role != User.Role.COUNSELOR:
+        if change or not user.is_counselor():
             return super().save_form(request, form, change)
 
         password = get_random_string(length=15)
