@@ -1,5 +1,3 @@
-from datetime import date
-
 from core.forms import BaseModelForm
 from diaries.models import Mood, MoodDiaryEntry
 from django import forms
@@ -37,13 +35,13 @@ class MoodDiaryEntryForm(BaseModelForm):
         ]
         widgets = {
             "date": forms.DateInput(
-                attrs={"placeholder": _("Select a date"), "type": "date"},
+                attrs={"placeholder": _("Select a date"), "type": "date"}, format="%Y-%m-%d"
             ),
             "start_time": forms.TimeInput(
-                attrs={"placeholder": _("Select a start time"), "type": "time"},
+                attrs={"placeholder": _("Select a start time"), "type": "time"}, format="%H:%M"
             ),
             "end_time": forms.TimeInput(
-                attrs={"placeholder": _("Select an end time"), "type": "time"},
+                attrs={"placeholder": _("Select an end time"), "type": "time"}, format="%H:%M"
             ),
             "activity": ActivityWidget(),
         }
@@ -83,11 +81,9 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["date"].label = _("Start date")
-        # self.fields["end_date"].initial = timezone.now().date()
-        # self.fields["start_time"].initial = timezone.now()
-        # self.fields["end_time"].initial = timezone.now()
+        self.fields["date"].initial = timezone.now().date().strftime("%Y-%m-%d")
+        self.fields["end_date"].initial = timezone.now().date().strftime("%Y-%m-%d")
 
-        # ToDo(ME-13.08.23): Handle initial value for date fields
         now = timezone.now().time()
         self.fields["start_time"].initial = now.strftime("%H:%M")
         self.fields["end_time"].initial = now.strftime("%H:%M")
@@ -95,11 +91,10 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
         self.order_fields(["date", "end_date"])
 
     end_date = forms.DateField(
-        initial=date.today,
         required=False,
         label=_("End date"),
         widget=forms.DateInput(
-            attrs={"placeholder": _("Select an end date"), "type": "date"},
+            attrs={"placeholder": _("Select an end date"), "type": "date"}, format="%Y-%m-%d"
         ),
     )
 
