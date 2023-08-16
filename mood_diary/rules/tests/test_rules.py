@@ -166,9 +166,13 @@ def test_relaxing_activity_mood_rule():
 
     rule_db.subscribed_clients.remove(client)
     assert rule.client_subscribed() is False
-    rule.evaluate()  # no effect
+    rule.evaluate()  # No effect
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+
+    rule_db.subscribed_clients.add(client)
+    assert rule.client_subscribed() is True
+    assert rule.triggering_allowed() is False  # Already triggered today
 
 
 @pytest.mark.django_db

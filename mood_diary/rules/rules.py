@@ -125,9 +125,17 @@ class RelaxingActivityRule(ActivityWithPeakMoodRule):
     """
     Rule checking if the last activity the client did before the rule evaluation was
     requested was a relaxing activity.
+    Triggered maximally once per day.
     """
 
     rule_title = "Relaxing activity"
+
+    def triggering_allowed(self) -> bool:
+        return not RuleTriggeredLog.objects.filter(
+            rule=self.rule,
+            client_id=self.client_id,
+            requested_at__gte=self.requested_at.date(),
+        ).exists()
 
     def evaluate_preconditions(self) -> bool:
         mood_diary_entries = self.get_mood_diary_entries()
