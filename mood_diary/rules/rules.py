@@ -141,6 +141,8 @@ class RelaxingActivityRule(ActivityWithPeakMoodRule):
 class PhysicalActivityPerWeekRule(BaseRule):
     """
     Rule checking if the client has done at least 150 minutes of physical activity this week.
+    As per the WHO recommendations, only at least moderate physical activity should be counted,
+    therefore restrict to sports activities.
     """
 
     rule_title = "Physical activity per week"
@@ -159,7 +161,7 @@ class PhysicalActivityPerWeekRule(BaseRule):
 
     def evaluate_preconditions(self) -> bool:
         relevant_entries = self.get_mood_diary_entries().filter(
-            activity__category__value=ActivityCategory.physical_activity_value
+            activity__value=Activity.sports_value
         )
         if not relevant_entries.exists():
             return False
@@ -406,6 +408,10 @@ class DailyAverageMoodImprovingRule(BaseRule):
 class PhysicalActivityPerWeekIncreasingRule(BaseRule):
     """
     Rule checking if the client has a higher physical activity than the week before.
+    As per the WHO recommendations, only at least moderate physical activity should be counted,
+    therefore restrict to sports activities.
+    If the current week's activity is higher than 300 minutes, the rule is not triggered,
+    as this is the maximum of the WHO recommendation.
     """
 
     rule_title = "Physical activity per week increasing"
@@ -428,7 +434,7 @@ class PhysicalActivityPerWeekIncreasingRule(BaseRule):
 
     def evaluate_preconditions(self) -> bool:
         relevant_entries = self.get_mood_diary_entries().filter(
-            activity__category__value=ActivityCategory.physical_activity_value
+            activity__value=Activity.sports_value
         )
         if not relevant_entries.exists():
             return False
@@ -450,7 +456,7 @@ class PhysicalActivityPerWeekIncreasingRule(BaseRule):
         )
         if duration_sum_last_week is None or duration_sum_current_week is None:
             return False
-        return duration_sum_current_week > duration_sum_last_week
+        return duration_sum_last_week.seconds < duration_sum_current_week.seconds <= 300 * 60
 
 
 TIME_BASED_RULES = [

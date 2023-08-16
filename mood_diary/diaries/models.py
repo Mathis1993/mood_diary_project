@@ -109,6 +109,7 @@ class Activity(NormalizedStringValueModel):
         return self.value
 
     food_intake_value = "Full meal"
+    sports_value = "Sports"
 
 
 class ActivityCategory(NormalizedStringValueModel):
