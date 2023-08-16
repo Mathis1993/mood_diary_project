@@ -166,9 +166,13 @@ def test_relaxing_activity_mood_rule():
 
     rule_db.subscribed_clients.remove(client)
     assert rule.client_subscribed() is False
-    rule.evaluate()  # no effect
+    rule.evaluate()  # No effect
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+
+    rule_db.subscribed_clients.add(client)
+    assert rule.client_subscribed() is True
+    assert rule.triggering_allowed() is False  # Already triggered today
 
 
 @pytest.mark.django_db
@@ -181,7 +185,7 @@ def test_physical_activity_per_week_rule(freezer):
     # Sunday (does not count)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         date="2023-09-24",
         start_time=datetime(2023, 9, 24, 10, 0),
         end_time=datetime(2023, 9, 24, 13, 0),
@@ -189,7 +193,7 @@ def test_physical_activity_per_week_rule(freezer):
     # Monday (does count)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         date="2023-09-25",
         start_time=datetime(2023, 9, 25, 10, 0),
         end_time=datetime(2023, 9, 25, 11, 0),
@@ -202,7 +206,7 @@ def test_physical_activity_per_week_rule(freezer):
     # Tuesday (does count)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         date="2023-09-26",
         start_time=datetime(2023, 9, 26, 10, 0),
         end_time=datetime(2023, 9, 26, 12, 0),
@@ -810,7 +814,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-26",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 25, 12, 0),
         end_time=datetime(2023, 9, 25, 13, 0),
@@ -818,7 +822,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-27",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 15, 0),
         end_time=datetime(2023, 9, 30, 16, 0),
@@ -838,7 +842,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-06",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 12, 0),
         end_time=datetime(2023, 9, 30, 13, 0),
@@ -846,7 +850,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-07",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 15, 0),
         end_time=datetime(2023, 9, 30, 16, 0),
@@ -858,7 +862,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-07",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 17, 0),
         end_time=datetime(2023, 9, 30, 18, 0),
@@ -871,6 +875,29 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
     assert rule.triggering_allowed() is False
+
+    # Next week's sunday again
+    freezer.move_to("2023-10-15")
+    timestamp = timezone.now()
+    rule = PhysicalActivityPerWeekIncreasingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 3
+    assert rule.evaluate_preconditions() is False
+
+    # Increase next week's amount again (more than 300 minutes)
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-14",
+        activity__value=Activity.sports_value,
+        mood__value=1,
+        start_time=datetime(2023, 9, 30, 10, 0),
+        end_time=datetime(2023, 9, 30, 18, 0),
+    )
+
+    # Evaluation is False as the maximum amount of minutes is 300
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 4
+    assert rule.evaluate_preconditions() is False
 
 
 @pytest.mark.django_db
