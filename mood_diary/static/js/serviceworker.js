@@ -48,6 +48,14 @@ self.addEventListener('activate', event => {
             );
         })
     );
+    // Update the push subscription upon service worker activation
+    if(Notification.permission === 'granted') {
+        // Send message to main thread to update the push subscription
+        self.clients.matchAll().then(clients => {
+            console.log('Sending update message')
+            clients.forEach(client => client.postMessage('update-push-subscription'));
+        });
+    }
 });
 
 // Serve from Cache
@@ -63,38 +71,40 @@ self.addEventListener("fetch", event => {
     )
 });
 
-
-// ToDo: This is not yet customized
+// Handle incoming push events
 function handlePushEvent(event) {
-  const DEFAULT_TAG = 'web-push-book-example-site'
-  return Promise.resolve()
-  .then(() => {
-    return event.data.json();
-  })
-  .then((data) => {
-    const title = data.notification.title;
-    const options = data.notification;
-    if (!options.tag) {
-      options.tag = DEFAULT_TAG;
-    }
-    return registration.showNotification(title, options);
-  })
-  .catch((err) => {
-    console.error('Push event caused an error: ', err);
-
-    const title = 'Message Received';
-    const options = {
-      body: event.data.text(),
-      tag: DEFAULT_TAG
-    };
-    return registration.showNotification(title, options);
-  });
+    console.log(event);
+    return Promise.resolve()
+        .then(() => {
+            return event.data.json();
+        })
+        .then((data) => {
+            console.log(data);
+            const title = data.title;
+            const text = data.text;
+            const url = data.url;
+            const notificationOptions = {
+                body: text,
+                icon: 'static/images/icons/android-chrome-512x512.png',
+                badge: 'static/images/icons/android-chrome-192x192.png',
+                data: {
+                    url: url
+                }
+            };
+            return registration.showNotification(title, notificationOptions);
+        })
+        .catch((err) => {
+            console.error('Push event caused an error: ', err);
+        });
 }
 
-self.addEventListener('push', function(event) {
-  event.waitUntil(handlePushEvent(event));
+self.addEventListener('push', function (event) {
+    event.waitUntil(handlePushEvent(event));
 });
 
-const doSomething = () => {
-  return Promise.resolve();
-};
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(
+        clients.openWindow(event.notification.data.url)
+    );
+});

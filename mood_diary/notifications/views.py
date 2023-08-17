@@ -37,6 +37,37 @@ class NotificationDetailView(
         return super().get(request, *args, **kwargs)
 
 
+# ToDo(ME-16.08.23): Test
+# ToDo(ME-16.08.23): Way to enable/disable push notifications
+#  (add "notifications" entry to settings dropdown?)
+class UpdateNotificationsPermissionView(AuthenticatedClientRoleMixin, View):
+    template_name = "dashboards/dashboard_client.html"
+
+    def post(self, request):
+        data = json.loads(request.body)
+        permission = data.get("permission")
+        client = request.user.client
+        if permission == "granted":
+            client.push_notifications_granted = True
+            client.save()
+        else:
+            client.push_notifications_granted = False
+            client.save()
+        return HttpResponse(status=http.HTTPStatus.OK)
+
+
+class SaveNotificationsSubscriptionView(AuthenticatedClientRoleMixin, View):
+    template_name = "dashboards/dashboard_client.html"
+
+    def post(self, request):
+        data = json.loads(request.body)
+        subscription = data.get("subscription")
+        client = request.user.client
+        client.push_notifications_subscription = subscription
+        client.save()
+        return HttpResponse(status=http.HTTPStatus.OK)
+
+
 class PushSubscriptionCreateView(AuthenticatedClientRoleMixin, View):
     def post(self, request):
         subscription = json.loads(request.body)

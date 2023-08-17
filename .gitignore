@@ -11,3 +11,6 @@ __pycache__/
 
 # Celery Beat Scheduler
 celerybeat-schedule
+
+# Ngrok
+ngrok

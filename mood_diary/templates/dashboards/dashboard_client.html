@@ -18,10 +18,12 @@
                 <!-- ToDo: Format better and formulate more -->
                 {% translate "May the Mood Diary send push notifications?" %}
             </p>
+            <p>{% translate "Clicking the button below will prompt your browser to ask you if the Mood Diary may send you push notifications." %}</p>
+            <p>{% translate "If you have deactivated notfication support for your browser in the settings of your device, instead of asking you, the browser will automatically default to denying notifications." %}</p>
             <p>
                 {% csrf_token %}
-                <!-- Allow Button-->
-                <button href="{% url 'users:change_password' %}"
+                <!-- Decide Button-->
+                <button href="#"
                         id="enableNotifications"
                         class="btn mb-2 btn-primary">{% translate "Decide About Notifications" %}</button>
             </p>
@@ -30,8 +32,8 @@
                     requestNotificationPermission();
                 });
             </script>
-            <!-- ToDo: Update field on client model -->
         </div>
+        <hr>
 
     {% endif %}
 
@@ -96,9 +98,6 @@
 
 {% block scripts %}
     {% load static %}
-    <!-- Asking for Notification Permission -->
-    <script>const VAPID_PUBLIC_KEY = "{{ vapid_public_key }}";</script>
-    <script src="{% static 'js/notifications.js' %}"></script>
 
     {{ mood_scores_dates|json_script:"chart-labels" }}
     {{ mood_scores_values|json_script:"chart-data" }}

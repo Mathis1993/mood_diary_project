@@ -81,3 +81,12 @@
   width: 100%;
   margin-top: 0.5em;
 }
+
+/* Notification on/off toggle */
+.custom-switch .custom-control-label::before {
+    background-color: #e9ecef;
+}
+
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #4e73df;
+}

@@ -79,6 +79,7 @@ def test_concrete_rule():
     rule_db.subscribed_clients.add(client)
     assert rule.client_subscribed() is True
     rule.evaluate()  # creates notification and log
+    assert rule.notification_id is not None
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
     rule_client_obj = RuleClient.objects.get(client=client, rule=rule_db)

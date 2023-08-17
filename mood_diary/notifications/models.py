@@ -1,4 +1,5 @@
 import http
+import json
 import logging
 
 from core.models import TrackCreationAndUpdates
@@ -39,20 +40,19 @@ class PushSubscription(TrackCreationAndUpdates):
 
     logger = logging.getLogger("notifications.models.PushSubscription")
 
-    def send_push_notification(self, message):
-        self.logger.info(f"Sending push notification to {self.client.identifier}")
-        # pusher = WebPusher(self.subscription)
+    # ToDo(ME-17.08.23): Test
+    def send_push_notification(self, message: dict):
+        self.logger.info(f"Trying to send push notification to {self.client.identifier}")
         try:
-            # pusher.send(message, ttl=settings.WEB_PUSH_TTL)
             webpush(
                 subscription_info=self.subscription,
-                data=message,
+                data=json.dumps(message),
                 vapid_private_key=settings.VAPID_PRIVATE_KEY,
                 vapid_claims={
                     "sub": "mailto:info@mood-diary.de",
                 },
             )
-            self.logger.info(f"Sending push notification to {self.client.identifier}")
+            self.logger.info(f"Successfully sent push notification to {self.client.identifier}")
         except WebPushException as e:
             self.logger.error(f"Error sending push notification to {self.client.identifier}")
             self.logger.error(e)
@@ -60,6 +60,4 @@ class PushSubscription(TrackCreationAndUpdates):
             if e.response.status_code == http.HTTPStatus.GONE:
                 self.delete()
             else:
-                # ToDo(ME-17.08.23): Log error, sth else here?
                 raise e
-        self.logger.info(f"Push notification sent to {self.client.identifier}")

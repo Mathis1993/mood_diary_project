@@ -1,6 +1,7 @@
 import http
 
 import pytest
+from clients.tests.factories import ClientFactory
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -136,3 +137,19 @@ def test_email_update_view(client):
     assert response.url == reverse("users:index")
     user.refresh_from_db()
     assert user.email == "new_email@example.com"
+
+
+@pytest.mark.django_db
+def test_toggle_push_notifications_view(client):
+    client_user = ClientFactory.create(push_notifications_granted=False)
+    client.force_login(client_user.user)
+    response = client.post(reverse("users:toggle_push_notifications"))
+    assert response.status_code == 302
+    assert response.url == reverse("users:profile")
+    client_user.refresh_from_db()
+    assert client_user.push_notifications_granted is True
+    response = client.post(reverse("users:toggle_push_notifications"))
+    assert response.status_code == 302
+    assert response.url == reverse("users:profile")
+    client_user.refresh_from_db()
+    assert client_user.push_notifications_granted is False
