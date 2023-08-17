@@ -67,9 +67,10 @@ class ProfilePageView(LoginRequiredMixin, View):
 
     def get(self, request):
         base_template = (
-            "base_client_role.html" if request.user.is_client() else "base_counselor_role.html"
+            "base_client_role.html"
+            if (is_client := request.user.is_client())
+            else "base_counselor_role.html"
         )
-        is_client = request.user.is_client()
         notifications_enabled = (
             request.user.client.push_notifications_granted if is_client else None
         )
