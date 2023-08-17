@@ -39,8 +39,7 @@ class NotificationDetailView(
 
 class PushSubscriptionCreateView(AuthenticatedClientRoleMixin, View):
     def post(self, request):
-        data = json.loads(request.body)
-        subscription = data.get("subscription")
+        subscription = json.loads(request.body)
         client = request.user.client
         _, created = client.push_subscriptions.get_or_create(
             subscription__endpoint=subscription["endpoint"], defaults={"subscription": subscription}

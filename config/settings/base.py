@@ -207,6 +207,7 @@ VAPID_PRIVATE_KEY = os.getenv("VAPID_PRIVATE_KEY")
 WEB_PUSH_TTL = 60 * 60 * 24 * 2  # Two days
 
 # PWA
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, "static/js/serviceworker.js")
 PWA_APP_NAME = "Mood Diary"
 PWA_APP_DESCRIPTION = "Mood Diary"
 PWA_APP_THEME_COLOR = "#0A0302"

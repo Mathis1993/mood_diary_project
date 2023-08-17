@@ -25,10 +25,13 @@ function requestNotificationPermission() {
             }).then(response => {
                 if (response.ok) {
                     // Refresh the page to update the UI
-                    location.reload();
+                    // ToDo: Change back
+                    // location.reload();
                 }
             });
         });
+    } else {
+        console.log('This browser does not support notifications.');
     }
 }
 
@@ -40,12 +43,13 @@ function subscribeUserToPush() {
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
         }).then(function (subscription) {
-            // console.log(
-            //     'Received PushSubscription: ',
-            //     JSON.stringify(subscription),
-            // );
+            // ToDo: Remove later
+            console.log(
+                'Received PushSubscription: ',
+                JSON.stringify(subscription),
+            );
             // Send the subscription object to the server
-            fetch('/dashboards/client/save_notifications_subscription/', {
+            fetch('/notifications/push_subscriptions/create/', {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken'),

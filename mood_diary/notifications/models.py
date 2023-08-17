@@ -1,9 +1,10 @@
 import http
+import logging
 
 from core.models import TrackCreationAndUpdates
 from django.conf import settings
 from django.db import models
-from pywebpush import WebPusher, WebPushException
+from pywebpush import WebPushException, webpush
 
 
 class Notification(TrackCreationAndUpdates):
@@ -36,14 +37,29 @@ class PushSubscription(TrackCreationAndUpdates):
     )
     subscription = models.JSONField()
 
+    logger = logging.getLogger("notifications.models.PushSubscription")
+
     def send_push_notification(self, message):
-        pusher = WebPusher(self.subscription)
+        self.logger.info(f"Sending push notification to {self.client.identifier}")
+        # pusher = WebPusher(self.subscription)
         try:
-            pusher.send(message, ttl=settings.WEB_PUSH_TTL)
+            # pusher.send(message, ttl=settings.WEB_PUSH_TTL)
+            webpush(
+                subscription_info=self.subscription,
+                data=message,
+                vapid_private_key=settings.VAPID_PRIVATE_KEY,
+                vapid_claims={
+                    "sub": "mailto:info@mood-diary.de",
+                },
+            )
+            self.logger.info(f"Sending push notification to {self.client.identifier}")
         except WebPushException as e:
+            self.logger.error(f"Error sending push notification to {self.client.identifier}")
+            self.logger.error(e)
             # If the subscription is expired or no longer valid, delete it
             if e.response.status_code == http.HTTPStatus.GONE:
                 self.delete()
             else:
                 # ToDo(ME-17.08.23): Log error, sth else here?
                 raise e
+        self.logger.info(f"Push notification sent to {self.client.identifier}")

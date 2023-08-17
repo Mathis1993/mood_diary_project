@@ -56,7 +56,7 @@ def test_push_subscription_create_view(user, create_response):
             "auth": "Stn8bCwWxn7CLiR_2hLeDA",
         },
     }
-    data = {"subscription": subscription}
+    data = subscription
     data_json = json.dumps(data)
 
     response = create_response(
