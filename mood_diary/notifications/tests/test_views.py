@@ -59,13 +59,17 @@ def test_push_subscription_create_view(user, create_response):
     data = {"subscription": subscription}
     data_json = json.dumps(data)
 
-    response = create_response(user, url, method="POST", data=data_json)
+    response = create_response(
+        user, url, method="POST", data=data_json, content_type="application/json"
+    )
 
     assert response.status_code == http.HTTPStatus.CREATED
     assert user.client.push_subscriptions.count() == 1
     assert user.client.push_subscriptions.first().subscription == subscription
 
-    response = create_response(user, url, method="POST", data=data_json)
+    response = create_response(
+        user, url, method="POST", data=data_json, content_type="application/json"
+    )
 
     assert response.status_code == http.HTTPStatus.OK
     assert user.client.push_subscriptions.count() == 1
