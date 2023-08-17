@@ -56,18 +56,6 @@ class UpdateNotificationsPermissionView(AuthenticatedClientRoleMixin, View):
         return HttpResponse(status=http.HTTPStatus.OK)
 
 
-class SaveNotificationsSubscriptionView(AuthenticatedClientRoleMixin, View):
-    template_name = "dashboards/dashboard_client.html"
-
-    def post(self, request):
-        data = json.loads(request.body)
-        subscription = data.get("subscription")
-        client = request.user.client
-        client.push_notifications_subscription = subscription
-        client.save()
-        return HttpResponse(status=http.HTTPStatus.OK)
-
-
 class PushSubscriptionCreateView(AuthenticatedClientRoleMixin, View):
     def post(self, request):
         subscription = json.loads(request.body)
