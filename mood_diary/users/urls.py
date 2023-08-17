@@ -53,4 +53,9 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+    path(
+        "toggle_push_notifications/",
+        views.TogglePushNotificationsView.as_view(),
+        name="toggle_push_notifications",
+    ),
 ]

@@ -36,3 +36,6 @@ django-select2==8.1.2
 
 # CACHES
 django-redis==5.3.0
+
+# WEB PUSH
+pywebpush==1.14.0

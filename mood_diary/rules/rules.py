@@ -2,10 +2,13 @@ import logging
 from datetime import timedelta
 from functools import cached_property
 
+from clients.models import Client
 from diaries.models import Activity, ActivityCategory, Mood, MoodDiary, MoodDiaryEntry
 from django.db import models
 from django.db.models import Count
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from notifications.models import Notification
 from rules.models import Rule, RuleTriggeredLog
 from rules.utils import get_beginning_of_week, get_end_of_week
@@ -29,6 +32,7 @@ class BaseRule:
         self.client_id = client_id
         self.requested_at = requested_at
         self.logger = logging.getLogger("mood_diary.rules")
+        self.notification_id = None
 
     @property
     def rule_title(self) -> str:
@@ -79,7 +83,28 @@ class BaseRule:
 
     def create_notification(self):
         message = self.rule.conclusion_message
-        Notification.objects.create(client_id=self.client_id, message=message, rule_id=self.rule.id)
+        notification = Notification.objects.create(
+            client_id=self.client_id, message=message, rule_id=self.rule.id
+        )
+        self.notification_id = notification.id
+
+    # ToDo(ME-18.08.23): Test
+    def create_push_notifications(self):
+        client = Client.objects.get(id=self.client_id)
+        if not client.push_notifications_granted:
+            self.logger.info(
+                f"No push notifications sent as there is no permission "
+                f"({self.client_id}: {self.rule_title})"
+            )
+            return
+        self.logger.info(f"Sending push notifications ({self.client_id}: {self.rule_title})")
+        message = {
+            "title": _("Pattern Detected"),
+            "text": self.rule.title,
+            "url": reverse("notifications:get_notification", kwargs={"pk": self.notification_id}),
+        }
+        for subscription in client.push_subscriptions.all():
+            subscription.send_push_notification(message)
 
     def evaluate(self):
         if not self.client_subscribed():
@@ -93,6 +118,7 @@ class BaseRule:
         self.logger.info(f"Rule triggered for client {self.client_id}: {self.rule_title}")
         self.persist_rule_triggering()
         self.create_notification()
+        self.create_push_notifications()
 
 
 class ActivityWithPeakMoodRule(BaseRule):

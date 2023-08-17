@@ -1,3 +1,4 @@
+from core.views import AuthenticatedClientRoleMixin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -66,10 +67,18 @@ class ProfilePageView(LoginRequiredMixin, View):
 
     def get(self, request):
         base_template = (
-            "base_client_role.html" if request.user.is_client() else "base_counselor_role.html"
+            "base_client_role.html"
+            if (is_client := request.user.is_client())
+            else "base_counselor_role.html"
         )
-
-        context = {"base_template": base_template}
+        notifications_enabled = (
+            request.user.client.push_notifications_granted if is_client else None
+        )
+        context = {
+            "base_template": base_template,
+            "is_client": is_client,
+            "notifications_enabled": notifications_enabled,
+        }
 
         return render(request, self.template_name, context)
 
@@ -81,3 +90,14 @@ class EmailUpdateView(LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, U
 
     def get_success_url(self):
         return reverse_lazy("users:index")
+
+
+class TogglePushNotificationsView(AuthenticatedClientRoleMixin, View):
+    template_name = "users/profile.html"
+
+    def post(self, request):
+        client = request.user.client
+        client.push_notifications_granted = not client.push_notifications_granted
+        client.save()
+
+        return redirect("users:profile")

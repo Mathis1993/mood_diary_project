@@ -5,3 +5,4 @@ docker-compose.yml
 celerybeat-schedule
 .docker
 .pytest_cache
+ngrok
