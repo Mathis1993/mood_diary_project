@@ -5,6 +5,36 @@
 
     <!-- Content Row -->
 
+    <!-- Ask for Push Notifications Section -->
+    {% if ask_for_push_notifications_permission %}
+
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">{% translate "Push Notifications" %}</h1>
+        </div>
+
+        <!-- Content Row -->
+        <div class="col">
+            <p>
+                <!-- ToDo: Format better and formulate more -->
+                {% translate "May the Mood Diary send push notifications?" %}
+            </p>
+            <p>
+                {% csrf_token %}
+                <!-- Allow Button-->
+                <button href="{% url 'users:change_password' %}"
+                        id="enableNotifications"
+                        class="btn mb-2 btn-primary">{% translate "Decide About Notifications" %}</button>
+            </p>
+            <script>
+                document.getElementById('enableNotifications').addEventListener('click', function () {
+                    requestNotificationPermission();
+                });
+            </script>
+            <!-- ToDo: Update field on client model -->
+        </div>
+
+    {% endif %}
+
     <div class="row">
 
         <!-- Average Mood Chart -->
@@ -65,10 +95,14 @@
 {% endblock %}
 
 {% block scripts %}
+    {% load static %}
+    <!-- Asking for Notification Permission -->
+    <script>const VAPID_PUBLIC_KEY = "{{ vapid_public_key }}";</script>
+    <script src="{% static 'js/notifications.js' %}"></script>
+
     {{ mood_scores_dates|json_script:"chart-labels" }}
     {{ mood_scores_values|json_script:"chart-data" }}
     {{ mood_score_data_name|json_script:"chart-data-name" }}
-    {% load static %}
     <script src="{% static 'js/average_mood_chart.js' %}"></script>
 {% endblock %}
 ```

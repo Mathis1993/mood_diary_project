@@ -1,4 +1,9 @@
+import http
+import json
+
 from core.views import AuthenticatedClientRoleMixin
+from django.http import HttpResponse
+from django.views import View
 from django.views.generic import DetailView
 from el_pagination.views import AjaxListView
 from notifications.models import Notification
@@ -30,3 +35,16 @@ class NotificationDetailView(
         notification.viewed = True
         notification.save()
         return super().get(request, *args, **kwargs)
+
+
+class PushSubscriptionCreateView(AuthenticatedClientRoleMixin, View):
+    def post(self, request):
+        data = json.loads(request.body)
+        subscription = data.get("subscription")
+        client = request.user.client
+        _, created = client.push_subscriptions.get_or_create(
+            subscription__endpoint=subscription["endpoint"], defaults={"subscription": subscription}
+        )
+        if created:
+            return HttpResponse(status=http.HTTPStatus.CREATED)
+        return HttpResponse(status=http.HTTPStatus.OK)

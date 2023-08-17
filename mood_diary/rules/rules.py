@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta
 from functools import cached_property
 
+from clients.models import Client
 from diaries.models import Activity, ActivityCategory, Mood, MoodDiary, MoodDiaryEntry
 from django.db import models
 from django.db.models import Count
@@ -81,6 +82,19 @@ class BaseRule:
         message = self.rule.conclusion_message
         Notification.objects.create(client_id=self.client_id, message=message, rule_id=self.rule.id)
 
+    def create_push_notifications(self):
+        client = Client.objects.get(id=self.client_id)
+        if not client.push_notifications_granted:
+            self.logger.info(
+                f"No push notifications sent as there is no permission "
+                f"({self.client_id}: {self.rule_title})"
+            )
+            return
+        message = self.rule.conclusion_message
+        self.logger.info(f"Sending push notifications ({self.client_id}: {self.rule_title})")
+        for subscription in client.push_subscriptions.all():
+            subscription.send_push_notification(message)
+
     def evaluate(self):
         if not self.client_subscribed():
             return
@@ -93,6 +107,7 @@ class BaseRule:
         self.logger.info(f"Rule triggered for client {self.client_id}: {self.rule_title}")
         self.persist_rule_triggering()
         self.create_notification()
+        self.create_push_notifications()
 
 
 class ActivityWithPeakMoodRule(BaseRule):

@@ -18,6 +18,7 @@ class Client(TrackCreationAndUpdates):
         to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name="clients"
     )
     active = models.BooleanField(default=True)
+    push_notifications_granted = models.BooleanField(null=True, blank=True, default=None)
 
     def save(self, *args, **kwargs):
         """
@@ -36,3 +37,7 @@ class Client(TrackCreationAndUpdates):
 
     def get_newest_notifications(self):
         return self.notifications.filter(viewed=False).all()[:3]
+
+    # ToDo(ME-16.08.23): Test
+    def ask_for_push_notifications_permission(self):
+        return self.push_notifications_granted is None

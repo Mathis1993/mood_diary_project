@@ -14,4 +14,9 @@ urlpatterns = [
         views.NotificationListView.as_view(),
         name="get_all_notifications",
     ),
+    path(
+        "push_subscriptions/create/",
+        views.PushSubscriptionCreateView.as_view(),
+        name="create_push_subscription",
+    ),
 ]

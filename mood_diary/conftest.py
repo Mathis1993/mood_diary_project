@@ -5,9 +5,9 @@ from diaries.tests.factories import MoodDiaryEntryFactory
 
 @pytest.fixture
 def create_response(client):
-    def _create_response(user, url, method="GET", data=None):
+    def _create_response(user, url, method="GET", data=None, content_type="application/json"):
         client.force_login(user)
-        response = getattr(client, method.lower())(url, data)
+        response = getattr(client, method.lower())(url, data, content_type=content_type)
         return response
 
     return _create_response
