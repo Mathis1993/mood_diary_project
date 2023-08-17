@@ -91,7 +91,7 @@ def test_custom_password_change_view_valid_form_submission(client):
 
 @pytest.mark.django_db
 def test_profile_page_view_base_template_for_client(client):
-    user = UserFactory.create(role=User.Role.CLIENT)
+    user = ClientFactory.create().user
     client.force_login(user)
     response = client.get(reverse("users:profile"))
     assert response.status_code == 200
