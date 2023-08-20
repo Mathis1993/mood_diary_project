@@ -55,9 +55,9 @@ class MoodDiaryEntryForm(BaseModelForm):
         self.fields["mood"].label = _("Mood")
         self.fields["mood"].empty_label = None
         self.fields["mood"].initial = Mood.objects.get(value=0)
-        self.fields["mood_and_emotion_info"].label = _("Additional info")
+        self.fields["mood_and_emotion_info"].label = _("Details")
         self.fields["mood_and_emotion_info"].widget.attrs.update(
-            {"rows": 5, "placeholder": _("Enter any additional info here...")}
+            {"rows": 5, "placeholder": _("Enter additional details here...")}
         )
 
     def clean(self):
