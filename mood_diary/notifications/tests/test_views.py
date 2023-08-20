@@ -46,6 +46,32 @@ def test_notification_list_view(user, create_response):
 
 
 @pytest.mark.django_db
+def test_update_notifications_permission_view(user, create_response):
+    assert user.client.push_notifications_granted is None
+    url = reverse("notifications:update_notifications_permission")
+    data = {"permission": "granted"}
+    data_json = json.dumps(data)
+
+    response = create_response(
+        user, url, method="POST", data=data_json, content_type="application/json"
+    )
+
+    assert response.status_code == http.HTTPStatus.OK
+    user.client.refresh_from_db()
+    assert user.client.push_notifications_granted is True
+
+    data["permission"] = "denied"
+    data_json = json.dumps(data)
+    response = create_response(
+        user, url, method="POST", data=data_json, content_type="application/json"
+    )
+
+    assert response.status_code == http.HTTPStatus.OK
+    user.client.refresh_from_db()
+    assert user.client.push_notifications_granted is False
+
+
+@pytest.mark.django_db
 def test_push_subscription_create_view(user, create_response):
     url = reverse("notifications:create_push_subscription")
     subscription = {

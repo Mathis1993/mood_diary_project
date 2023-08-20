@@ -37,9 +37,6 @@ class NotificationDetailView(
         return super().get(request, *args, **kwargs)
 
 
-# ToDo(ME-16.08.23): Test
-# ToDo(ME-16.08.23): Way to enable/disable push notifications
-#  (add "notifications" entry to settings dropdown?)
 class UpdateNotificationsPermissionView(AuthenticatedClientRoleMixin, View):
     template_name = "dashboards/dashboard_client.html"
 

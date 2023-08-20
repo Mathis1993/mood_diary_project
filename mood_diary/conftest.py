@@ -18,7 +18,7 @@ def create_response(client):
 
 @pytest.fixture
 def user():
-    client = ClientFactory.create()
+    client = ClientFactory.create(push_notifications_granted=None)
     return client.user
 
 
