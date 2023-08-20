@@ -465,3 +465,82 @@ msgstr "Passwort zurücksetzen"
 #: mood_diary/templates/users/login.html:76
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
+
+
+#: mood_diary/templates/users/profile.html:31
+msgid "May the Mood Diary send you push notifications?"
+msgstr "Darf das Mood Diary dir Push-Benachrichtigungen senden?"
+
+#: mood_diary/templates/users/profile.html:33
+msgid ""
+"Clicking the button below will prompt your browser to ask you if the Mood "
+"Diary may send you push notifications."
+msgstr ""
+"Wenn du den Button unten klickst, wird dein Browser dich fragen, ob das Mood Diary dir Push-Benachrichtigungen senden darf."
+
+#: mood_diary/templates/users/profile.html:34
+msgid ""
+"The prompt will only appear if you have not yet decided about notification "
+"settings for the Mood Diary."
+msgstr ""
+"Die Aufforderung erscheint nur, wenn du noch nicht über die Benachrichtigungseinstellungen des Mood Diary entschieden hast."
+
+#: mood_diary/templates/users/profile.html:35
+msgid ""
+"If you have deactivated notfication support for your browser in the settings "
+"of your device, instead of showing a prompt, the browser will automatically "
+"default to denying notifications."
+msgstr ""
+"Wenn du die Benachrichtigungsunterstützung für deinen Browser in den Einstellungen deines Geräts deaktiviert hast, wird der Browser anstelle einer Aufforderung automatisch Benachrichtigungen ablehnen."
+
+#: mood_diary/templates/users/profile.html:41
+msgid "Prompt Browser Notification Settings"
+msgstr "Browsereinstellungen für Benachrichtigungen aufrufen"
+
+#: mood_diary/templates/users/profile.html:53
+msgid ""
+"In addition to managing the browser settings for push notifications, you can "
+"disable push notifications here."
+msgstr ""
+"Neben der Verwaltung der Browsereinstellungen für Push-Benachrichtigungen kannst du hier Push-Benachrichtigungen deaktivieren."
+
+#: mood_diary/templates/users/profile.html:56
+msgid ""
+"It can also help to click the button above in order to renew the push "
+"subscription under the hood."
+msgstr ""
+"Es kann auch hilfreich sein, den Button oben zu klicken, um das Push-Abonnement im Hintergrund zu erneuern."
+
+#: mood_diary/templates/users/profile.html:62
+msgid "Disable Notifications"
+msgstr "Benachrichtigungen deaktivieren"
+
+#: mood_diary/templates/users/profile.html:64
+msgid "Enable Notifications"
+msgstr "Benachrichtigungen aktivieren"
+
+#: mood_diary/templates/users/offline.html:5
+msgid "Oh no! It seems that you are offline!"
+msgstr "Oh nein! Es scheint, dass du offline bist!"
+
+#: mood_diary/templates/users/profile.html:54
+msgid ""
+"Then, even when your browser settings allow push notifiactions, the Mood "
+"Diary will not send you any."
+msgstr ""
+"Dann wird das Mood Diary dir keine senden, selbst wenn deine Browsereinstellungen Push-Benachrichtigungen erlauben."
+
+#: mood_diary/templates/users/profile.html:55
+msgid ""
+"If you have enabled push notifications here but do not receive any, ensure "
+"that you allowed notifications in your browser for the Mood Diary."
+msgstr ""
+"Wenn du hier Push-Benachrichtigungen aktiviert hast, aber keine erhältst, stelle sicher, dass du Benachrichtigungen in deinem Browser für das Mood Diary zugelassen hast."
+
+#: mood_diary/templates/users/profile.html:7
+msgid "Email And Password"
+msgstr "Email und Passwort"
+
+#: mood_diary/templates/users/profile.html:25
+msgid "Push Notifications"
+msgstr "Push-Benachrichtigungen"
