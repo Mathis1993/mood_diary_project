@@ -1,5 +1,4 @@
 from core.views import AuthenticatedClientRoleMixin
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
@@ -40,7 +39,5 @@ class DashboardClientView(AuthenticatedClientRoleMixin, View):
                 "mood_scores_dates": mood_scores_dates,
                 "mood_score_data_name": _("Average Mood"),
                 "mood_highlights": mood_highlights,
-                "ask_for_push_notifications_permission": user.client.ask_for_push_notifications_permission(),  # noqa E501
-                "vapid_public_key": settings.VAPID_PUBLIC_KEY,
             },
         )
