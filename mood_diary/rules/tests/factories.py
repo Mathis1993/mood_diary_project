@@ -2,20 +2,20 @@ import factory.fuzzy
 from django.utils import timezone
 from rules.models import Rule, RuleClient, RuleTriggeredLog
 
-RULE_TITLES = [
-    "Activity with peak mood",
-    "Relaxing activity",
-    "Physical activity per week",
-    "High media usage per day",
-    "Low media usage per day",
-    "14 day mood average",
-    "14 day mood maximum",
-    "Unsteady food intake",
-    "Positive mood change between activities",
-    "Negative mood change between activities",
-    "Daily mean mood improving",
-    "Physical activity per week increasing",
-]
+RULE_TITLES_EN_DE = {
+    "Activity with peak mood": "Aktivität mit maximaler Stummung",
+    "Relaxing activity": "Entspannende Aktivität",
+    "Physical activity per week": "Bewegung in einer Woche",
+    "High media usage per day": "Hohe tägliche Mediennutzung",
+    "Low media usage per day": "Geringe tägliche Mediennutzung",
+    "14 day mood average": "14-Tage-Stimmungsdurchschnitt",
+    "14 day mood maximum": "14-Tage-Stimmungshöchstwert",
+    "Unsteady food intake": "Unregelmäßige Nahrungsaufnahme",
+    "Positive mood change between activities": "Positive Stimmungsänderung zwischen Aktivitäten",
+    "Negative mood change between activities": "Negative Stimmungsänderung zwischen Aktivitäten",
+    "Daily average mood improving": "Verbesserung der durschn. Tagesstimmung",
+    "Physical activity per week increasing": "Mehr Bewegung in einer Woche",
+}
 
 
 class RuleFactory(factory.django.DjangoModelFactory):
@@ -23,7 +23,7 @@ class RuleFactory(factory.django.DjangoModelFactory):
         model = Rule
         django_get_or_create = ("title",)
 
-    title = factory.fuzzy.FuzzyChoice(RULE_TITLES)
+    title = factory.fuzzy.FuzzyChoice(list(RULE_TITLES_EN_DE.keys()))
     preconditions_description = factory.fuzzy.FuzzyText(length=20)
     criterion = factory.fuzzy.FuzzyChoice(Rule.Criterion.choices)
     evaluation = factory.fuzzy.FuzzyChoice(Rule.Evaluation.choices)
