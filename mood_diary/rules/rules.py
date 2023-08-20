@@ -337,7 +337,7 @@ class UnsteadyFoodIntakeRule(BaseRule):
     def evaluate_preconditions(self) -> bool:
         relevant_entries_per_day = (
             self.get_mood_diary_entries()
-            .filter(activity__value=Activity.food_intake_value)
+            .filter(activity__category__value=ActivityCategory.food_intake_value)
             .values("date")
             .annotate(count_meals=Count("id"))
         )

@@ -496,7 +496,7 @@ def test_unsteady_food_intake_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-30",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is True
@@ -504,7 +504,7 @@ def test_unsteady_food_intake_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-30",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is True
@@ -512,7 +512,7 @@ def test_unsteady_food_intake_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-30",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is False
@@ -553,17 +553,17 @@ def test_unsteady_food_intake_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-05",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-05",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-05",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
 
     freezer.move_to("2023-10-06")
