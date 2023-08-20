@@ -541,3 +541,23 @@ msgstr "Email und Passwort"
 #: mood_diary/templates/users/profile.html:25
 msgid "Push Notifications"
 msgstr "Push-Benachrichtigungen"
+
+#: mood_diary/templates/users/profile.html:75
+msgid "App Installation"
+msgstr "App-Installation"
+
+#: mood_diary/templates/users/profile.html:78
+msgid "You can install the Mood Diary as a web app on your device."
+msgstr "Du kannst das Mood Diary als Web-App auf deinem Gerät installieren."
+
+#: mood_diary/templates/users/profile.html:79
+msgid "If your browser supports this, clicking the button below will show an installation prompt."
+msgstr "Wenn dein Browser dies unterstützt, wird durch Klicken des Buttons unten eine Installationsaufforderung angezeigt."
+
+#: mood_diary/templates/users/profile.html:80
+msgid "If it doesn't, or if you already installed the Mood Diary, clicking the button will have no effect."
+msgstr "Wenn dies nicht der Fall ist oder wenn du das Mood Diary bereits installiert hast, hat das Klicken des Buttons keine Auswirkungen."
+
+#: mood_diary/templates/users/profile.html:84
+msgid "Show Installation Prompt"
+msgstr "Installationsaufforderung anzeigen"
