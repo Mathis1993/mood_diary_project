@@ -7,6 +7,8 @@ from diaries.models import Activity, ActivityCategory, MoodDiaryEntry
 from diaries.tests.factories import MoodDiaryEntryFactory, MoodDiaryFactory, MoodFactory
 from django.utils import timezone
 from notifications.models import Notification
+from notifications.tests.factories import PushSubscriptionFactory
+from pytest_mock import MockerFixture
 from rules.models import RuleClient, RuleTriggeredLog
 from rules.rules import (
     ActivityWithPeakMoodRule,
@@ -44,7 +46,9 @@ def test_base_rule():
 
 
 @pytest.mark.django_db
-def test_concrete_rule():
+def test_concrete_rule(mocker: MockerFixture):
+    mocked_method = mocker.patch("notifications.models.PushSubscription.send_push_notification")
+
     class MyRule(BaseRule):
         rule_title = "My Rule"
 
@@ -58,7 +62,8 @@ def test_concrete_rule():
             return True
 
     rule_db = RuleFactory.create(title="My Rule")
-    client = ClientFactory.create()
+    client = ClientFactory.create(push_notifications_granted=True)
+    PushSubscriptionFactory.create(client=client)
     MoodDiaryFactory.create(client=client)
     MoodDiaryEntryFactory.create(mood_diary__client=client)
     timestamp = timezone.now()
@@ -78,14 +83,27 @@ def test_concrete_rule():
     assert not RuleTriggeredLog.objects.exists()
     rule_db.subscribed_clients.add(client)
     assert rule.client_subscribed() is True
+    assert mocked_method.call_count == 0
     rule.evaluate()  # creates notification and log
     assert rule.notification_id is not None
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+    assert mocked_method.call_count == 1
     rule_client_obj = RuleClient.objects.get(client=client, rule=rule_db)
     rule_client_obj.active = False
     rule_client_obj.save()
     assert rule.client_subscribed() is False
+
+    rule_client_obj.active = True
+    rule_client_obj.save()
+    timestamp = timezone.now()
+    rule = MyRule(client_id=client.id, requested_at=timestamp)
+    client.push_notifications_granted = False
+    client.save()
+    rule.evaluate()
+    assert Notification.objects.count() == 2
+    assert RuleTriggeredLog.objects.count() == 2
+    assert mocked_method.call_count == 1
 
     class MyOtherRule(MyRule):
         def triggering_allowed(self):
@@ -94,8 +112,8 @@ def test_concrete_rule():
     rule = MyOtherRule(client_id=client.id, requested_at=timestamp)
     assert rule.triggering_allowed() is False
     rule.evaluate()  # no effect
-    assert Notification.objects.count() == 1
-    assert RuleTriggeredLog.objects.count() == 1
+    assert Notification.objects.count() == 2
+    assert RuleTriggeredLog.objects.count() == 2
 
 
 @pytest.mark.django_db

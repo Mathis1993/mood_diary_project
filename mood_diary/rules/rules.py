@@ -88,7 +88,6 @@ class BaseRule:
         )
         self.notification_id = notification.id
 
-    # ToDo(ME-18.08.23): Test
     def create_push_notifications(self):
         client = Client.objects.get(id=self.client_id)
         if not client.push_notifications_granted:
