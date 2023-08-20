@@ -108,7 +108,6 @@ class Activity(NormalizedStringValueModel):
     def __str__(self):
         return self.value
 
-    food_intake_value = "Full meal"
     sports_value = "Sports"
 
 
@@ -123,6 +122,7 @@ class ActivityCategory(NormalizedStringValueModel):
     physical_activity_value = "Physical Activity"
     relaxing_value = "Relaxation"
     media_usage_value = "Media"
+    food_intake_value = "Food"
 
 
 class Strain(NormalizedScaleModel):

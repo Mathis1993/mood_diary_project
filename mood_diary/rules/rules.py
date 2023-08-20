@@ -88,7 +88,6 @@ class BaseRule:
         )
         self.notification_id = notification.id
 
-    # ToDo(ME-18.08.23): Test
     def create_push_notifications(self):
         client = Client.objects.get(id=self.client_id)
         if not client.push_notifications_granted:
@@ -301,7 +300,6 @@ class FourteenDaysMoodAverageRule(BaseRule):
         return days_with_mood_avg_below_zero >= 9
 
 
-# ToDo(ME-07.08.23): Less than 1 here but less than 0 for rule above?
 class FourteenDaysMoodMaximumRule(FourteenDaysMoodAverageRule):
     """
     Rule checking if the client has got a max mood value of less than 1 for the last 14 days.
@@ -339,7 +337,7 @@ class UnsteadyFoodIntakeRule(BaseRule):
     def evaluate_preconditions(self) -> bool:
         relevant_entries_per_day = (
             self.get_mood_diary_entries()
-            .filter(activity__value=Activity.food_intake_value)
+            .filter(activity__category__value=ActivityCategory.food_intake_value)
             .values("date")
             .annotate(count_meals=Count("id"))
         )

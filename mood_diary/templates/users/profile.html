@@ -5,35 +5,68 @@
     <h1 class="h3 mb-4 text-gray-800">{% translate "Profile Settings" %}</h1>
     <hr>
     <h2 class="h5 mb-4 text-gray-800">{% translate "Email And Password" %}</h2>
-    <p>
-        <!-- Change Email Button-->
-        <a href="{% url 'users:change_email' pk=user.id %}"
-           class="btn btn-primary">{% translate "Change Email" %}</a>
-    </p>
-    <p>
-        <!-- Change Password Button-->
-        <a href="{% url 'users:change_password' %}"
-           class="btn mb-2 btn-primary">{% translate "Change Password" %}</a>
-    </p>
+    <div class="col">
+        <p>
+            <!-- Change Email Button-->
+            <a href="{% url 'users:change_email' pk=user.id %}"
+               class="btn btn-primary">{% translate "Change Email" %}</a>
+        </p>
+        <p>
+            <!-- Change Password Button-->
+            <a href="{% url 'users:change_password' %}"
+               class="btn mb-2 btn-primary">{% translate "Change Password" %}</a>
+        </p>
+    </div>
 
     {% if is_client %}
 
         <hr>
 
         <h2 class="h5 mb-4 text-gray-800">{% translate "Push Notifications" %}</h2>
-        <p>{% translate "Click the button to update your push notification settings." %}</p>
-        <p>{% translate "If you have enabled push notifications here but do not receive any, ensure that you allowed notifications in your browser for the Mood Diary." %}</p>
-        <!-- Push Notifications Button-->
-        <form method="post" action="{% url "users:toggle_push_notifications" %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">
-                {% if notifications_enabled %}
-                    {% translate "Disable Notifications" %}
-                {% else %}
-                    {% translate "Enable Notifications" %}
-                {% endif %}
-            </button>
-        </form>
+
+        <!-- Ask for Push Notifications Section -->
+        <div class="col">
+            <p>
+                <!-- ToDo: Format better and formulate more -->
+                {% translate "May the Mood Diary send you push notifications?" %}
+            </p>
+            <p>{% translate "Clicking the button below will prompt your browser to ask you if the Mood Diary may send you push notifications." %}</p>
+            <p>{% translate "The prompt will only appear if you have not yet decided about notification settings for the Mood Diary." %}</p>
+            <p>{% translate "If you have deactivated notfication support for your browser in the settings of your device, instead of showing a prompt, the browser will automatically default to denying notifications." %}</p>
+            <p>
+                {% csrf_token %}
+                <!-- Decide Button-->
+                <button href="#"
+                        id="enableNotifications"
+                        class="btn mb-2 btn-primary">{% translate "Prompt Browser Notification Settings" %}</button>
+            </p>
+            <script>
+                document.getElementById('enableNotifications').addEventListener('click', function () {
+                    requestNotificationPermission();
+                });
+            </script>
+        </div>
+
+
+        <div class="col">
+
+            <p>{% translate "In addition to managing the browser settings for push notifications, you can disable push notifications here." %}</p>
+            <p>{% translate "Then, even when your browser settings allow push notifiactions, the Mood Diary will not send you any." %}</p>
+            <p>{% translate "If you have enabled push notifications here but do not receive any, ensure that you allowed notifications in your browser for the Mood Diary." %}</p>
+            <p>{% translate "It can also help to click the button above in order to renew the push subscription under the hood." %}</p>
+            <!-- Push Notifications Button-->
+            <form method="post" action="{% url "users:toggle_push_notifications" %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    {% if notifications_enabled %}
+                        {% translate "Disable Notifications" %}
+                    {% else %}
+                        {% translate "Enable Notifications" %}
+                    {% endif %}
+                </button>
+            </form>
+
+        </div>
 
     {% endif %}
 

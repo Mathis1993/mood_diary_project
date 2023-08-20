@@ -1,5 +1,3 @@
-// ToDo: Add function to create and send subscription object to server every time the app is accessed and have it called accordingly
-
 function requestNotificationPermission() {
     if ('Notification' in window && navigator.serviceWorker) {
         let permissionStatus;
@@ -22,9 +20,9 @@ function requestNotificationPermission() {
                 },
                 body: JSON.stringify({permission: permissionStatus})
             }).then(response => {
-                if (response.ok) {
-                    // Refresh the page to update the UI
-                    location.reload();
+                if (!response.ok) {
+                    console.log('Error updating notification permission status.')
+                    console.log(response)
                 }
             });
         });
@@ -46,10 +44,12 @@ navigator.serviceWorker.addEventListener('message', event => {
 function subscribeUserToPush() {
     console.log('Subscribing user to push notifications...')
     navigator.serviceWorker.ready.then(function (registration) {
+        console.log('Service worker ready...')
         registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array('BKq9sY0dNJzVKyg6PmJm57oMwNBDgEYZGtrUjsA59DmImGOX-GmFtcMekXWxQQShePZDGHdyPILpbL7Aoh3V5v4')
         }).then(function (subscription) {
+            console.log('Sending subscription so server...')
             // Send the subscription object to the server
             fetch('/notifications/push_subscriptions/create/', {
                 method: 'POST',
@@ -59,6 +59,7 @@ function subscribeUserToPush() {
                 },
                 body: JSON.stringify(subscription)
             });
+            console.log('Subscribtion object sent to server: ', subscription);
         }).catch(function (error) {
             console.error('Failed to subscribe the user: ', error);
         });

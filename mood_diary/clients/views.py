@@ -91,9 +91,6 @@ class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, AjaxListV
     def get_queryset(self):
         client_id = self.kwargs.get(self.pk_url_kwarg)
         mood_diary, _ = MoodDiary.objects.get_or_create(
-            # ToDo(ME-29.06.23): Is this smart? Should we not just return a 404
-            #  in case the counselor is not allowed to see this client?
-            #  Also test this!
             client_id=client_id,
             client__counselor_id=self.request.user.id,
         )

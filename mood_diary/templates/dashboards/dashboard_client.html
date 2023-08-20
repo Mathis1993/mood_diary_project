@@ -5,38 +5,6 @@
 
     <!-- Content Row -->
 
-    <!-- Ask for Push Notifications Section -->
-    {% if ask_for_push_notifications_permission %}
-
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">{% translate "Push Notifications" %}</h1>
-        </div>
-
-        <!-- Content Row -->
-        <div class="col">
-            <p>
-                <!-- ToDo: Format better and formulate more -->
-                {% translate "May the Mood Diary send push notifications?" %}
-            </p>
-            <p>{% translate "Clicking the button below will prompt your browser to ask you if the Mood Diary may send you push notifications." %}</p>
-            <p>{% translate "If you have deactivated notfication support for your browser in the settings of your device, instead of asking you, the browser will automatically default to denying notifications." %}</p>
-            <p>
-                {% csrf_token %}
-                <!-- Decide Button-->
-                <button href="#"
-                        id="enableNotifications"
-                        class="btn mb-2 btn-primary">{% translate "Decide About Notifications" %}</button>
-            </p>
-            <script>
-                document.getElementById('enableNotifications').addEventListener('click', function () {
-                    requestNotificationPermission();
-                });
-            </script>
-        </div>
-        <hr>
-
-    {% endif %}
-
     <div class="row">
 
         <!-- Average Mood Chart -->
