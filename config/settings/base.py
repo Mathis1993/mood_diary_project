@@ -47,12 +47,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # third-party
-    "django_extensions",
-    "django_select2",
-    "el_pagination",
-    "modeltranslation",
-    "pwa",
     # custom
     "clients",
     "core",
@@ -61,6 +55,12 @@ INSTALLED_APPS = [
     "notifications",
     "rules",
     "users",
+    # third-party
+    "django_extensions",
+    "django_select2",
+    "el_pagination",
+    "modeltranslation",
+    "pwa",
 ]
 
 MIDDLEWARE = [

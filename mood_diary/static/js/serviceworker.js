@@ -1,28 +1,54 @@
 // Base Service Worker implementation taken from django-pwa (https://github.com/silviolleite/django-pwa)
 
 var staticCacheName = "django-pwa-v" + new Date().getTime();
-// ToDo: Update the files to cache
 var filesToCache = [
     '/offline/',
-    '/static/css/django-pwa-app.css',
-    '/static/images/icons/icon-72x72.png',
-    '/static/images/icons/icon-96x96.png',
-    '/static/images/icons/icon-128x128.png',
-    '/static/images/icons/icon-144x144.png',
-    '/static/images/icons/icon-152x152.png',
-    '/static/images/icons/icon-192x192.png',
-    '/static/images/icons/icon-384x384.png',
-    '/static/images/icons/icon-512x512.png',
-    '/static/images/icons/splash-640x1136.png',
-    '/static/images/icons/splash-750x1334.png',
-    '/static/images/icons/splash-1242x2208.png',
-    '/static/images/icons/splash-1125x2436.png',
-    '/static/images/icons/splash-828x1792.png',
-    '/static/images/icons/splash-1242x2688.png',
-    '/static/images/icons/splash-1536x2048.png',
-    '/static/images/icons/splash-1668x2224.png',
-    '/static/images/icons/splash-1668x2388.png',
-    '/static/images/icons/splash-2048x2732.png'
+    'static/theme/vendor/fontawesome-free/css/all.min.css',
+    'static/theme/vendor/fontawesome-free/css/fontawesome.min.css',
+    'https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i',
+    'static/theme/css/sb-admin-2.min.css',
+    'static/css/styles.css',
+    'static/images/icons/favicon.ico',
+    'static/theme/img/undraw_profile.svg',
+    'static/theme/vendor/fontawesome-free/webfonts/fa-solid-900.woff',
+    'static/theme/vendor/fontawesome-free/webfonts/fa-solid-900.woff2',
+    'static/theme/vendor/fontawesome-free/webfonts/fa-solid-900.ttf',
+    '/static/images/icons/android-chrome-512x512.png',
+    '/static/images/icons/apple-touch-icon.png',
+    '/static/images/splash_screens/iPhone_14_Pro_Max_landscape.png',
+    '/static/images/splash_screens/iPhone_14_Pro_landscape.png',
+    '/static/images/splash_screens/iPhone_14_Plus__iPhone_13_Pro_Max__iPhone_12_Pro_Max_landscape.png',
+    '/static/images/splash_screens/iPhone_14__iPhone_13_Pro__iPhone_13__iPhone_12_Pro__iPhone_12_landscape.png',
+    '/static/images/splash_screens/iPhone_13_mini__iPhone_12_mini__iPhone_11_Pro__iPhone_XS__iPhone_X_landscape.png',
+    '/static/images/splash_screens/iPhone_11_Pro_Max__iPhone_XS_Max_landscape.png',
+    '/static/images/splash_screens/iPhone_11__iPhone_XR_landscape.png',
+    '/static/images/splash_screens/iPhone_8_Plus__iPhone_7_Plus__iPhone_6s_Plus__iPhone_6_Plus_landscape.png',
+    '/static/images/splash_screens/iPhone_8__iPhone_7__iPhone_6s__iPhone_6__4.7__iPhone_SE_landscape.png',
+    '/static/images/splash_screens/4__iPhone_SE__iPod_touch_5th_generation_and_later_landscape.png',
+    '/static/images/splash_screens/12.9__iPad_Pro_landscape.png',
+    '/static/images/splash_screens/11__iPad_Pro__10.5__iPad_Pro_landscape.png',
+    '/static/images/splash_screens/10.9__iPad_Air_landscape.png',
+    '/static/images/splash_screens/10.5__iPad_Air_landscape.png',
+    '/static/images/splash_screens/10.2__iPad_landscape.png',
+    '/static/images/splash_screens/9.7__iPad_Pro__7.9__iPad_mini__9.7__iPad_Air__9.7__iPad_landscape.png',
+    '/static/images/splash_screens/8.3__iPad_Mini_landscape.png',
+    '/static/images/splash_screens/iPhone_14_Pro_Max_portrait.png',
+    '/static/images/splash_screens/iPhone_14_Pro_portrait.png',
+    '/static/images/splash_screens/iPhone_14_Plus__iPhone_13_Pro_Max__iPhone_12_Pro_Max_portrait.png',
+    '/static/images/splash_screens/iPhone_14__iPhone_13_Pro__iPhone_13__iPhone_12_Pro__iPhone_12_portrait.png',
+    '/static/images/splash_screens/iPhone_13_mini__iPhone_12_mini__iPhone_11_Pro__iPhone_XS__iPhone_X_portrait.png',
+    '/static/images/splash_screens/iPhone_11_Pro_Max__iPhone_XS_Max_portrait.png',
+    '/static/images/splash_screens/iPhone_11__iPhone_XR_portrait.png',
+    '/static/images/splash_screens/iPhone_8_Plus__iPhone_7_Plus__iPhone_6s_Plus__iPhone_6_Plus_portrait.png',
+    '/static/images/splash_screens/iPhone_8__iPhone_7__iPhone_6s__iPhone_6__4.7__iPhone_SE_portrait.png',
+    '/static/images/splash_screens/4__iPhone_SE__iPod_touch_5th_generation_and_later_portrait.png',
+    '/static/images/splash_screens/12.9__iPad_Pro_portrait.png',
+    '/static/images/splash_screens/11__iPad_Pro__10.5__iPad_Pro_portrait.png',
+    '/static/images/splash_screens/10.9__iPad_Air_portrait.png',
+    '/static/images/splash_screens/10.2__iPad_portrait.png',
+    '/static/images/splash_screens/10.5__iPad_Air_portrait.png',
+    '/static/images/splash_screens/9.7__iPad_Pro__7.9__iPad_mini__9.7__iPad_Air__9.7__iPad_portrait.png',
+    '/static/images/splash_screens/8.3__iPad_Mini_portrait.png',
 ];
 
 // Cache on install
@@ -32,7 +58,9 @@ self.addEventListener("install", event => {
         caches.open(staticCacheName)
             .then(cache => {
                 return cache.addAll(filesToCache);
-            })
+            }).catch((err) => {
+            console.error('Caching caused an error: ', err);
+        })
     )
 });
 
@@ -49,7 +77,7 @@ self.addEventListener('activate', event => {
         })
     );
     // Update the push subscription upon service worker activation
-    if(Notification.permission === 'granted') {
+    if (Notification.permission === 'granted') {
         // Send message to main thread to update the push subscription
         self.clients.matchAll().then(clients => {
             console.log('Sending update message')
@@ -102,7 +130,7 @@ self.addEventListener('push', function (event) {
     event.waitUntil(handlePushEvent(event));
 });
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
     event.notification.close();
     event.waitUntil(
         clients.openWindow(event.notification.data.url)
