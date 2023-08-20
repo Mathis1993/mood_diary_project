@@ -348,6 +348,7 @@ msgstr "Beschreibung"
 
 #: mood_diary/templates/notifications/notification_list_page.html:15
 #: mood_diary/templates/notifications/notification_list_page.html:37
+#: mood_diary/rules/rules.py:101
 msgid "Pattern detected!"
 msgstr "Muster erkannt!"
 

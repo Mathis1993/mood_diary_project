@@ -98,7 +98,7 @@ class BaseRule:
             return
         self.logger.info(f"Sending push notifications ({self.client_id}: {self.rule_title})")
         message = {
-            "title": _("Pattern Detected"),
+            "title": _("Pattern detected!"),
             "text": self.rule.title,
             "url": reverse("notifications:get_notification", kwargs={"pk": self.notification_id}),
         }
