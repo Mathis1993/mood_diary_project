@@ -558,6 +558,10 @@ msgstr "Wenn dein Browser dies unterstützt, wird durch Klicken des Buttons unte
 msgid "If it doesn't, or if you already installed the Mood Diary, clicking the button will have no effect."
 msgstr "Wenn dies nicht der Fall ist oder wenn du das Mood Diary bereits installiert hast, hat das Klicken des Buttons keine Auswirkungen."
 
-#: mood_diary/templates/users/profile.html:84
+#: mood_diary/templates/users/profile.html:81
+msgid "If your browser doesn't support the installation, you can still select 'Add to homescreen' from it's context menu on a mobile device for easier access to the Mood Diary."
+msgstr "Wenn dein Browser die Installation nicht unterstützt, kannst du trotzdem 'Zum Startbildschirm hinzufügen' aus dem Kontextmenü auswählen, um auf dem Smartphone einen einfacheren Zugriff auf das Mood Diary zu erhalten."
+
+#: mood_diary/templates/users/profile.html:85
 msgid "Show Installation Prompt"
 msgstr "Installationsaufforderung anzeigen"
