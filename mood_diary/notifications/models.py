@@ -40,7 +40,6 @@ class PushSubscription(TrackCreationAndUpdates):
 
     logger = logging.getLogger("notifications.models.PushSubscription")
 
-    # ToDo(ME-17.08.23): Test
     def send_push_notification(self, message: dict):
         self.logger.info(f"Trying to send push notification to {self.client.identifier}")
         try:
