@@ -358,7 +358,7 @@ def test_low_media_usage_per_day_rule(freezer):
 def test_fourteen_days_mood_average_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Fourteen days mood average")
+    rule_db = RuleFactory.create(title="14 day mood average")
     rule_db.subscribed_clients.add(client)
 
     # 13 days of bad mood
@@ -425,7 +425,7 @@ def test_fourteen_days_mood_average_rule(freezer):
 def test_fourteen_days_mood_maximum_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Fourteen days mood maximum")
+    rule_db = RuleFactory.create(title="14 day mood maximum")
     rule_db.subscribed_clients.add(client)
 
     # 13 days of bad mood

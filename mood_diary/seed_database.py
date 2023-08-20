@@ -12,7 +12,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rules.models import Rule
 from rules.rules import EVENT_BASED_RULES, TIME_BASED_RULES
-from rules.tests.factories import RuleFactory
+from rules.tests.factories import RULE_TITLES_EN_DE, RuleFactory
 from users.tests.factories import UserFactory
 
 User = get_user_model()
@@ -50,14 +50,6 @@ def seed_database():
 
 def seed_database_staging():
     create_contents()
-    [
-        RuleFactory.create(title=rule.rule_title, evaluation=Rule.Evaluation.EVENT_BASED)
-        for rule in EVENT_BASED_RULES
-    ]
-    [
-        RuleFactory.create(title=rule.rule_title, evaluation=Rule.Evaluation.TIME_BASED)
-        for rule in TIME_BASED_RULES
-    ]
 
 
 def create_contents():
@@ -76,3 +68,6 @@ def create_contents():
                 value_en=activity_en,
                 value_de=activity_de,
             )
+
+    for rule_title_en, rule_title_de in RULE_TITLES_EN_DE.items():
+        RuleFactory.create(title=rule_title_en, title_de=rule_title_de, title_en=rule_title_en)

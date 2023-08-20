@@ -98,7 +98,7 @@ class BaseRule:
             return
         self.logger.info(f"Sending push notifications ({self.client_id}: {self.rule_title})")
         message = {
-            "title": _("Pattern Detected"),
+            "title": _("Pattern detected!"),
             "text": self.rule.title,
             "url": reverse("notifications:get_notification", kwargs={"pk": self.notification_id}),
         }
@@ -260,7 +260,7 @@ class FourteenDaysMoodAverageRule(BaseRule):
     out of the last 14 days.
     """
 
-    rule_title = "Fourteen days mood average"
+    rule_title = "14 day mood average"
 
     def triggering_allowed(self) -> bool:
         # There are entries for the last 14 days
@@ -305,7 +305,7 @@ class FourteenDaysMoodMaximumRule(FourteenDaysMoodAverageRule):
     Rule checking if the client has got a max mood value of less than 1 for the last 14 days.
     """
 
-    rule_title = "Fourteen days mood maximum"
+    rule_title = "14 day mood maximum"
 
     def evaluate_preconditions(self) -> bool:
         relevant_entries = self.get_mood_diary_entries()
