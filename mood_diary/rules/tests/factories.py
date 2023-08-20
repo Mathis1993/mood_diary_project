@@ -3,9 +3,9 @@ from django.utils import timezone
 from rules.models import Rule, RuleClient, RuleTriggeredLog
 
 RULE_TITLES_EN_DE = {
-    "Activity with peak mood": "Aktivität mit maximaler Stummung",
+    "Activity with peak mood": "Aktivität mit maximaler Stimmung",
     "Relaxing activity": "Entspannende Aktivität",
-    "Physical activity per week": "Bewegung in einer Woche",
+    "Physical activity per week": "Wöchentliche Bewegungsdauer",
     "High media usage per day": "Hohe tägliche Mediennutzung",
     "Low media usage per day": "Geringe tägliche Mediennutzung",
     "14 day mood average": "14-Tage-Stimmungsdurchschnitt",
@@ -14,7 +14,7 @@ RULE_TITLES_EN_DE = {
     "Positive mood change between activities": "Positive Stimmungsänderung zwischen Aktivitäten",
     "Negative mood change between activities": "Negative Stimmungsänderung zwischen Aktivitäten",
     "Daily average mood improving": "Verbesserung der durschn. Tagesstimmung",
-    "Physical activity per week increasing": "Mehr Bewegung in einer Woche",
+    "Physical activity per week increasing": "Wöchentliche Bewegungsdauer gestiegen",
 }
 
 

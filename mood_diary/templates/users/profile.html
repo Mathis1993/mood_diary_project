@@ -68,8 +68,28 @@
 
         </div>
 
-        <hr>
-
     {% endif %}
+
+    <hr>
+
+    <h2 class="h5 mb-4 text-gray-800">{% translate "App Installation" %}</h2>
+
+    <div class="col">
+        <p>{% translate "You can install the Mood Diary as a web app on your device." %}</p>
+        <p> {% translate "If your browser supports this, clicking the button below will show an installation prompt." %}</p>
+        <p> {% translate "If it doesn't, or if you already installed the Mood Diary, clicking the button will have no effect." %}</p>
+        <p>
+            <!-- Install Button-->
+            <a href="#"
+               class="btn btn-primary" id="installButton">{% translate "Show Installation Prompt" %}</a>
+        </p>
+        <script>
+            document.getElementById('installButton').addEventListener('click', function () {
+                installApp();
+            });
+        </script>
+    </div>
+
+    <hr>
 
 {% endblock %}
