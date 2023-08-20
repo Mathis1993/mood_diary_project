@@ -426,7 +426,7 @@ msgstr "Anmelden"
 
 #: mood_diary/templates/users/password_change.html:6
 #: mood_diary/templates/users/password_change.html:14
-#: mood_diary/templates/users/profile.html:9
+#: mood_diary/templates/users/profile.html:17
 msgid "Change Password"
 msgstr "Passwort ändern"
 
@@ -438,7 +438,7 @@ msgstr "Dein Passwort wurde geändert."
 msgid "Profile Settings"
 msgstr "Profileinstellungen"
 
-#: mood_diary/templates/users/profile.html:14
+#: mood_diary/templates/users/profile.html:12
 msgid "Change Email"
 msgstr "Email ändern"
 
@@ -464,25 +464,25 @@ msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
 
 
-#: mood_diary/templates/users/profile.html:31
+#: mood_diary/templates/users/profile.html:54
 msgid "May the Mood Diary send you push notifications?"
 msgstr "Darf das Mood Diary dir Push-Benachrichtigungen senden?"
 
-#: mood_diary/templates/users/profile.html:33
+#: mood_diary/templates/users/profile.html:56
 msgid ""
 "Clicking the button below will prompt your browser to ask you if the Mood "
 "Diary may send you push notifications."
 msgstr ""
 "Wenn du den Button unten klickst, wird dein Browser dich fragen, ob das Mood Diary dir Push-Benachrichtigungen senden darf."
 
-#: mood_diary/templates/users/profile.html:34
+#: mood_diary/templates/users/profile.html:57
 msgid ""
 "The prompt will only appear if you have not yet decided about notification "
 "settings for the Mood Diary."
 msgstr ""
 "Die Aufforderung erscheint nur, wenn du noch nicht über die Benachrichtigungseinstellungen des Mood Diary entschieden hast."
 
-#: mood_diary/templates/users/profile.html:35
+#: mood_diary/templates/users/profile.html:58
 msgid ""
 "If you have deactivated notfication support for your browser in the settings "
 "of your device, instead of showing a prompt, the browser will automatically "
@@ -490,29 +490,29 @@ msgid ""
 msgstr ""
 "Wenn du die Benachrichtigungsunterstützung für deinen Browser in den Einstellungen deines Geräts deaktiviert hast, wird der Browser anstelle einer Aufforderung automatisch Benachrichtigungen ablehnen."
 
-#: mood_diary/templates/users/profile.html:41
+#: mood_diary/templates/users/profile.html:64
 msgid "Prompt Browser Notification Settings"
 msgstr "Browsereinstellungen für Benachrichtigungen aufrufen"
 
-#: mood_diary/templates/users/profile.html:53
+#: mood_diary/templates/users/profile.html:76
 msgid ""
 "In addition to managing the browser settings for push notifications, you can "
 "disable push notifications here."
 msgstr ""
 "Neben der Verwaltung der Browsereinstellungen für Push-Benachrichtigungen kannst du hier Push-Benachrichtigungen deaktivieren."
 
-#: mood_diary/templates/users/profile.html:56
+#: mood_diary/templates/users/profile.html:79
 msgid ""
 "It can also help to click the button above in order to renew the push "
 "subscription under the hood."
 msgstr ""
 "Es kann auch hilfreich sein, den Button oben zu klicken, um das Push-Abonnement im Hintergrund zu erneuern."
 
-#: mood_diary/templates/users/profile.html:62
+#: mood_diary/templates/users/profile.html:85
 msgid "Disable Notifications"
 msgstr "Benachrichtigungen deaktivieren"
 
-#: mood_diary/templates/users/profile.html:64
+#: mood_diary/templates/users/profile.html:87
 msgid "Enable Notifications"
 msgstr "Benachrichtigungen aktivieren"
 
@@ -520,14 +520,14 @@ msgstr "Benachrichtigungen aktivieren"
 msgid "Oh no! It seems that you are offline!"
 msgstr "Oh nein! Es scheint, dass du offline bist!"
 
-#: mood_diary/templates/users/profile.html:54
+#: mood_diary/templates/users/profile.html:77
 msgid ""
 "Then, even when your browser settings allow push notifiactions, the Mood "
 "Diary will not send you any."
 msgstr ""
 "Dann wird das Mood Diary dir keine senden, selbst wenn deine Browsereinstellungen Push-Benachrichtigungen erlauben."
 
-#: mood_diary/templates/users/profile.html:55
+#: mood_diary/templates/users/profile.html:78
 msgid ""
 "If you have enabled push notifications here but do not receive any, ensure "
 "that you allowed notifications in your browser for the Mood Diary."
@@ -542,22 +542,34 @@ msgstr "Email und Passwort"
 msgid "Push Notifications"
 msgstr "Push-Benachrichtigungen"
 
-#: mood_diary/templates/users/profile.html:75
+#: mood_diary/templates/users/profile.html:23
 msgid "App Installation"
 msgstr "App-Installation"
 
-#: mood_diary/templates/users/profile.html:78
+#: mood_diary/templates/users/profile.html:26
 msgid "You can install the Mood Diary as a web app on your device."
 msgstr "Du kannst das Mood Diary als Web-App auf deinem Gerät installieren."
 
-#: mood_diary/templates/users/profile.html:79
+#: mood_diary/templates/users/profile.html:27
 msgid "If your browser supports this, clicking the button below will show an installation prompt."
 msgstr "Wenn dein Browser dies unterstützt, wird durch Klicken des Buttons unten eine Installationsaufforderung angezeigt."
 
-#: mood_diary/templates/users/profile.html:80
+#: mood_diary/templates/users/profile.html:28
 msgid "If it doesn't, or if you already installed the Mood Diary, clicking the button will have no effect."
 msgstr "Wenn dies nicht der Fall ist oder wenn du das Mood Diary bereits installiert hast, hat das Klicken des Buttons keine Auswirkungen."
 
-#: mood_diary/templates/users/profile.html:84
+#: mood_diary/templates/users/profile.html:29
+msgid "If your browser doesn't support the installation, you can still select 'Add to homescreen' from it's context menu on a mobile device for easier access to the Mood Diary."
+msgstr "Wenn dein Browser die Installation nicht unterstützt, kannst du trotzdem 'Zum Startbildschirm hinzufügen' aus dem Kontextmenü auswählen, um auf dem Smartphone einen einfacheren Zugriff auf das Mood Diary zu erhalten."
+
+#: mood_diary/templates/users/profile.html:30
+msgid "This is specifically relevant for iOS devices. Using Safari, you can install the Mood Diary, but you must select 'Add to homescreen' from the context menu manually."
+msgstr "Das ist insbesondere für iOS-Geräte relevant. Mit Safari kannst du das Mood Diary installieren, aber du musst 'Zum Startbildschirm hinzufügen' im Kontextmenü manuell auswählen."
+
+#: mood_diary/templates/users/profile.html:31
+msgid "Therefore, on iOS, use Safari to install the Mood Diary. On Android, best use Chrome."
+msgstr "Verwende daher auf iOS Safari, um das Mood Diary zu installieren. Auf Android verwende am besten Chrome."
+
+#: mood_diary/templates/users/profile.html:35
 msgid "Show Installation Prompt"
 msgstr "Installationsaufforderung anzeigen"
