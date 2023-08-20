@@ -38,6 +38,5 @@ class Client(TrackCreationAndUpdates):
     def get_newest_notifications(self):
         return self.notifications.filter(viewed=False).all()[:3]
 
-    # ToDo(ME-16.08.23): Test
     def ask_for_push_notifications_permission(self):
         return self.push_notifications_granted is None

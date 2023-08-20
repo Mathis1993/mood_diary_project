@@ -1,5 +1,6 @@
 import pytest
 from clients.models import Client
+from clients.tests.factories import ClientFactory
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from notifications.tests.factories import NotificationFactory
@@ -73,3 +74,19 @@ def test_get_newest_notifications():
     assert notif_4 in newest_notifications
     assert notif_3 in newest_notifications
     assert notif_2 in newest_notifications
+
+
+@pytest.mark.django_db
+def test_client_ask_for_push_notifications_permission():
+    client = ClientFactory.create(push_notifications_granted=None)
+    assert client.ask_for_push_notifications_permission() is True
+
+    client.push_notifications_granted = True
+    client.save()
+
+    assert client.ask_for_push_notifications_permission() is False
+
+    client.push_notifications_granted = False
+    client.save()
+
+    assert client.ask_for_push_notifications_permission() is False
