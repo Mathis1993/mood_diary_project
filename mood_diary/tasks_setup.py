@@ -18,7 +18,7 @@ app.autodiscover_tasks()
 celery_beat_schedule = {
     "Evaluation of time-based rules": {
         "task": "diaries.tasks.task_time_based_rules_init",
-        "schedule": crontab(hour="6", minute="0"),
+        "schedule": crontab(hour="12", minute="0"),
     },
 }
 app.conf.beat_schedule = celery_beat_schedule
