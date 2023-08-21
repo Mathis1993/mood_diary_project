@@ -50,6 +50,7 @@ class PushSubscription(TrackCreationAndUpdates):
                 vapid_claims={
                     "sub": "mailto:info@mood-diary.de",
                 },
+                ttl=settings.WEB_PUSH_TTL,
             )
             self.logger.info(f"Successfully sent push notification to {self.client.identifier}")
         except WebPushException as e:
