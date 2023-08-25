@@ -9,6 +9,20 @@ from django.utils import timezone
 from notifications.models import Notification
 from notifications.tests.factories import PushSubscriptionFactory
 from pytest_mock import MockerFixture
+from rules.content.rules import (
+    ACTIVITY_WITH_PEAK_MOOD,
+    DAILY_AVERAGE_MOOD_IMPROVING,
+    FOURTEEN_DAY_MOOD_AVERAGE,
+    FOURTEEN_DAY_MOOD_MAXIMUM,
+    HIGH_MEDIA_USAGE_PER_DAY,
+    LOW_MEDIA_USAGE_PER_DAY,
+    NEGATIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES,
+    PHYSICAL_ACTIVITY_PER_WEEK,
+    PHYSICAL_ACTIVITY_PER_WEEK_INCREASING,
+    POSITIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES,
+    RELAXING_ACTIVITY,
+    UNSTEADY_FOOD_INTAKE,
+)
 from rules.models import RuleClient, RuleTriggeredLog
 from rules.rules import (
     ActivityWithPeakMoodRule,
@@ -119,7 +133,7 @@ def test_concrete_rule(mocker: MockerFixture):
 @pytest.mark.django_db
 def test_activity_with_peak_mood_rule():
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Activity with peak mood")
+    rule_db = RuleFactory.create(title=ACTIVITY_WITH_PEAK_MOOD)
     rule_db.subscribed_clients.add(client)
     MoodDiaryEntryFactory.create(mood_diary__client=client, mood__value=0)
     time.sleep(0.1)
@@ -154,7 +168,7 @@ def test_activity_with_peak_mood_rule():
 @pytest.mark.django_db
 def test_relaxing_activity_mood_rule():
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Relaxing activity")
+    rule_db = RuleFactory.create(title=RELAXING_ACTIVITY)
     rule_db.subscribed_clients.add(client)
     MoodDiaryEntryFactory.create(mood_diary__client=client, activity__category__value="Work")
     time.sleep(0.1)
@@ -199,7 +213,7 @@ def test_physical_activity_per_week_rule(freezer):
     # It is Friday
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Physical activity per week")
+    rule_db = RuleFactory.create(title=PHYSICAL_ACTIVITY_PER_WEEK)
     rule_db.subscribed_clients.add(client)
     # Sunday (does not count)
     MoodDiaryEntryFactory.create(
@@ -251,7 +265,7 @@ def test_physical_activity_per_week_rule(freezer):
 def test_high_media_usage_per_day_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="High media usage per day")
+    rule_db = RuleFactory.create(title=HIGH_MEDIA_USAGE_PER_DAY)
     rule_db.subscribed_clients.add(client)
 
     MoodDiaryEntryFactory.create(
@@ -297,7 +311,7 @@ def test_high_media_usage_per_day_rule(freezer):
 def test_low_media_usage_per_day_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Low media usage per day")
+    rule_db = RuleFactory.create(title=LOW_MEDIA_USAGE_PER_DAY)
     rule_db.subscribed_clients.add(client)
 
     MoodDiaryEntryFactory.create(
@@ -358,7 +372,7 @@ def test_low_media_usage_per_day_rule(freezer):
 def test_fourteen_days_mood_average_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="14 day mood average")
+    rule_db = RuleFactory.create(title=FOURTEEN_DAY_MOOD_AVERAGE)
     rule_db.subscribed_clients.add(client)
 
     # 13 days of bad mood
@@ -425,7 +439,7 @@ def test_fourteen_days_mood_average_rule(freezer):
 def test_fourteen_days_mood_maximum_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="14 day mood maximum")
+    rule_db = RuleFactory.create(title=FOURTEEN_DAY_MOOD_MAXIMUM)
     rule_db.subscribed_clients.add(client)
 
     # 13 days of bad mood
@@ -485,7 +499,7 @@ def test_unsteady_food_intake_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Unsteady food intake")
+    rule_db = RuleFactory.create(title=UNSTEADY_FOOD_INTAKE)
     rule_db.subscribed_clients.add(client)
 
     timestamp = timezone.now()
@@ -577,7 +591,7 @@ def test_unsteady_food_intake_rule(freezer):
 def test_positive_mood_change_between_activities_rule():
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Positive mood change between activities")
+    rule_db = RuleFactory.create(title=POSITIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES)
     rule_db.subscribed_clients.add(client)
 
     # first activity
@@ -659,7 +673,7 @@ def test_positive_mood_change_between_activities_rule():
 def test_negative_mood_change_between_activities_rule():
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Negative mood change between activities")
+    rule_db = RuleFactory.create(title=NEGATIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES)
     rule_db.subscribed_clients.add(client)
 
     # first activity
@@ -741,7 +755,7 @@ def test_daily_average_mood_improving_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Daily average mood improving")
+    rule_db = RuleFactory.create(title=DAILY_AVERAGE_MOOD_IMPROVING)
     rule_db.subscribed_clients.add(client)
 
     timestamp = timezone.now()
@@ -813,7 +827,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Physical activity per week increasing")
+    rule_db = RuleFactory.create(title=PHYSICAL_ACTIVITY_PER_WEEK_INCREASING)
     rule_db.subscribed_clients.add(client)
 
     # Saturday
@@ -923,7 +937,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
 def test_rule_evaluation_two_consecutive_days(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Low media usage per day")
+    rule_db = RuleFactory.create(title=LOW_MEDIA_USAGE_PER_DAY)
     rule_db.subscribed_clients.add(client)
 
     MoodDiaryEntryFactory.create(

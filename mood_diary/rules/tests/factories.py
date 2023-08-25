@@ -1,21 +1,7 @@
 import factory.fuzzy
 from django.utils import timezone
+from rules.content.rules import RULE_TITLES_CONCLUSION_MESSAGES_EN_DE, RULE_TITLES_EN_DE
 from rules.models import Rule, RuleClient, RuleTriggeredLog
-
-RULE_TITLES_EN_DE = {
-    "Activity with peak mood": "Aktivität mit maximaler Stimmung",
-    "Relaxing activity": "Entspannende Aktivität",
-    "Physical activity per week": "Wöchentliche Bewegungsdauer",
-    "High media usage per day": "Hohe tägliche Mediennutzung",
-    "Low media usage per day": "Geringe tägliche Mediennutzung",
-    "14 day mood average": "14-Tage-Stimmungsdurchschnitt",
-    "14 day mood maximum": "14-Tage-Stimmungshöchstwert",
-    "Unsteady food intake": "Unregelmäßige Nahrungsaufnahme",
-    "Positive mood change between activities": "Positive Stimmungsänderung zwischen Aktivitäten",
-    "Negative mood change between activities": "Negative Stimmungsänderung zwischen Aktivitäten",
-    "Daily average mood improving": "Verbesserung der durschn. Tagesstimmung",
-    "Physical activity per week increasing": "Wöchentliche Bewegungsdauer gestiegen",
-}
 
 
 class RuleFactory(factory.django.DjangoModelFactory):
@@ -27,7 +13,9 @@ class RuleFactory(factory.django.DjangoModelFactory):
     preconditions_description = factory.fuzzy.FuzzyText(length=20)
     criterion = factory.fuzzy.FuzzyChoice(Rule.Criterion.choices)
     evaluation = factory.fuzzy.FuzzyChoice(Rule.Evaluation.choices)
-    conclusion_message = factory.fuzzy.FuzzyText(length=100)
+    conclusion_message = factory.LazyAttribute(
+        lambda obj: RULE_TITLES_CONCLUSION_MESSAGES_EN_DE[obj.title]["en"]
+    )
 
 
 class RuleClientFactory(factory.django.DjangoModelFactory):

@@ -10,6 +10,7 @@ from diaries.tests.factories import (
 )
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from rules.content.rules import RULE_TITLES_CONCLUSION_MESSAGES_EN_DE
 from rules.models import Rule
 from rules.rules import EVENT_BASED_RULES, TIME_BASED_RULES
 from rules.tests.factories import RULE_TITLES_EN_DE, RuleFactory
@@ -20,7 +21,8 @@ User = get_user_model()
 
 def seed_database():
     User.objects.create_superuser(
-        email="mathis@mood-diary.de", password=settings.TEST_USER_PASSWORD
+        email="mathis@mood-diary.de",
+        password=settings.TEST_USER_PASSWORD,
     )
     create_contents()
     [
@@ -38,7 +40,7 @@ def seed_database():
     ]
 
     counselor = UserFactory.create(role=User.Role.COUNSELOR)
-    client_user = UserFactory.create(role=User.Role.CLIENT)
+    client_user = UserFactory.create(role=User.Role.CLIENT, first_login_completed=True)
     client = ClientFactory.create(
         user=client_user, counselor=counselor, subscribed_rules=Rule.objects.all()
     )
@@ -70,4 +72,11 @@ def create_contents():
             )
 
     for rule_title_en, rule_title_de in RULE_TITLES_EN_DE.items():
-        RuleFactory.create(title=rule_title_en, title_de=rule_title_de, title_en=rule_title_en)
+        RuleFactory.create(
+            title=rule_title_en,
+            title_de=rule_title_de,
+            title_en=rule_title_en,
+            conclusion_message=RULE_TITLES_CONCLUSION_MESSAGES_EN_DE[rule_title_en]["en"],
+            conclusion_message_en=RULE_TITLES_CONCLUSION_MESSAGES_EN_DE[rule_title_en]["en"],
+            conclusion_message_de=RULE_TITLES_CONCLUSION_MESSAGES_EN_DE[rule_title_en]["de"],
+        )

@@ -10,6 +10,20 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from notifications.models import Notification
+from rules.content.rules import (
+    ACTIVITY_WITH_PEAK_MOOD,
+    DAILY_AVERAGE_MOOD_IMPROVING,
+    FOURTEEN_DAY_MOOD_AVERAGE,
+    FOURTEEN_DAY_MOOD_MAXIMUM,
+    HIGH_MEDIA_USAGE_PER_DAY,
+    LOW_MEDIA_USAGE_PER_DAY,
+    NEGATIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES,
+    PHYSICAL_ACTIVITY_PER_WEEK,
+    PHYSICAL_ACTIVITY_PER_WEEK_INCREASING,
+    POSITIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES,
+    RELAXING_ACTIVITY,
+    UNSTEADY_FOOD_INTAKE,
+)
 from rules.models import Rule, RuleTriggeredLog
 from rules.utils import get_beginning_of_week, get_end_of_week
 
@@ -83,8 +97,9 @@ class BaseRule:
 
     def create_notification(self):
         message = self.rule.conclusion_message
+        message_de = self.rule.conclusion_message_de
         notification = Notification.objects.create(
-            client_id=self.client_id, message=message, rule_id=self.rule.id
+            client_id=self.client_id, message=message, message_de=message_de, rule_id=self.rule.id
         )
         self.notification_id = notification.id
 
@@ -126,7 +141,7 @@ class ActivityWithPeakMoodRule(BaseRule):
     requested had the highest mood value available.
     """
 
-    rule_title = "Activity with peak mood"
+    rule_title = ACTIVITY_WITH_PEAK_MOOD
 
     def triggering_allowed(self) -> bool:
         return True
@@ -153,7 +168,7 @@ class RelaxingActivityRule(ActivityWithPeakMoodRule):
     Triggered maximally once per day.
     """
 
-    rule_title = "Relaxing activity"
+    rule_title = RELAXING_ACTIVITY
 
     def triggering_allowed(self) -> bool:
         return not RuleTriggeredLog.objects.filter(
@@ -178,7 +193,7 @@ class PhysicalActivityPerWeekRule(BaseRule):
     therefore restrict to sports activities.
     """
 
-    rule_title = "Physical activity per week"
+    rule_title = PHYSICAL_ACTIVITY_PER_WEEK
 
     def triggering_allowed(self) -> bool:
         return not RuleTriggeredLog.objects.filter(
@@ -209,7 +224,7 @@ class HighMediaUsagePerDayRule(BaseRule):
     Rule checking if the client has spent more than 6 hours on media usage today.
     """
 
-    rule_title = "High media usage per day"
+    rule_title = HIGH_MEDIA_USAGE_PER_DAY
 
     def triggering_allowed(self) -> bool:
         return not RuleTriggeredLog.objects.filter(
@@ -240,7 +255,7 @@ class LowMediaUsagePerDayRule(HighMediaUsagePerDayRule):
     Rule checking if the client has spent less than 30 minutes on media usage today.
     """
 
-    rule_title = "Low media usage per day"
+    rule_title = LOW_MEDIA_USAGE_PER_DAY
 
     def evaluate_preconditions(self) -> bool:
         relevant_entries = self.get_mood_diary_entries().filter(
@@ -260,7 +275,7 @@ class FourteenDaysMoodAverageRule(BaseRule):
     out of the last 14 days.
     """
 
-    rule_title = "14 day mood average"
+    rule_title = FOURTEEN_DAY_MOOD_AVERAGE
 
     def triggering_allowed(self) -> bool:
         # There are entries for the last 14 days
@@ -305,7 +320,7 @@ class FourteenDaysMoodMaximumRule(FourteenDaysMoodAverageRule):
     Rule checking if the client has got a max mood value of less than 1 for the last 14 days.
     """
 
-    rule_title = "14 day mood maximum"
+    rule_title = FOURTEEN_DAY_MOOD_MAXIMUM
 
     def evaluate_preconditions(self) -> bool:
         relevant_entries = self.get_mood_diary_entries()
@@ -320,7 +335,7 @@ class UnsteadyFoodIntakeRule(BaseRule):
     Rule checking if the client has eaten less than 3 meals per day each for the last 3 days.
     """
 
-    rule_title = "Unsteady food intake"
+    rule_title = UNSTEADY_FOOD_INTAKE
 
     def triggering_allowed(self) -> bool:
         return not RuleTriggeredLog.objects.filter(
@@ -349,7 +364,7 @@ class PositiveMoodChangeBetweenActivitiesRule(BaseRule):
     Rule checking if the client has a positive mood change between two consecutive activities.
     """
 
-    rule_title = "Positive mood change between activities"
+    rule_title = POSITIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES
 
     def triggering_allowed(self) -> bool:
         return True
@@ -393,7 +408,7 @@ class NegativeMoodChangeBetweenActivitiesRule(PositiveMoodChangeBetweenActivitie
     Rule checking if the client has a negative mood change between two consecutive activities.
     """
 
-    rule_title = "Negative mood change between activities"
+    rule_title = NEGATIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES
 
     def evaluate_preconditions(self) -> bool:
         relevant_entries = self.get_mood_diary_entries()
@@ -408,7 +423,7 @@ class DailyAverageMoodImprovingRule(BaseRule):
     Rule checking if the client has a higher average mood than the day before.
     """
 
-    rule_title = "Daily average mood improving"
+    rule_title = DAILY_AVERAGE_MOOD_IMPROVING
 
     def triggering_allowed(self) -> bool:
         return not RuleTriggeredLog.objects.filter(
@@ -446,7 +461,7 @@ class PhysicalActivityPerWeekIncreasingRule(BaseRule):
     as this is the maximum of the WHO recommendation.
     """
 
-    rule_title = "Physical activity per week increasing"
+    rule_title = PHYSICAL_ACTIVITY_PER_WEEK_INCREASING
 
     def triggering_allowed(self) -> bool:
         # Only to be triggered on Sundays
