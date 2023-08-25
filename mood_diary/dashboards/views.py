@@ -1,10 +1,7 @@
 from core.views import AuthenticatedClientRoleMixin
-from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-
-User = get_user_model()
 
 
 class DashboardClientView(AuthenticatedClientRoleMixin, View):
