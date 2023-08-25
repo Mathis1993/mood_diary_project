@@ -17,6 +17,16 @@ from rules.models import Rule
 User = get_user_model()
 
 
+class RestrictToOwnClientsAndReleasedEntriesMixin:
+    def get_queryset(self):
+        client_id = self.kwargs.get(self.pk_client_kwarg)
+        mood_diary, _ = MoodDiary.objects.get_or_create(
+            client_id=client_id,
+            client__counselor_id=self.request.user.id,
+        )
+        return mood_diary.entries.filter(released=True)
+
+
 class CreateClientView(AuthenticatedCounselorRoleMixin, View):
     form_class = ClientCreationForm
     template_name = "clients/client_create.html"
@@ -81,36 +91,24 @@ class ClientUpdateToInactiveView(AuthenticatedCounselorRoleMixin, View):
         return redirect(reverse_lazy("clients:list_clients"))
 
 
-class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, AjaxListView):
+class MoodDiaryEntryListCounselorView(
+    AuthenticatedCounselorRoleMixin, RestrictToOwnClientsAndReleasedEntriesMixin, AjaxListView
+):
     model = MoodDiaryEntry
     template_name = "clients/mood_diary_entries_list.html"
     page_template = "clients/mood_diary_entries_list_page.html"
     context_object_name = "entries"
-    pk_url_kwarg = "client_pk"
-
-    def get_queryset(self):
-        client_id = self.kwargs.get(self.pk_url_kwarg)
-        mood_diary, _ = MoodDiary.objects.get_or_create(
-            client_id=client_id,
-            client__counselor_id=self.request.user.id,
-        )
-        return mood_diary.entries.filter(released=True)
+    pk_client_kwarg = "client_pk"
 
 
-class MoodDiaryEntryDetailView(AuthenticatedCounselorRoleMixin, DetailView):
+class MoodDiaryEntryDetailView(
+    AuthenticatedCounselorRoleMixin, RestrictToOwnClientsAndReleasedEntriesMixin, DetailView
+):
     model = MoodDiaryEntry
     template_name = "clients/mood_diary_entry_get.html"
     context_object_name = "entry"
     pk_client_kwarg = "client_pk"
     pk_url_kwarg = "entry_pk"
-
-    def get_queryset(self):
-        client_id = self.kwargs.get(self.pk_client_kwarg)
-        return self.model.objects.filter(
-            released=True,
-            mood_diary__client_id=client_id,
-            mood_diary__client__counselor_id=self.request.user.id,
-        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
