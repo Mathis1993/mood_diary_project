@@ -14,7 +14,7 @@ class RuleFactory(factory.django.DjangoModelFactory):
     criterion = factory.fuzzy.FuzzyChoice(Rule.Criterion.choices)
     evaluation = factory.fuzzy.FuzzyChoice(Rule.Evaluation.choices)
     conclusion_message = factory.LazyAttribute(
-        lambda obj: RULE_TITLES_CONCLUSION_MESSAGES_EN_DE[obj.title]["en"]
+        lambda obj: RULE_TITLES_CONCLUSION_MESSAGES_EN_DE.get(obj.title, {"en": "blorg"}).get("en")
     )
 
 
