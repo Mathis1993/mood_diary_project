@@ -41,35 +41,10 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
     mood = models.ForeignKey(
         to="diaries.Mood", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
-    emotion = models.ForeignKey(
-        to="diaries.Emotion",
-        on_delete=models.RESTRICT,
-        related_name="mood_diary_entries",
-        null=True,
-        blank=True,
-        default=None,
-    )
-    details = models.TextField(null=True, blank=True, default=None)
     activity = models.ForeignKey(
         to="diaries.Activity", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
-    strain = models.ForeignKey(
-        to="diaries.Strain",
-        on_delete=models.RESTRICT,
-        related_name="mood_diary_entries",
-        null=True,
-        blank=True,
-        default=None,
-    )
-    strain_area = models.ForeignKey(
-        to="diaries.StrainArea",
-        on_delete=models.RESTRICT,
-        related_name="mood_diary_entries",
-        null=True,
-        blank=True,
-        default=None,
-    )
-    strain_info = models.TextField(null=True, blank=True, default=None)
+    details = models.TextField(null=True, blank=True, default=None)
 
 
 class Mood(NormalizedScaleModel):
@@ -86,14 +61,6 @@ class Mood(NormalizedScaleModel):
     @staticmethod
     def max_value() -> int:
         return 3
-
-
-class Emotion(NormalizedStringValueModel):
-    class Meta:
-        db_table = "diaries_emotions"
-
-    def __str__(self):
-        return self.value
 
 
 class Activity(NormalizedStringValueModel):
@@ -123,19 +90,3 @@ class ActivityCategory(NormalizedStringValueModel):
     relaxing_value = "Relaxation"
     media_usage_value = "Media"
     food_intake_value = "Food"
-
-
-class Strain(NormalizedScaleModel):
-    class Meta:
-        db_table = "diaries_strains"
-
-    def __str__(self):
-        return f"{self.label} ({self.value})"
-
-
-class StrainArea(NormalizedStringValueModel):
-    class Meta:
-        db_table = "diaries_strain_areas"
-
-    def __str__(self):
-        return self.value
