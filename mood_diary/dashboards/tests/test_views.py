@@ -45,19 +45,19 @@ def mood_highlights(mood_diary):
     return [
         MoodDiaryEntry(
             id=1,
-            date="2023-06-07",
+            date="2023-09-23",
             mood=Mood(value=7, label="Happiest"),
             activity=Activity(value="A1"),
         ),
         MoodDiaryEntry(
             id=2,
-            date="2023-06-06",
+            date="2023-09-24",
             mood=Mood(value=6, label="Happier"),
             activity=Activity(value="A2"),
         ),
         MoodDiaryEntry(
             id=3,
-            date="2023-06-05",
+            date="2023-09-25",
             mood=Mood(value=5, label="Happy"),
             activity=Activity(value="A3"),
         ),
@@ -77,7 +77,6 @@ def test_dashboard_client_view(
     response = create_response(user, url)
 
     assert response.status_code == http.HTTPStatus.OK
-    # assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
     assert response.context["mood_scores_dates"] == ["Sunday", "Monday", "Tuesday"]
     assert response.context["mood_scores_values"] == [8, 9, 10]
     assert response.context["mood_highlights"] == mock_highlights.return_value

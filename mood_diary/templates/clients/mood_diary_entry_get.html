@@ -36,10 +36,10 @@
                             <div class="active-mood-label">{{ entry.mood.label }}</div>
                         </div>
                     </div>
-                    {% if entry.mood_and_emotion_info %}
+                    {% if entry.details %}
                         <h4 class="text-md-left">{% translate "Details" %}</h4>
                         <div class="text">
-                            <p>{{ entry.mood_and_emotion_info }}</p>
+                            <p>{{ entry.details }}</p>
                         </div>
                     {% endif %}
                 </div>
