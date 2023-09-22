@@ -60,7 +60,7 @@ class MoodDiaryEntryFactory(factory.django.DjangoModelFactory):
     end_time = factory.LazyAttribute(lambda obj: timezone.now())
     mood = factory.SubFactory("diaries.tests.factories.MoodFactory")
     emotion = factory.SubFactory("diaries.tests.factories.EmotionFactory")
-    mood_and_emotion_info = factory.faker.Faker("sentence", nb_words=10)
+    details = factory.faker.Faker("sentence", nb_words=10)
     activity = factory.SubFactory("diaries.tests.factories.ActivityFactory")
     strain = factory.SubFactory("diaries.tests.factories.StrainFactory")
     strain_area = factory.SubFactory("diaries.tests.factories.StrainAreaFactory")

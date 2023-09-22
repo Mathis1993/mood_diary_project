@@ -31,7 +31,7 @@ class MoodDiaryEntryForm(BaseModelForm):
             "end_time",
             "activity",
             "mood",
-            "mood_and_emotion_info",
+            "details",
         ]
         widgets = {
             "date": forms.DateInput(
@@ -55,8 +55,8 @@ class MoodDiaryEntryForm(BaseModelForm):
         self.fields["mood"].label = _("Mood")
         self.fields["mood"].empty_label = None
         self.fields["mood"].initial = Mood.objects.get(value=0)
-        self.fields["mood_and_emotion_info"].label = _("Details")
-        self.fields["mood_and_emotion_info"].widget.attrs.update(
+        self.fields["details"].label = _("Details")
+        self.fields["details"].widget.attrs.update(
             {"rows": 5, "placeholder": _("Enter additional details here...")}
         )
 

@@ -49,7 +49,7 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
         blank=True,
         default=None,
     )
-    mood_and_emotion_info = models.TextField(null=True, blank=True, default=None)
+    details = models.TextField(null=True, blank=True, default=None)
     activity = models.ForeignKey(
         to="diaries.Activity", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )

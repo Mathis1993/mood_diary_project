@@ -29,7 +29,7 @@ def test_mood_diary_entry():
         end_time=timezone.now(),
         mood=mood,
         emotion=emotion,
-        mood_and_emotion_info="blorg",
+        details="blorg",
         activity=activity,
         strain=strain,
         strain_area=strain_area,
@@ -41,7 +41,7 @@ def test_mood_diary_entry():
     assert mood_diary_entry_1.released is False
     assert mood_diary_entry_1.mood == mood
     assert mood_diary_entry_1.emotion == emotion
-    assert mood_diary_entry_1.mood_and_emotion_info == "blorg"
+    assert mood_diary_entry_1.details == "blorg"
     assert mood_diary_entry_1.activity == activity
     assert mood_diary_entry_1.strain == strain
     assert mood_diary_entry_1.strain_area == strain_area
@@ -61,7 +61,7 @@ def test_mood_diary_entry():
 
     assert mood_diary_entry_2.start_time is not None
     assert mood_diary_entry_2.end_time is not None
-    assert mood_diary_entry_2.mood_and_emotion_info is None
+    assert mood_diary_entry_2.details is None
     assert mood_diary_entry_2.strain_area is None
 
     # Only required fields are filled

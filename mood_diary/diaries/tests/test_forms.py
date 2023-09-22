@@ -14,7 +14,7 @@ def valid_mood_diary_entry_form_data():
         "end_time": "10:00",
         "activity": activity.id,
         "mood": mood.id,
-        "mood_and_emotion_info": "Feeling good",
+        "details": "Feeling good",
     }
 
 
