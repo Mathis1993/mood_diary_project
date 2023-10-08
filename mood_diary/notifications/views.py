@@ -15,7 +15,7 @@ class RestrictNotificationToOwnerMixin:
     Mixin to restrict access to a notification to its owner.
     """
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[Notification]:
         return self.model.objects.filter(client_id=self.request.user.client.id).all()
 
 
