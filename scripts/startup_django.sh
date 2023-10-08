@@ -1,5 +1,7 @@
 #! /bin/sh
 
+# Django Application startup script
+
 python manage.py collectstatic --noinput
 
 # Write logs to stdout/stderr

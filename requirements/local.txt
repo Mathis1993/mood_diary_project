@@ -1,3 +1,5 @@
+# Extend base requirements with some for local development
+
 -r base.txt
 
 # Code Quality

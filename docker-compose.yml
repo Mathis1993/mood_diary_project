@@ -1,3 +1,5 @@
+# docker-compose file for development where postgres and redis are run
+# as services but the django app is run locally
 version: '3.8'
 
 services:

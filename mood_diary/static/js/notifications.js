@@ -1,3 +1,6 @@
+// If the browser supports notifications and service workers, ask the user for permission
+// to send notifications. If the user grants permission, subscribe the user to push notifications
+// by creating a push subscription object and sending it to the server.
 function requestNotificationPermission() {
     if ('Notification' in window && navigator.serviceWorker) {
         let permissionStatus;

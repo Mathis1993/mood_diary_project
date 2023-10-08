@@ -1,3 +1,7 @@
+"""
+URL patterns for the notifications app.
+"""
+
 from django.urls import path
 from rules import views
 

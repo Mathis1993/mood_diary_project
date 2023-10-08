@@ -1,3 +1,4 @@
+# This script will nuke your local database and reseed it with fresh data (for better DX)
 STEP_COUNTER=0
 
 echo -e "\n$((STEP_COUNTER += 1))) 💣 💣 Nuking local DB 💣 💣"

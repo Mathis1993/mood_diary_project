@@ -1,16 +1,34 @@
 import logging
+from typing import Literal
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-logger = logging.getLogger("mood_diary.core.utils")
+logger = logging.getLogger("mood_diary.clients.utils")
 
 
-def send_account_creation_email(to_email: str, host: str, scheme: str, initial_password: str):
+def send_account_creation_email(
+    to_email: str, host: str, scheme: Literal["http", "https"], initial_password: str
+):
     """
     Sends an email to the client with the initial password.
     A html message is sent if the email client supports it, otherwise a fallback message is sent.
+
+    Parameters
+    ----------
+    to_email: str
+        Email address to send the email to
+    host: str
+        Hostname of the django server
+    scheme: str
+        Scheme of the django server (http or https)
+    initial_password: str
+        The initial password to send in the email
+
+    Returns
+    -------
+    None
     """
     url = f"{scheme}://{host}"
     fallback_message = f"""

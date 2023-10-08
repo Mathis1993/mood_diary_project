@@ -1,3 +1,6 @@
+# Base requirements to run the project
+
+# Django
 Django==4.2.2
 
 # Database

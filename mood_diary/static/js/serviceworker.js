@@ -1,4 +1,4 @@
-// Base Service Worker implementation taken from django-pwa (https://github.com/silviolleite/django-pwa)
+// Base Service Worker implementation taken from django-pwa (https://github.com/silviolleite/django-pwa).
 
 var staticCacheName = "django-pwa-v" + new Date().getTime();
 var filesToCache = [
@@ -51,7 +51,7 @@ var filesToCache = [
     '/static/images/splash_screens/8.3__iPad_Mini_portrait.png',
 ];
 
-// Cache on install
+// Cache on install.
 self.addEventListener("install", event => {
     this.skipWaiting();
     event.waitUntil(
@@ -64,7 +64,7 @@ self.addEventListener("install", event => {
     )
 });
 
-// Clear cache on activate
+// Clear cache on activate.
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
@@ -86,7 +86,7 @@ self.addEventListener('activate', event => {
     }
 });
 
-// Serve from Cache
+// Serve from Cache.
 self.addEventListener("fetch", event => {
     event.respondWith(
         caches.match(event.request)
@@ -99,7 +99,7 @@ self.addEventListener("fetch", event => {
     )
 });
 
-// Handle incoming push events
+// Handle incoming push events.
 function handlePushEvent(event) {
     console.log(event);
     return Promise.resolve()
@@ -126,10 +126,12 @@ function handlePushEvent(event) {
         });
 }
 
+// Listen for push events.
 self.addEventListener('push', function (event) {
     event.waitUntil(handlePushEvent(event));
 });
 
+// Listen for notification click events.
 self.addEventListener('notificationclick', function (event) {
     event.notification.close();
     event.waitUntil(

@@ -1,5 +1,6 @@
 """
 WSGI config for mood_diary project.
+Used by Gunicorn to serve the project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
