@@ -159,7 +159,10 @@ AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "users:index"
 LOGOUT_REDIRECT_URL = "users:login"
-
+AUTHENTICATION_BACKENDS = [
+    "users.authentication_backends.EmailHashBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

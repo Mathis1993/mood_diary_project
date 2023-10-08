@@ -1,4 +1,5 @@
 import pytest
+from core.utils import hash_email
 from django.conf import settings
 from django.core import mail
 from django.urls import reverse
@@ -17,7 +18,7 @@ def test_counselor_creation_sends_email(admin_client, django_user_model):
     response = admin_client.post(url, data)
 
     assert response.status_code == 302  # Redirect after creation
-    assert django_user_model.objects.get(email="test@example.com") is not None
+    assert django_user_model.objects.get(email_hash=hash_email("test@example.com")) is not None
     assert len(mail.outbox) == 1
     assert mail.outbox[0].to[0] == "test@example.com"
     assert mail.outbox[0].from_email == settings.FROM_EMAIL
@@ -35,7 +36,7 @@ def test_client_creation_does_not_send_email(admin_client, django_user_model):
     response = admin_client.post(url, data)
 
     assert response.status_code == 302  # Redirect after creation
-    assert django_user_model.objects.get(email="test@example.com") is not None
+    assert django_user_model.objects.get(email_hash=hash_email("test@example.com")) is not None
     assert len(mail.outbox) == 0
 
 
@@ -49,5 +50,5 @@ def test_user_update_does_not_send_email(admin_client):
     # Check if the user was updated
     assert response.status_code == 302  # Redirect after update
     user.refresh_from_db()
-    assert user.email == "another@example.com"
+    assert user.email_hash == hash_email("another@example.com")
     assert len(mail.outbox) == 0

@@ -1,6 +1,6 @@
 from clients.forms import ClientCreationForm
 from clients.models import Client
-from core.utils import send_account_creation_email
+from core.utils import hash_email, send_account_creation_email
 from core.views import AuthenticatedCounselorRoleMixin
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from django.contrib.auth import get_user_model
@@ -34,7 +34,10 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
             identifier = form.cleaned_data["identifier"]
             password = get_random_string(length=15)
 
-            client_user, created = User.objects.get_or_create(email=email, role=User.Role.CLIENT)
+            hashed_email = hash_email(email)
+            client_user, created = User.objects.get_or_create(
+                email_hash=hashed_email, role=User.Role.CLIENT
+            )
             if not created:
                 form.add_error("email", ValidationError(_("Client already exists")))
                 return render(request, self.template_name, {"form": form})
