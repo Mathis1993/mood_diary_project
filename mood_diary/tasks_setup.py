@@ -1,3 +1,8 @@
+"""
+This file configures Celery for the mood diary project, auto-discovering functions
+annotated as tasks and registering periodic tasks.
+"""
+
 import os
 
 from celery import Celery

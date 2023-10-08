@@ -1,3 +1,7 @@
+"""
+URL patterns for the diaries app.
+"""
+
 from diaries import views
 from django.urls import path
 
@@ -33,11 +37,6 @@ urlpatterns = [
         "mood_diary_entries/release/",
         views.MoodDiaryEntryReleaseView.as_view(),
         name="release_mood_diary_entries",
-    ),
-    path(
-        "mood_diary_entries/release_done/",
-        views.MoodDiaryEntryReleaseDoneView.as_view(),
-        name="release_mood_diary_entries_done",
     ),
     path(
         "mood_diary_entries/auto_select/auto.json",

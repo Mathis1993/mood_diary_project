@@ -9,6 +9,10 @@ from pywebpush import WebPushException, webpush
 
 
 class Notification(TrackCreationAndUpdates):
+    """
+    This is the Notification model representing a notification for a client.
+    """
+
     class Meta:
         db_table = "notifications_notifications"
         ordering = ["viewed", "-created_at"]
@@ -28,6 +32,11 @@ class Notification(TrackCreationAndUpdates):
 
 
 class PushSubscription(TrackCreationAndUpdates):
+    """
+    This is the PushSubscription model representing a push subscription for a client
+    with all information necessary for that held in a json field.
+    """
+
     class Meta:
         db_table = "notifications_push_subscriptions"
 
@@ -41,6 +50,24 @@ class PushSubscription(TrackCreationAndUpdates):
     logger = logging.getLogger("notifications.models.PushSubscription")
 
     def send_push_notification(self, message: dict):
+        """
+        Send a push notification using the subscription the current model instance holds.
+        The message that is sent is encrypted via the VAPID protocol so that the push
+        service cannot access it.
+
+        Parameters
+        ----------
+        message: dict
+            The push notification content.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        WebPushException
+        """
         self.logger.info(f"Trying to send push notification to {self.client.identifier}")
         try:
             webpush(

@@ -1,3 +1,8 @@
+"""
+This file holds pytest fixtures that can be used across multiple subdirectories
+to avoid code duplication.
+"""
+
 import pytest
 from clients.tests.factories import ClientFactory
 from diaries.tests.factories import MoodDiaryEntryFactory

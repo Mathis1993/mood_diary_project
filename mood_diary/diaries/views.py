@@ -5,8 +5,9 @@ from diaries.forms import MoodDiaryEntryCreateForm, MoodDiaryEntryForm
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
 from diaries.tasks import task_event_based_rules_evaluation
 from django.conf import settings
-from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.module_loading import import_string
@@ -20,18 +21,39 @@ from rules.utils import RuleMessage
 
 
 class RestrictMoodDiaryEntryToOwnerMixin:
-    def get_queryset(self):
+    """
+    Mixin to restrict access to a mood diary entry to its owner.
+    """
+
+    def get_queryset(self) -> QuerySet:
         return self.model.objects.filter(mood_diary__client_id=self.request.user.client.id)
 
 
 class MoodDiaryEntryDetailView(
     AuthenticatedClientRoleMixin, RestrictMoodDiaryEntryToOwnerMixin, DetailView
 ):
+    """
+    View for displaying a mood diary entry in detail.
+    """
+
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entry_get.html"
     context_object_name = "entry"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
+        """
+        Adds the mood scale to the response context.
+
+        Parameters
+        ----------
+        kwargs: dict
+            Keyword arguments for the parent method.
+
+        Returns
+        -------
+        dict
+            Response context
+        """
         context = super().get_context_data(**kwargs)
         context["moods"] = Mood.objects.all()
         context["label_left"] = Mood.objects.first().label
@@ -40,23 +62,54 @@ class MoodDiaryEntryDetailView(
 
 
 class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
+    """
+    View for displaying a list of mood diary entries.
+    """
+
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entries_list.html"
     page_template = "diaries/mood_diary_entry_list_page.html"
     context_object_name = "entries"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
+        """
+        Restrict the returned MoodDiaryEntry entities to those of the client requesting the view.
+
+        Returns
+        -------
+        Queryset
+            All MoodDiaryEntry entities of the client requesting the view.
+        """
         client_id = self.request.user.client.id
         mood_diary, _ = MoodDiary.objects.get_or_create(client_id=client_id)
         return mood_diary.entries.all()
 
 
 class MoodDiaryEntryCreateView(AuthenticatedClientRoleMixin, CreateView):
+    """
+    View for creating a mood diary entry.
+    """
+
     model = MoodDiaryEntry
     form_class = MoodDiaryEntryCreateForm
     template_name = "diaries/mood_diary_entry_create.html"
 
-    def form_valid(self, form):
+    def form_valid(self, form: MoodDiaryEntryCreateForm) -> HttpResponse:
+        """
+        When a form submitted via a POST request is valid, disassemble it into separate mood
+        diary entries in case the start and end date differ.
+        Also trigger evaluation of event-based rules.
+
+        Parameters
+        ----------
+        form: MoodDiaryEntryCreateForm
+            The form to be processed.
+
+        Returns
+        -------
+        HttpResponse
+            Redirects to the list of mood diary entries.
+        """
         start_time = form.cleaned_data.get("start_time")
         end_time = form.cleaned_data.get("end_time")
         start_date = form.cleaned_data.get("date")
@@ -82,14 +135,38 @@ class MoodDiaryEntryCreateView(AuthenticatedClientRoleMixin, CreateView):
 class MoodDiaryEntryUpdateView(
     AuthenticatedClientRoleMixin, RestrictMoodDiaryEntryToOwnerMixin, UpdateView
 ):
+    """
+    View for updating a mood diary entry.
+    """
+
     model = MoodDiaryEntry
     form_class = MoodDiaryEntryForm
     template_name = "diaries/mood_diary_entry_update.html"
 
-    def get_success_url(self):
+    def get_success_url(self) -> HttpResponse:
+        """
+        Returns the URL to redirect to after a successful update.
+
+        Returns
+        -------
+        HttpResponse
+            Redirects to the detail view of the updated mood diary entry.
+        """
         return reverse_lazy("diaries:get_mood_diary_entry", kwargs={"pk": self.object.id})
 
-    def form_valid(self, form):
+    def form_valid(self, form: MoodDiaryEntryForm) -> HttpResponse:
+        """
+        When a form submitted via a POST request is valid, trigger evaluation of event-based rules.
+
+        Parameters
+        ----------
+        form: MoodDiaryEntryForm
+            The form to be processed.
+
+        Returns
+        -------
+        HttpResponse
+        """
         response = super().form_valid(form)
 
         # Trigger evaluation of event-based rules
@@ -102,6 +179,11 @@ class MoodDiaryEntryUpdateView(
 class MoodDiaryEntryDeleteView(
     AuthenticatedClientRoleMixin, RestrictMoodDiaryEntryToOwnerMixin, DeleteView
 ):
+    """
+    View for deleting a mood diary entry.
+    Redirects to the list of mood diary entries after deletion.
+    """
+
     model = MoodDiaryEntry
     template_name = "diaries/mood_diary_entry_delete.html"
     context_object_name = "entry"
@@ -109,33 +191,54 @@ class MoodDiaryEntryDeleteView(
 
 
 class MoodDiaryEntryReleaseView(AuthenticatedClientRoleMixin, View):
-    template_name = "diaries/mood_diary_entry_release.html"
+    """
+    View for releasing mood diary entries.
+    """
 
-    def get(self, request):
-        return render(request, self.template_name)
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """
+        Upon receiving a POST request, release all mood diary entries of the client requesting it.
 
-    def post(self, request):
+        Parameters
+        ----------
+        request: HttpRequest
+
+        Returns
+        -------
+        HttpResponse
+            Redirects to the list of mood diary entries.
+        """
         mood_diary = self.request.user.client.mood_diary
         mood_diary.release_entries()
-        return redirect("diaries:release_mood_diary_entries_done")
-
-
-class MoodDiaryEntryReleaseDoneView(AuthenticatedClientRoleMixin, View):
-    template_name = "diaries/mood_diary_entry_release_done.html"
-
-    def get(self, request):
-        return render(request, self.template_name)
+        return redirect("diaries:list_mood_diary_entries")
 
 
 class ActivitySelect2QuerySetView(AutoResponseView):
-    def get(self, request, *args, **kwargs):
+    """
+    View for providing a JSON response for the activity select2 widget
+    to properly display activities grouped by their categories.
+    """
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         """
         Django-Select2 does not provide the possibility to combine a search field
         and results organized hierarchically (using <optgroup>) out of the box.
         Therefore, this view processes results for a proper display.
-        Return a :class:`.django.http.JsonResponse` with results grouped in a way that
+        Return a django.http.JsonResponse with results grouped in a way that
         they can be displayed in <optgroup> options.
         For an example, see https://select2.org/data-sources/formats#grouped-data.
+
+        Parameters
+        ----------
+        request: HttpRequest
+        args: list
+        kwargs: dict
+
+        Returns
+        -------
+        JsonResponse
+            Activity and ActivityCategory entities grouped in a way that they
+            can be displayed in <optgroup> options.
         """
         self.widget = self.get_widget_or_404()
         self.term = kwargs.get("term", request.GET.get("term", ""))
@@ -148,12 +251,21 @@ class ActivitySelect2QuerySetView(AutoResponseView):
             encoder=import_string(settings.SELECT2_JSON_ENCODER),
         )
 
-    def queryset_to_dict(self, queryset):
+    def queryset_to_dict(self, queryset: QuerySet) -> dict:
         """
         Transform the queryset to a dict where activities are ordered within their
         categories.
         Activities are ordered by German categories by default (see the Activity model)
         so that itertool's groupby can work correctly.
+
+        Parameters
+        ----------
+        queryset: QuerySet
+
+        Returns
+        -------
+        dict
+            Activities grouped by their categories as a dict.
         """
         lang = get_language_from_request(self.request)
         if lang == "en":

@@ -1,3 +1,7 @@
+"""
+URL patterns for the users app.
+"""
+
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy

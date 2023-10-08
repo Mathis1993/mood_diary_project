@@ -10,3 +10,5 @@ multiline-quotes = double
 # flake8 declared the behaviour a feature, fair, but annoying.
 # https://gitlab.com/pycqa/flake8/-/issues/10
 exclude = .git .hg .idea venv __pycache__ */migrations/* config
+
+# flake8 is used as a pre-commit hook to improve code quality

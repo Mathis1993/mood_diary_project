@@ -5,7 +5,7 @@ from functools import cached_property
 from clients.models import Client
 from diaries.models import Activity, ActivityCategory, Mood, MoodDiary, MoodDiaryEntry
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, QuerySet
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -61,10 +61,21 @@ class BaseRule:
         Checks if the rule is allowed to trigger right now.
         If, for example, the rule is only allowed to trigger once a day, this method should
         return False if the rule has already been triggered today.
+
+        Returns
+        -------
+        bool
         """
         raise NotImplementedError
 
-    def get_mood_diary_entries(self) -> models.QuerySet[MoodDiaryEntry]:
+    def get_mood_diary_entries(self) -> QuerySet[MoodDiaryEntry]:
+        """
+        Returns the MoodDiaryEntry entities relevant for the rule evaluation.
+
+        Returns
+        -------
+        QuerySet[MoodDiaryEntry]
+        """
         raise NotImplementedError
 
     def evaluate_preconditions(self) -> bool:
@@ -72,18 +83,30 @@ class BaseRule:
         Checks if the preconditions for the rule are met.
         For example, if the rule is based on a threshold, this method should check if the
         threshold has been reached.
+
+        Returns
+        -------
+        bool
         """
         raise NotImplementedError
 
     def client_subscribed(self) -> bool:
         """
         Checks if the client is subscribed to the rule at the moment.
+
+        Returns
+        -------
+        bool
         """
         return self.rule.rule_users.filter(client_id=self.client_id, active=True).exists()
 
     def mood_diary_exists(self) -> bool:
         """
         Checks if the client has a mood diary and logged any entries.
+
+        Returns
+        -------
+        bool
         """
         return (
             MoodDiary.objects.filter(client_id=self.client_id).exists()
@@ -91,11 +114,26 @@ class BaseRule:
         )
 
     def persist_rule_triggering(self):
+        """
+        Log the triggering of the rule in the database.
+
+        Returns
+        -------
+        None
+        """
         RuleTriggeredLog.objects.create(
             rule=self.rule, client_id=self.client_id, requested_at=self.requested_at
         )
 
     def create_notification(self):
+        """
+        Create a notification for the client from the conclusion message of the
+        triggered rule.
+
+        Returns
+        -------
+        None
+        """
         message = self.rule.conclusion_message
         message_de = self.rule.conclusion_message_de
         notification = Notification.objects.create(
@@ -104,6 +142,14 @@ class BaseRule:
         self.notification_id = notification.id
 
     def create_push_notifications(self):
+        """
+        If the client has granted push notifications, send a push notification
+        per active subscription.
+
+        Returns
+        -------
+        None
+        """
         client = Client.objects.get(id=self.client_id)
         if not client.push_notifications_granted:
             self.logger.info(
@@ -121,6 +167,18 @@ class BaseRule:
             subscription.send_push_notification(message)
 
     def evaluate(self):
+        """
+        Rule evaluation process.
+        Checks if the client is subscribed to the rule, if mood diary and entries exists,
+        if the rule is allowed to trigger and if the preconditions are met.
+        If all of these conditions are met, the rule triggering is logged in the database and
+        a notification for the respective client is created as well as push notifications,
+        if applicable.
+
+        Returns
+        -------
+        None
+        """
         if not self.client_subscribed():
             return
         if not self.mood_diary_exists():

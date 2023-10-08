@@ -1,18 +1,23 @@
-from core.utils import send_account_creation_email
+from typing import Union
+
+from clients.utils import send_account_creation_email
 from django import forms
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
+from django.http import HttpRequest, HttpResponse
 from django.utils.crypto import get_random_string
 
 User = get_user_model()
 
 
 class UserCreationForm(forms.ModelForm):
-    """A form for creating new users. Includes all the required
-    fields."""
+    """
+    A form for creating new users. Includes all the required fields.
+    Used in the django admin interface.
+    """
 
     class Meta:
         model = User
@@ -20,9 +25,11 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    """A form for updating users. Includes some fields on
-    the user, but replaces the password field with admin's
-    disabled password hash display field.
+    """
+    A form for updating users. Includes some fields on the user model,
+    but replaces the password field with a disabled password hash
+    display field.
+    Used in the django admin interface.
     """
 
     password = ReadOnlyPasswordHashField()
@@ -36,7 +43,7 @@ class UserChangeForm(forms.ModelForm):
 class UserAdmin(BaseUserAdmin):
     """
     Override the base user admin class as much as necessary to work with
-    the custom user model.
+    the custom user model in the django admin interface.
     """
 
     # The forms to add and change user instances
@@ -67,11 +74,24 @@ class UserAdmin(BaseUserAdmin):
     ordering = ["email"]
     filter_horizontal = []
 
-    def save_form(self, request, form, change):
+    def save_form(
+        self, request: HttpRequest, form: Union[UserCreationForm, UserChangeForm], change: bool
+    ) -> HttpResponse:
         """
         Send a creation email to a newly created user.
         The admin should only create counselors, so there
         is no further logic executed for other roles.
+
+        Parameters
+        ----------
+        request: HttpRequest
+        form: Union[UserCreationForm, UserChangeForm]
+        change: bool
+            If true, we deal with a UserChangeForm, otherwise with a UserCreationForm
+
+        Returns
+        -------
+        HttpResponse
         """
         # Do not execute any further logic on updating a user
         # or if the user is not a counselor.

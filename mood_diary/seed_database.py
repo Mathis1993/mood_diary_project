@@ -20,6 +20,14 @@ User = get_user_model()
 
 
 def seed_database():
+    """
+    Seed the development database with some initial data and users so that the
+    local application is ready to use.
+
+    Returns
+    -------
+    None
+    """
     User.objects.create_superuser(
         email="mathis@mood-diary.de",
         password=settings.TEST_USER_PASSWORD,
@@ -51,10 +59,25 @@ def seed_database():
 
 
 def seed_database_staging():
+    """
+    Seed the staging database with normalized entities, essentially just wrapping the
+    create_contents() function.
+
+    Returns
+    -------
+    None
+    """
     create_contents()
 
 
 def create_contents():
+    """
+    Create some normalized entities in the database, like the items for the mood scale.
+
+    Returns
+    -------
+    None
+    """
     for value, labels_de_en in MOOD_SCALE_DE_EN.items():
         for label_de, label_en in labels_de_en.items():
             MoodFactory.create(value=value, label=label_en, label_en=label_en, label_de=label_de)

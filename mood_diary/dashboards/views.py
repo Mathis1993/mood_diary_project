@@ -1,13 +1,30 @@
 from core.views import AuthenticatedClientRoleMixin
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 
 class DashboardClientView(AuthenticatedClientRoleMixin, View):
+    """
+    View for the client dashboard.
+    """
+
     template_name = "dashboards/dashboard_client.html"
 
-    def get(self, request):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """
+        Upon receiving a GET request, render the client dashboard.
+        That includes providing data for the mood score chart and the mood highlights.
+
+        Parameters
+        ----------
+        request: HttpRequest
+
+        Returns
+        -------
+        HttpResponse
+        """
         user = request.user
         mood_diary = user.client.mood_diary
         mood_scores = mood_diary.average_mood_scores_previous_days(7)

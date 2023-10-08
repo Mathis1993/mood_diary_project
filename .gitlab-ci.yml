@@ -1,3 +1,4 @@
+# This file defines the CI/CD pipeline for GitLab
 variables:
   GIT_STRATEGY: fetch
   # BASE IMAGE (kind of the folder for all images)

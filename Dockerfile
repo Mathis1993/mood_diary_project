@@ -1,3 +1,4 @@
+# Dockerfile for the Django application
 FROM python:3.11 AS base
 
 # Working directory

@@ -8,6 +8,13 @@ from django_select2.forms import ModelSelect2Widget
 
 
 class ActivityWidget(ModelSelect2Widget):
+    """
+    Widget for the activity field of the MoodDiaryEntryForm.
+    Enables to show activities grouped by their categories and to
+    search within activities and categories.
+    Utilizes the django-select2 package.
+    """
+
     search_fields = [
         "value_de__icontains",
         "value_en__icontains",
@@ -23,6 +30,10 @@ class ActivityWidget(ModelSelect2Widget):
 
 
 class MoodDiaryEntryForm(BaseModelForm):
+    """
+    Form for updating mood diary entries.
+    """
+
     class Meta:
         model = MoodDiaryEntry
         fields = [
@@ -67,6 +78,10 @@ class MoodDiaryEntryForm(BaseModelForm):
 
 
 class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
+    """
+    Form for creating mood diary entries.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["date"].label = _("Start date")
@@ -87,7 +102,16 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
         ),
     )
 
-    def clean(self):
+    def clean(self) -> dict:
+        """
+        Ensure that the end and start dates are set and that the
+        end date lies after the start date.
+
+        Returns
+        -------
+        dict
+            Cleaned form data
+        """
         cleaned_data = super().clean()
 
         if not cleaned_data.get("end_date"):

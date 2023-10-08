@@ -1,3 +1,7 @@
+"""
+URL patterns for the clients app.
+"""
+
 from clients import views
 from django.urls import path
 

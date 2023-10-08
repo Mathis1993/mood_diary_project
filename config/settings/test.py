@@ -1,3 +1,7 @@
+"""
+Django settings for a test environment.
+"""
+
 from .base import *  # noqa: F401 F403
 
 SECRET_KEY = SECRET_KEY or "simpletestsecret"  # noqa: F405
