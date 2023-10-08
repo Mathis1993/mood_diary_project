@@ -2,6 +2,7 @@ import logging
 from typing import Literal
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -76,4 +77,5 @@ Initial password: {initial_password}
         logger.exception(
             f"Could not send registration email to {to_email}. Failed with exception: {e}"
         )
+        raise ValidationError(str(e))
     logger.info(f"Sent registration email to {to_email}.")

@@ -1,6 +1,8 @@
+import pytest
 from clients.utils import send_account_creation_email
 from django.conf import settings
 from django.core import mail
+from django.core.exceptions import ValidationError
 from pytest_mock import MockFixture
 
 
@@ -13,5 +15,6 @@ def test_send_account_creation_email():
 
 def test_send_account_creation_email_fails(mocker: MockFixture):
     mocker.patch("clients.utils.send_mail", side_effect=Exception)
-    send_account_creation_email("a@b.de", "localhost", "http", "password")
+    with pytest.raises(ValidationError):
+        send_account_creation_email("a@b.de", "localhost", "http", "password")
     assert len(mail.outbox) == 0

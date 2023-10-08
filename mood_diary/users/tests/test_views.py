@@ -2,6 +2,7 @@ import http
 
 import pytest
 from clients.tests.factories import ClientFactory
+from core.utils import hash_email
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -136,7 +137,8 @@ def test_email_update_view(client):
     assert response.status_code == 302
     assert response.url == reverse("users:index")
     user.refresh_from_db()
-    assert user.email == "new_email@example.com"
+    assert user.email is None
+    assert user.email_hash == hash_email("new_email@example.com")
 
 
 @pytest.mark.django_db
