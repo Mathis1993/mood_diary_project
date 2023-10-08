@@ -22,7 +22,7 @@ class MoodDiary(models.Model):
 
     client = models.OneToOneField(to=Client, on_delete=models.CASCADE, related_name="mood_diary")
 
-    def average_mood_scores_previous_days(self, n_days: int) -> QuerySet:
+    def average_mood_scores_previous_days(self, n_days: int) -> QuerySet[MoodDiaryEntry]:
         """
         Calculate the average mood scores of the previous n days.
 
@@ -41,7 +41,7 @@ class MoodDiary(models.Model):
             .annotate(average_mood=Avg("mood__value"))[:n_days]
         )
 
-    def most_recent_mood_highlights(self, n_highlights: int) -> QuerySet:
+    def most_recent_mood_highlights(self, n_highlights: int) -> QuerySet[MoodDiaryEntry]:
         """
         Return the n most recent mood highlights.
 

@@ -25,7 +25,7 @@ class RestrictMoodDiaryEntryToOwnerMixin:
     Mixin to restrict access to a mood diary entry to its owner.
     """
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[MoodDiaryEntry]:
         return self.model.objects.filter(mood_diary__client_id=self.request.user.client.id)
 
 
@@ -71,7 +71,7 @@ class MoodDiaryEntryListView(AuthenticatedClientRoleMixin, AjaxListView):
     page_template = "diaries/mood_diary_entry_list_page.html"
     context_object_name = "entries"
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[MoodDiaryEntry]:
         """
         Restrict the returned MoodDiaryEntry entities to those of the client requesting the view.
 

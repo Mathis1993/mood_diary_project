@@ -104,7 +104,7 @@ class ClientListView(AuthenticatedCounselorRoleMixin, AjaxListView):
     page_template = "clients/clients_list_page.html"
     context_object_name = "clients"
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[Client]:
         """
         Restrict returned Client entities to those of the counselor requesting the view.
 
@@ -157,7 +157,7 @@ class MoodDiaryEntryListCounselorView(AuthenticatedCounselorRoleMixin, AjaxListV
     context_object_name = "entries"
     pk_url_kwarg = "client_pk"
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[MoodDiaryEntry]:
         """
         Restrict the returned MoodDiaryEntry entities to those of the client with the given pk
         that they have released to the counselor requesting the view.
@@ -187,7 +187,7 @@ class MoodDiaryEntryDetailView(AuthenticatedCounselorRoleMixin, DetailView):
     pk_client_kwarg = "client_pk"
     pk_url_kwarg = "entry_pk"
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[MoodDiaryEntry]:
         """
         Restrict the returned MoodDiaryEntry entities to those of the client with the given pk.
         Also ensure that the counselor requesting the view is the counselor of the client.
