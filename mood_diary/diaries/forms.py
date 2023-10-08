@@ -52,12 +52,17 @@ class MoodDiaryEntryForm(BaseModelForm):
         self.fields["start_time"].label = _("Start time")
         self.fields["end_time"].label = _("End time")
         self.fields["activity"].empty_label = None
+        self.fields["activity"].label = _("Activity")
         self.fields["mood"].label = _("Mood")
         self.fields["mood"].empty_label = None
         self.fields["mood"].initial = Mood.objects.get(value=0)
         self.fields["details"].label = _("Details")
         self.fields["details"].widget.attrs.update(
-            {"rows": 5, "placeholder": _("Enter additional details here...")}
+            {
+                "rows": 3,
+                "placeholder": _("Enter additional details here..."),
+                "maxlength": 300,
+            }
         )
 
 

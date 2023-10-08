@@ -257,9 +257,13 @@ msgstr "Stimmungsübersicht"
 msgid "Mood Highlights"
 msgstr "Stimmungshighlights"
 
-#: mood_diary/templates/diaries/mood_diary_entries_list.html:17
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:18
 msgid "No mood diary entries found."
 msgstr "Keine Tagebucheinträge gefunden."
+
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:15
+msgid "Entries released to your counselor show in green."
+msgstr "Einträge, die an deine*n Berater*in freigegeben wurden, sind grün markiert."
 
 #: mood_diary/templates/diaries/mood_diary_entries_list.html:43
 msgid "Release all Entries?"
