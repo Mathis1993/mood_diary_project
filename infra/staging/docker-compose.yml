@@ -1,5 +1,5 @@
 # docker-compose file for the staging environment where all components of the project
-# are run as services (postgres, redis, django, celery consumer, celery scheduler).configs:
+# are run as services (postgres, redis, django, celery consumer, celery scheduler):
 # Note that the staging system expects a traefik reverse proxy to be running on the host
 # independently of this docker-compose file.
 version: '3.8'
