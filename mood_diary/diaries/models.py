@@ -54,7 +54,7 @@ class MoodDiary(models.Model):
         QuerySet
             MoodDiary entities ordered by mood score and date.
         """
-        return self.entries.order_by("-mood__value", "-date")[:n_highlights]
+        return self.entries.order_by("-mood__value", "-date", "-start_time")[:n_highlights]
 
     def release_entries(self):
         """
