@@ -56,7 +56,7 @@ source venv/bin/activate
 ```
 3. Install the requirements
 ```shell
-pip install -r requirements/local.txt
+pip install -r requirements/test.txt
 ```
 4. Copy the .env-sample file to .env
 ```shell
@@ -87,22 +87,20 @@ This will create
   - email: `user1@example.com`
   - password: `TEST_USER_PASSWORD`
 
+The `TEST_USER_PASSWORD` is defined in `config/settings/test.py`.
+
 ### Run the Application
 1. Start the Django development server
 ```shell
 python manage.py runserver
 ```
+2. Open the application in your browser at `http://localhost:8000`
 
 #### Mobile Device View
 To view the application as it would appear on a mobile device, in Chrome, you can open the developer tools and toggle the device toolbar (second icon in the top-left corner).
 
 ## Tests
-To execute tests, ensure you have test requirements installed.
-With your virtual environment activated, run
-```shell
-pip install -r requirements/test.txt
-```
-Then, run the tests with
+To execute tests, with your virtual environment activated, run
 ```shell
 pytest
 ```
