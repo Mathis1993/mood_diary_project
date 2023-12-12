@@ -89,19 +89,20 @@ deploy_to_staging:
     only:
         - develop  # only deploy staging when pushing to develop branch
 
-deploy_to_production:
-    stage: deploy
-    tags:
-      - shell
-    script:
-      - apt update && apt install openssh-client curl jq -y
-      - scp infra/production/docker-compose.yml ${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}:${DEPLOY_TARGET_DIR}/docker-compose.yml
-      - ssh -l $DEPLOY_SSH_USER $DEPLOY_SSH_HOST "
-        cd ${DEPLOY_TARGET_DIR}
-        docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-        docker compose pull && docker compose up -d
-        docker compose exec django python manage.py migrate"
-    variables:
-      DEPLOY_TARGET_DIR: /home/docker/mood_diary
-    only:
-        - main  # only deploy when pushing to main branch
+# Production deployment is pulled in by cron job to avoid ssh logins from the outside
+#deploy_to_production:
+#    stage: deploy
+#    tags:
+#      - shell
+#    script:
+#      - apt update && apt install openssh-client curl jq -y
+#      - scp infra/production/docker-compose.yml ${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}:${DEPLOY_TARGET_DIR}/docker-compose.yml
+#      - ssh -l $DEPLOY_SSH_USER $DEPLOY_SSH_HOST "
+#        cd ${DEPLOY_TARGET_DIR}
+#        docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+#        docker compose pull && docker compose up -d
+#        docker compose exec django python manage.py migrate"
+#    variables:
+#      DEPLOY_TARGET_DIR: /home/docker/mood_diary
+#    only:
+#        - main  # only deploy when pushing to main branch
