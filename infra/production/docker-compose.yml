@@ -10,9 +10,9 @@ services:
     networks:
       - overlay
     env_file:
-      - /home/docker/mood_diary/.env
+      - ./.env
     volumes:
-      - /home/docker/mood_diary/postgres_data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data
 
   redis:
     restart: always
@@ -20,7 +20,7 @@ services:
     networks:
       - overlay
     volumes:
-      - /home/docker/mood_diary/redis/data:/var/lib/redis/data
+      - ./redis/data:/var/lib/redis/data
 
   django:
     restart: always
@@ -29,7 +29,7 @@ services:
       - overlay
       - web
     env_file:
-      - /home/docker/mood_diary/.env
+      - ./.env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.django-nginx.entrypoints=http"
@@ -51,7 +51,7 @@ services:
     networks:
       - overlay
     env_file:
-      - /home/docker/mood_diary/.env
+      - ./.env
     command: bash scripts/startup_celery_consumer.sh
 
   celery_beat:
@@ -60,7 +60,7 @@ services:
     networks:
       - overlay
     env_file:
-      - /home/docker/mood_diary/.env
+      - ./.env
     command: bash scripts/startup_celery_scheduler.sh
 
 # ToDo

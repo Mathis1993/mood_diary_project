@@ -19,6 +19,10 @@ if [ -n "$(git diff origin/main)" ]; then
   rm docker-compose.yml
   cp ./infra/production/docker-compose.yml .
 
+  # Ensure networks exist
+  docker network create --driver bridge overlay || true
+  docker network create --driver bridge web || true
+
   # Execute the Docker Compose commands
   docker login -u "$REGISTRY_USER" -p "$REGISTRY_TOKEN" "$REGISTRY_NAME"
   docker compose pull && docker compose up -d
