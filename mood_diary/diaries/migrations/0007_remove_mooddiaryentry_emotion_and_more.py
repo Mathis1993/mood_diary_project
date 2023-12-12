@@ -1,0 +1,36 @@
+from django.db import migrations
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('diaries', '0006_rename_mood_and_emotion_info_mooddiaryentry_details'),
+    ]
+
+    operations = [
+        migrations.RemoveField(
+            model_name='mooddiaryentry',
+            name='emotion',
+        ),
+        migrations.RemoveField(
+            model_name='mooddiaryentry',
+            name='strain',
+        ),
+        migrations.RemoveField(
+            model_name='mooddiaryentry',
+            name='strain_area',
+        ),
+        migrations.RemoveField(
+            model_name='mooddiaryentry',
+            name='strain_info',
+        ),
+        migrations.DeleteModel(
+            name='Emotion',
+        ),
+        migrations.DeleteModel(
+            name='Strain',
+        ),
+        migrations.DeleteModel(
+            name='StrainArea',
+        ),
+    ]

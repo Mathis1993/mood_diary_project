@@ -1,12 +1,34 @@
+import logging
+from typing import Literal
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+logger = logging.getLogger("mood_diary.clients.utils")
 
-def send_account_creation_email(to_email: str, host: str, scheme: str, initial_password: str):
+
+def send_account_creation_email(
+    to_email: str, host: str, scheme: Literal["http", "https"], initial_password: str
+):
     """
     Sends an email to the client with the initial password.
     A html message is sent if the email client supports it, otherwise a fallback message is sent.
+
+    Parameters
+    ----------
+    to_email: str
+        Email address to send the email to
+    host: str
+        Hostname of the django server
+    scheme: str
+        Scheme of the django server (http or https)
+    initial_password: str
+        The initial password to send in the email
+
+    Returns
+    -------
+    None
     """
     url = f"{scheme}://{host}"
     fallback_message = f"""
@@ -40,12 +62,18 @@ Initial password: {initial_password}
         "url": url,
         "password": initial_password,
     }
-    html_content = render_to_string("clients/registration_email.html", context)
-    send_mail(
-        "Registration for the Mood Diary",
-        fallback_message,
-        settings.FROM_EMAIL,
-        [to_email],
-        fail_silently=False,
-        html_message=html_content,
-    )
+    html_content = render_to_string("users/registration_email.html", context)
+    try:
+        send_mail(
+            "Registration for the Mood Diary",
+            fallback_message,
+            settings.FROM_EMAIL,
+            [to_email],
+            fail_silently=False,
+            html_message=html_content,
+        )
+    except Exception as e:
+        logger.exception(
+            f"Could not send registration email to {to_email}. Failed with exception: {e}"
+        )
+    logger.info(f"Sent registration email to {to_email}.")

@@ -2,9 +2,9 @@
 
 {% lazy_paginate entries %}
 {% for entry in entries %}
-     <div class="col-xl-5 col-md-6 mb-4">
+    <div class="col-xl-5 col-md-6 mb-4">
         <a href="{% url 'diaries:get_mood_diary_entry' pk=entry.id %}">
-            <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card {% if entry.released %}border-left-success{% else %}border-left-primary{% endif %} shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -12,6 +12,7 @@
                                 {{ entry.mood }}</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ entry.activity }}</div>
                             <div class="text-gray-500">{{ entry.date }}</div>
+                            <div class="text-gray-500">{{ entry.start_time }} - {{ entry.end_time }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-fw fa-book fa-2x text-gray-300"></i>
@@ -20,6 +21,6 @@
                 </div>
             </div>
         </a>
-        </div>
+    </div>
 {% endfor %}
 {% show_more %}

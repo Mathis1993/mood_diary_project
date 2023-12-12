@@ -1,6 +1,7 @@
 import pytest
-from diaries.forms import MoodDiaryEntryCreateForm, MoodDiaryEntryForm
+from diaries.forms import ActivityWidget, MoodDiaryEntryCreateForm, MoodDiaryEntryForm
 from diaries.tests.factories import ActivityFactory, MoodFactory
+from django.urls import reverse
 
 
 @pytest.fixture
@@ -13,7 +14,7 @@ def valid_mood_diary_entry_form_data():
         "end_time": "10:00",
         "activity": activity.id,
         "mood": mood.id,
-        "mood_and_emotion_info": "Feeling good",
+        "details": "Feeling good",
     }
 
 
@@ -58,20 +59,23 @@ def test_mood_diary_entry_create_form_clean(valid_mood_diary_entry_form_data):
     assert form.cleaned_data["end_date"] == form.cleaned_data["date"]
 
 
-# Right now excluded from form
-# @pytest.mark.django_db
-# def test_dependent_strain_fields(valid_mood_diary_entry_form_data):
-#     strain_area = StrainAreaFactory.create()
-#
-#     # Set strain area without strain
-#     valid_form_data["strain"] = None
-#     valid_form_data["strain_area"] = strain_area.id
-#     form = MoodDiaryEntryForm(data=valid_form_data)
-#     assert not form.is_valid()
-#     assert "strain_area" in form.errors
-#
-#     # Set strain info without strain
-#     valid_form_data["strain_info"] = "Some info"
-#     form = MoodDiaryEntryForm(data=valid_form_data)
-#     assert not form.is_valid()
-#     assert "strain_info" in form.errors
+def test_activity_widget_search_fields():
+    widget = ActivityWidget()
+    expected_search_fields = [
+        "value_de__icontains",
+        "value_en__icontains",
+        "category__value_de__icontains",
+        "category__value_en__icontains",
+    ]
+    assert widget.search_fields == expected_search_fields
+
+
+def test_activity_widget_data_url():
+    widget = ActivityWidget()
+    expected_url = reverse("diaries:mood_diary_entries_create_auto_select")
+    assert widget.data_url == expected_url
+
+
+def test_activity_widget_attrs():
+    widget = ActivityWidget()
+    assert widget.attrs["data-minimum-input-length"] == 0

@@ -11,6 +11,7 @@ class ClientFactory(factory.django.DjangoModelFactory):
     identifier = factory.Sequence(lambda n: "identifier_{0}".format(n))
     counselor = factory.SubFactory("users.tests.factories.UserFactory", role="counselor")
     active = factory.fuzzy.FuzzyChoice([True, False])
+    push_notifications_granted = None
 
     @factory.post_generation
     def subscribed_rules(self, create, extracted, **kwargs):

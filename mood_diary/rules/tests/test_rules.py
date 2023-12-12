@@ -7,6 +7,22 @@ from diaries.models import Activity, ActivityCategory, MoodDiaryEntry
 from diaries.tests.factories import MoodDiaryEntryFactory, MoodDiaryFactory, MoodFactory
 from django.utils import timezone
 from notifications.models import Notification
+from notifications.tests.factories import PushSubscriptionFactory
+from pytest_mock import MockerFixture
+from rules.content.rules import (
+    ACTIVITY_WITH_PEAK_MOOD,
+    DAILY_AVERAGE_MOOD_IMPROVING,
+    FOURTEEN_DAY_MOOD_AVERAGE,
+    FOURTEEN_DAY_MOOD_MAXIMUM,
+    HIGH_MEDIA_USAGE_PER_DAY,
+    LOW_MEDIA_USAGE_PER_DAY,
+    NEGATIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES,
+    PHYSICAL_ACTIVITY_PER_WEEK,
+    PHYSICAL_ACTIVITY_PER_WEEK_INCREASING,
+    POSITIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES,
+    RELAXING_ACTIVITY,
+    UNSTEADY_FOOD_INTAKE,
+)
 from rules.models import RuleClient, RuleTriggeredLog
 from rules.rules import (
     ActivityWithPeakMoodRule,
@@ -44,7 +60,9 @@ def test_base_rule():
 
 
 @pytest.mark.django_db
-def test_concrete_rule():
+def test_concrete_rule(mocker: MockerFixture):
+    mocked_method = mocker.patch("notifications.models.PushSubscription.send_push_notification")
+
     class MyRule(BaseRule):
         rule_title = "My Rule"
 
@@ -58,7 +76,8 @@ def test_concrete_rule():
             return True
 
     rule_db = RuleFactory.create(title="My Rule")
-    client = ClientFactory.create()
+    client = ClientFactory.create(push_notifications_granted=True)
+    PushSubscriptionFactory.create(client=client)
     MoodDiaryFactory.create(client=client)
     MoodDiaryEntryFactory.create(mood_diary__client=client)
     timestamp = timezone.now()
@@ -78,13 +97,27 @@ def test_concrete_rule():
     assert not RuleTriggeredLog.objects.exists()
     rule_db.subscribed_clients.add(client)
     assert rule.client_subscribed() is True
+    assert mocked_method.call_count == 0
     rule.evaluate()  # creates notification and log
+    assert rule.notification_id is not None
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+    assert mocked_method.call_count == 1
     rule_client_obj = RuleClient.objects.get(client=client, rule=rule_db)
     rule_client_obj.active = False
     rule_client_obj.save()
     assert rule.client_subscribed() is False
+
+    rule_client_obj.active = True
+    rule_client_obj.save()
+    timestamp = timezone.now()
+    rule = MyRule(client_id=client.id, requested_at=timestamp)
+    client.push_notifications_granted = False
+    client.save()
+    rule.evaluate()
+    assert Notification.objects.count() == 2
+    assert RuleTriggeredLog.objects.count() == 2
+    assert mocked_method.call_count == 1
 
     class MyOtherRule(MyRule):
         def triggering_allowed(self):
@@ -93,14 +126,14 @@ def test_concrete_rule():
     rule = MyOtherRule(client_id=client.id, requested_at=timestamp)
     assert rule.triggering_allowed() is False
     rule.evaluate()  # no effect
-    assert Notification.objects.count() == 1
-    assert RuleTriggeredLog.objects.count() == 1
+    assert Notification.objects.count() == 2
+    assert RuleTriggeredLog.objects.count() == 2
 
 
 @pytest.mark.django_db
 def test_activity_with_peak_mood_rule():
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Activity with peak mood")
+    rule_db = RuleFactory.create(title=ACTIVITY_WITH_PEAK_MOOD)
     rule_db.subscribed_clients.add(client)
     MoodDiaryEntryFactory.create(mood_diary__client=client, mood__value=0)
     time.sleep(0.1)
@@ -135,7 +168,7 @@ def test_activity_with_peak_mood_rule():
 @pytest.mark.django_db
 def test_relaxing_activity_mood_rule():
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Relaxing activity")
+    rule_db = RuleFactory.create(title=RELAXING_ACTIVITY)
     rule_db.subscribed_clients.add(client)
     MoodDiaryEntryFactory.create(mood_diary__client=client, activity__category__value="Work")
     time.sleep(0.1)
@@ -166,9 +199,13 @@ def test_relaxing_activity_mood_rule():
 
     rule_db.subscribed_clients.remove(client)
     assert rule.client_subscribed() is False
-    rule.evaluate()  # no effect
+    rule.evaluate()  # No effect
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
+
+    rule_db.subscribed_clients.add(client)
+    assert rule.client_subscribed() is True
+    assert rule.triggering_allowed() is False  # Already triggered today
 
 
 @pytest.mark.django_db
@@ -176,12 +213,12 @@ def test_physical_activity_per_week_rule(freezer):
     # It is Friday
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Physical activity per week")
+    rule_db = RuleFactory.create(title=PHYSICAL_ACTIVITY_PER_WEEK)
     rule_db.subscribed_clients.add(client)
     # Sunday (does not count)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         date="2023-09-24",
         start_time=datetime(2023, 9, 24, 10, 0),
         end_time=datetime(2023, 9, 24, 13, 0),
@@ -189,7 +226,7 @@ def test_physical_activity_per_week_rule(freezer):
     # Monday (does count)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         date="2023-09-25",
         start_time=datetime(2023, 9, 25, 10, 0),
         end_time=datetime(2023, 9, 25, 11, 0),
@@ -202,7 +239,7 @@ def test_physical_activity_per_week_rule(freezer):
     # Tuesday (does count)
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         date="2023-09-26",
         start_time=datetime(2023, 9, 26, 10, 0),
         end_time=datetime(2023, 9, 26, 12, 0),
@@ -228,7 +265,7 @@ def test_physical_activity_per_week_rule(freezer):
 def test_high_media_usage_per_day_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="High media usage per day")
+    rule_db = RuleFactory.create(title=HIGH_MEDIA_USAGE_PER_DAY)
     rule_db.subscribed_clients.add(client)
 
     MoodDiaryEntryFactory.create(
@@ -274,7 +311,7 @@ def test_high_media_usage_per_day_rule(freezer):
 def test_low_media_usage_per_day_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Low media usage per day")
+    rule_db = RuleFactory.create(title=LOW_MEDIA_USAGE_PER_DAY)
     rule_db.subscribed_clients.add(client)
 
     MoodDiaryEntryFactory.create(
@@ -335,7 +372,7 @@ def test_low_media_usage_per_day_rule(freezer):
 def test_fourteen_days_mood_average_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Fourteen days mood average")
+    rule_db = RuleFactory.create(title=FOURTEEN_DAY_MOOD_AVERAGE)
     rule_db.subscribed_clients.add(client)
 
     # 13 days of bad mood
@@ -402,7 +439,7 @@ def test_fourteen_days_mood_average_rule(freezer):
 def test_fourteen_days_mood_maximum_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
-    rule_db = RuleFactory.create(title="Fourteen days mood maximum")
+    rule_db = RuleFactory.create(title=FOURTEEN_DAY_MOOD_MAXIMUM)
     rule_db.subscribed_clients.add(client)
 
     # 13 days of bad mood
@@ -462,7 +499,7 @@ def test_unsteady_food_intake_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Unsteady food intake")
+    rule_db = RuleFactory.create(title=UNSTEADY_FOOD_INTAKE)
     rule_db.subscribed_clients.add(client)
 
     timestamp = timezone.now()
@@ -473,7 +510,7 @@ def test_unsteady_food_intake_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-30",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is True
@@ -481,7 +518,7 @@ def test_unsteady_food_intake_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-30",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is True
@@ -489,12 +526,24 @@ def test_unsteady_food_intake_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-30",
-        activity__value=Activity.food_intake_value,
+        activity__category__value=ActivityCategory.food_intake_value,
     )
     assert rule.triggering_allowed() is True
     assert rule.evaluate_preconditions() is False
 
     freezer.move_to("2023-10-01")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    freezer.move_to("2023-10-02")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
+    freezer.move_to("2023-10-03")
     timestamp = timezone.now()
     rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
     assert rule.triggering_allowed() is True
@@ -506,12 +555,43 @@ def test_unsteady_food_intake_rule(freezer):
     assert RuleTriggeredLog.objects.count() == 1
     assert rule.triggering_allowed() is False
 
+    freezer.move_to("2023-10-04")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+
+    freezer.move_to("2023-10-05")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is False
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-05",
+        activity__category__value=ActivityCategory.food_intake_value,
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-05",
+        activity__category__value=ActivityCategory.food_intake_value,
+    )
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-05",
+        activity__category__value=ActivityCategory.food_intake_value,
+    )
+
+    freezer.move_to("2023-10-06")
+    timestamp = timezone.now()
+    rule = UnsteadyFoodIntakeRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.evaluate_preconditions() is False
+
 
 @pytest.mark.django_db
 def test_positive_mood_change_between_activities_rule():
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Positive mood change between activities")
+    rule_db = RuleFactory.create(title=POSITIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES)
     rule_db.subscribed_clients.add(client)
 
     # first activity
@@ -534,6 +614,7 @@ def test_positive_mood_change_between_activities_rule():
         mood_diary__client=client,
         date="2023-09-30",
         activity__value="b",
+        activity__category__value="Studies",
         mood__value=-2,
         start_time=datetime(2023, 9, 30, 11, 0),
         end_time=datetime(2023, 9, 30, 12, 0),
@@ -548,6 +629,7 @@ def test_positive_mood_change_between_activities_rule():
         mood_diary__client=client,
         date="2023-09-30",
         activity__value="b",
+        activity__category__value="Studies",
         mood__value=0,
         start_time=datetime(2023, 9, 30, 12, 0),
         end_time=datetime(2023, 9, 30, 13, 0),
@@ -561,8 +643,9 @@ def test_positive_mood_change_between_activities_rule():
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-30",
-        activity__value="c",
-        mood__value=2,
+        activity__value="b",
+        activity__category__value="Sleep",
+        mood__value=3,
         start_time=datetime(2023, 9, 30, 13, 0),
         end_time=datetime(2023, 9, 30, 14, 0),
     )
@@ -590,7 +673,7 @@ def test_positive_mood_change_between_activities_rule():
 def test_negative_mood_change_between_activities_rule():
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Negative mood change between activities")
+    rule_db = RuleFactory.create(title=NEGATIVE_MOOD_CHANGE_BETWEEN_ACTIVITIES)
     rule_db.subscribed_clients.add(client)
 
     # first activity
@@ -613,6 +696,7 @@ def test_negative_mood_change_between_activities_rule():
         mood_diary__client=client,
         date="2023-09-30",
         activity__value="b",
+        activity__category__value="Studies",
         mood__value=2,
         start_time=datetime(2023, 9, 30, 11, 0),
         end_time=datetime(2023, 9, 30, 12, 0),
@@ -627,6 +711,7 @@ def test_negative_mood_change_between_activities_rule():
         mood_diary__client=client,
         date="2023-09-30",
         activity__value="b",
+        activity__category__value="Studies",
         mood__value=0,
         start_time=datetime(2023, 9, 30, 12, 0),
         end_time=datetime(2023, 9, 30, 13, 0),
@@ -641,7 +726,7 @@ def test_negative_mood_change_between_activities_rule():
         mood_diary__client=client,
         date="2023-09-30",
         activity__value="c",
-        mood__value=-2,
+        mood__value=-3,
         start_time=datetime(2023, 9, 30, 13, 0),
         end_time=datetime(2023, 9, 30, 14, 0),
     )
@@ -670,7 +755,7 @@ def test_daily_average_mood_improving_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Daily average mood improving")
+    rule_db = RuleFactory.create(title=DAILY_AVERAGE_MOOD_IMPROVING)
     rule_db.subscribed_clients.add(client)
 
     timestamp = timezone.now()
@@ -742,7 +827,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     freezer.move_to("2023-09-30")
     client = ClientFactory.create()
     MoodDiaryFactory.create(client=client)
-    rule_db = RuleFactory.create(title="Physical activity per week increasing")
+    rule_db = RuleFactory.create(title=PHYSICAL_ACTIVITY_PER_WEEK_INCREASING)
     rule_db.subscribed_clients.add(client)
 
     # Saturday
@@ -762,7 +847,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-26",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 25, 12, 0),
         end_time=datetime(2023, 9, 25, 13, 0),
@@ -770,7 +855,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-09-27",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 15, 0),
         end_time=datetime(2023, 9, 30, 16, 0),
@@ -790,7 +875,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-06",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 12, 0),
         end_time=datetime(2023, 9, 30, 13, 0),
@@ -798,7 +883,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-07",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 15, 0),
         end_time=datetime(2023, 9, 30, 16, 0),
@@ -810,7 +895,7 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     MoodDiaryEntryFactory.create(
         mood_diary__client=client,
         date="2023-10-07",
-        activity__category__value=ActivityCategory.physical_activity_value,
+        activity__value=Activity.sports_value,
         mood__value=1,
         start_time=datetime(2023, 9, 30, 17, 0),
         end_time=datetime(2023, 9, 30, 18, 0),
@@ -823,3 +908,65 @@ def test_physical_activity_per_week_increasing_rule(freezer):
     assert Notification.objects.count() == 1
     assert RuleTriggeredLog.objects.count() == 1
     assert rule.triggering_allowed() is False
+
+    # Next week's sunday again
+    freezer.move_to("2023-10-15")
+    timestamp = timezone.now()
+    rule = PhysicalActivityPerWeekIncreasingRule(client_id=client.id, requested_at=timestamp)
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 3
+    assert rule.evaluate_preconditions() is False
+
+    # Increase next week's amount again (more than 300 minutes)
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        date="2023-10-14",
+        activity__value=Activity.sports_value,
+        mood__value=1,
+        start_time=datetime(2023, 9, 30, 10, 0),
+        end_time=datetime(2023, 9, 30, 18, 0),
+    )
+
+    # Evaluation is False as the maximum amount of minutes is 300
+    assert rule.triggering_allowed() is True
+    assert rule.get_mood_diary_entries().count() == 4
+    assert rule.evaluate_preconditions() is False
+
+
+@pytest.mark.django_db
+def test_rule_evaluation_two_consecutive_days(freezer):
+    freezer.move_to("2023-09-30")
+    client = ClientFactory.create()
+    rule_db = RuleFactory.create(title=LOW_MEDIA_USAGE_PER_DAY)
+    rule_db.subscribed_clients.add(client)
+
+    MoodDiaryEntryFactory.create(
+        mood_diary__client=client,
+        activity__category__value=ActivityCategory.media_usage_value,
+        date="2023-09-30",
+        start_time=datetime(2023, 9, 30, 10, 0),
+        end_time=datetime(2023, 9, 30, 10, 20),
+    )
+
+    freezer.move_to("2023-10-01 06:00:00")
+    timestamp = (timezone.now() - timedelta(days=1)).replace(
+        hour=23, minute=59, second=59, microsecond=999999
+    )
+    rule = LowMediaUsagePerDayRule(client_id=client.id, requested_at=timestamp)
+    assert not Notification.objects.exists()
+    assert not RuleTriggeredLog.objects.exists()
+    rule.evaluate()
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+
+    # No media usage entries for the 1st of October
+    freezer.move_to("2023-10-02 06:00:00")
+    timestamp = (timezone.now() - timedelta(days=1)).replace(
+        hour=23, minute=59, second=59, microsecond=999999
+    )
+    rule = LowMediaUsagePerDayRule(client_id=client.id, requested_at=timestamp)
+    assert Notification.objects.count() == 1
+    assert RuleTriggeredLog.objects.count() == 1
+    rule.evaluate()
+    assert Notification.objects.count() == 2
+    assert RuleTriggeredLog.objects.count() == 2

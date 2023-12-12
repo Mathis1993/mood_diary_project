@@ -1,20 +1,7 @@
 import factory.fuzzy
+from django.utils import timezone
+from rules.content.rules import RULE_TITLES_CONCLUSION_MESSAGES_EN_DE, RULE_TITLES_EN_DE
 from rules.models import Rule, RuleClient, RuleTriggeredLog
-
-RULE_TITLES = [
-    "Activity with peak mood",
-    "Relaxing activity",
-    "Physical activity per week",
-    "High media usage per day",
-    "Low media usage per day",
-    "14 day mood average",
-    "14 day mood maximum",
-    "Unsteady food intake",
-    "Positive mood change between activities",
-    "Negative mood change between activities",
-    "Daily mean mood improving",
-    "Physical activity per week increasing",
-]
 
 
 class RuleFactory(factory.django.DjangoModelFactory):
@@ -22,11 +9,13 @@ class RuleFactory(factory.django.DjangoModelFactory):
         model = Rule
         django_get_or_create = ("title",)
 
-    title = factory.fuzzy.FuzzyChoice(RULE_TITLES)
+    title = factory.fuzzy.FuzzyChoice(list(RULE_TITLES_EN_DE.keys()))
     preconditions_description = factory.fuzzy.FuzzyText(length=20)
     criterion = factory.fuzzy.FuzzyChoice(Rule.Criterion.choices)
     evaluation = factory.fuzzy.FuzzyChoice(Rule.Evaluation.choices)
-    conclusion_message = factory.fuzzy.FuzzyText(length=100)
+    conclusion_message = factory.LazyAttribute(
+        lambda obj: RULE_TITLES_CONCLUSION_MESSAGES_EN_DE.get(obj.title, {"en": "blorg"}).get("en")
+    )
 
 
 class RuleClientFactory(factory.django.DjangoModelFactory):
@@ -45,3 +34,4 @@ class RuleTriggeredLogFactory(factory.django.DjangoModelFactory):
 
     rule = factory.SubFactory(RuleFactory)
     client = factory.SubFactory("clients.tests.factories.ClientFactory")
+    requested_at = timezone.now

@@ -3,18 +3,51 @@ from itertools import groupby
 from operator import attrgetter
 
 import django.db.models
+from django import forms
 from django.forms.models import ModelChoiceField, ModelChoiceIterator
 
 
-# https://simpleisbetterthancomplex.com/tutorial/2019/01/02/how-to-implement-grouped-model-choice-field.html
+class FormWithUIClassMixin:
+    """
+    Mixin for forms that adds the class "form-control" to all fields.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        [
+            self.fields[field].widget.attrs.update({"class": "form-control"})
+            for field in self.fields.keys()
+        ]
+
+
+class BaseForm(FormWithUIClassMixin, forms.Form):
+    """
+    Base form for all forms in the project.
+    """
+
+    pass
+
+
+class BaseModelForm(FormWithUIClassMixin, forms.ModelForm):
+    """
+    Base model form for all forms in the project.
+    """
+
+    pass
+
+
 class GroupedModelChoiceIterator(ModelChoiceIterator):
-    """Iterator that groups choices by a given attribute."""
+    """
+    Iterator that groups choices by a given attribute.
+    Adapted from
+    https://simpleisbetterthancomplex.com/tutorial/2019/01/02/how-to-implement-grouped-model-choice-field.html
+    """
 
     def __init__(self, field: django.db.models.Field, group_by: callable):
         self.group_by = group_by
         super().__init__(field)
 
-    def __iter__(self):
+    def __iter__(self) -> iter:
         if self.field.empty_label is not None:
             yield "", self.field.empty_label
         queryset = self.queryset
@@ -26,7 +59,9 @@ class GroupedModelChoiceIterator(ModelChoiceIterator):
 
 
 class GroupedModelChoiceField(ModelChoiceField):
-    """A ModelChoiceField that groups choices by a provided attribute."""
+    """
+    A ModelChoiceField that groups choices by a provided attribute.
+    """
 
     def __init__(self, *args, choices_group_by: str, **kwargs):
         if isinstance(choices_group_by, str):

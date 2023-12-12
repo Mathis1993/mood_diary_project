@@ -1,19 +1,13 @@
 {% extends "base_generic.html" %}
+{% load i18n %}
 
 {% block navigation_items %}
-
-    <!-- Nav Item - Home -->
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'users:index' %}">
-            <i class="fas fa-fw fa-home"></i>
-            <span>Home</span></a>
-    </li>
 
     <!-- Nav Item - Clients -->
     <li class="nav-item active">
         <a class="nav-link" href="{% url 'clients:list_clients' %}">
             <i class="fas fa-fw fa-user"></i>
-            <span>Clients</span></a>
+            <span>{% translate "Clients" %}</span></a>
     </li>
 
 {% endblock %}

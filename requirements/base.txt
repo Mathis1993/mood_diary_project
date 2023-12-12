@@ -1,3 +1,6 @@
+# Base requirements to run the project
+
+# Django
 Django==4.2.2
 
 # Database
@@ -18,3 +21,24 @@ python-dotenv==1.0.0
 
 # EMAILS
 sendgrid==6.10.0
+
+# DEPLOYMENT
+gunicorn==21.2.0
+
+# DJANGO DEVELOPMENT UTILITIES
+django-extensions==3.2.3
+
+# STATIC FILES
+whitenoise==6.5.0
+
+# TRANSLATIONS
+django-modeltranslation==0.18.11
+
+# FORMS
+django-select2==8.1.2
+
+# CACHES
+django-redis==5.3.0
+
+# WEB PUSH
+pywebpush==1.14.0

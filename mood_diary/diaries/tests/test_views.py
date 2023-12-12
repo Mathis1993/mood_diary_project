@@ -1,17 +1,20 @@
 import datetime
 import http
 from datetime import date
+from unittest.mock import patch
 
 import pytest
 from clients.tests.factories import ClientFactory
-from diaries.forms import MoodDiaryEntryForm
-from diaries.models import MoodDiaryEntry
+from diaries.forms import ActivityWidget, MoodDiaryEntryForm
+from diaries.models import Activity, MoodDiaryEntry
 from diaries.tests.factories import (
+    ActivityCategoryFactory,
     ActivityFactory,
     MoodDiaryEntryFactory,
     MoodDiaryFactory,
     MoodFactory,
 )
+from diaries.views import ActivitySelect2QuerySetView
 from django.urls import reverse
 from django.utils import timezone
 from pytest_mock import MockerFixture
@@ -202,16 +205,6 @@ def test_mood_diary_entry_delete_view_post(user, entry, create_response):
 
 
 @pytest.mark.django_db
-def test_mood_diary_entry_release_view_get(user, entry, create_response):
-    url = reverse("diaries:release_mood_diary_entries")
-
-    response = create_response(user, url)
-
-    assert response.status_code == 200
-    assert response.templates[0].name == "diaries/mood_diary_entry_release.html"
-
-
-@pytest.mark.django_db
 def test_mood_diary_entry_release_view_post(user, entry, create_response):
     MoodDiaryEntryFactory.create_batch(size=3, mood_diary__client=user.client, released=False)
 
@@ -222,5 +215,74 @@ def test_mood_diary_entry_release_view_post(user, entry, create_response):
     response = create_response(user, url, method="POST")
 
     assert response.status_code == 302
-    assert response.url == reverse("diaries:release_mood_diary_entries_done")
+    assert response.url == reverse("diaries:list_mood_diary_entries")
     assert not MoodDiaryEntry.objects.filter(released=True).count() == 3
+
+
+@pytest.mark.django_db
+def test_activity_select2_queryset_view_grouped_response(client):
+    category1 = ActivityCategoryFactory.create(
+        value="Category_1",
+        value_de="Kategorie_1",
+        value_en="Category_1",
+    )
+    category2 = ActivityCategoryFactory.create(
+        value="Category_2",
+        value_de="Kategorie_2",
+        value_en="Category_2",
+    )
+    ActivityFactory.create(
+        category=category1,
+        value="Activity_1",
+        value_de="Aktivität_1",
+        value_en="Activity_1",
+    )
+    ActivityFactory.create(
+        category=category1,
+        value="Activity_2",
+        value_de="Aktivität_2",
+        value_en="Activity_2",
+    )
+    ActivityFactory.create(
+        category=category2,
+        value="Activity_3",
+        value_de="Aktivität_3",
+        value_en="Activity_3",
+    )
+
+    with patch.object(
+        ActivitySelect2QuerySetView,
+        "get_widget_or_404",
+        return_value=ActivityWidget(queryset=Activity.objects.all()),
+    ):
+        response = client.get(
+            reverse("diaries:mood_diary_entries_create_auto_select"),
+            HTTP_ACCEPT="application/json",
+            HTTP_ACCEPT_LANGUAGE="de",
+        )
+    data = response.json()
+
+    assert len(data["results"]) == 2
+    assert data["results"][0]["text"] == "Kategorie_1"
+    assert len(children := data["results"][0]["children"]) == 2
+    assert children[0]["text"] == "Aktivität_1"
+
+
+@pytest.mark.django_db
+def test_activity_select2_queryset_view_ordering_by_language(client):
+    category = ActivityCategoryFactory(value="Category", value_de="Kategorie", value_en="Category")
+    ActivityFactory(category=category, value="Activity", value_de="Aktivität", value_en="Activity")
+
+    with patch.object(
+        ActivitySelect2QuerySetView,
+        "get_widget_or_404",
+        return_value=ActivityWidget(queryset=Activity.objects.all()),
+    ):
+        response = client.get(
+            reverse("diaries:mood_diary_entries_create_auto_select"),
+            HTTP_ACCEPT_LANGUAGE="en",
+        )
+    data = response.json()
+
+    assert data["results"][0]["text"] == "Category"
+    assert data["results"][0]["children"][0]["text"] == "Activity"

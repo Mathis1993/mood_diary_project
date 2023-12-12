@@ -1,11 +1,39 @@
-from datetime import date
-
-from core.forms import GroupedModelChoiceField
-from diaries.models import Activity, Mood, MoodDiaryEntry
+from core.forms import BaseModelForm
+from diaries.models import Mood, MoodDiaryEntry
 from django import forms
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django_select2.forms import ModelSelect2Widget
 
 
-class MoodDiaryEntryForm(forms.ModelForm):
+class ActivityWidget(ModelSelect2Widget):
+    """
+    Widget for the activity field of the MoodDiaryEntryForm.
+    Enables to show activities grouped by their categories and to
+    search within activities and categories.
+    Utilizes the django-select2 package.
+    """
+
+    search_fields = [
+        "value_de__icontains",
+        "value_en__icontains",
+        "category__value_de__icontains",
+        "category__value_en__icontains",
+    ]
+    data_url = reverse_lazy("diaries:mood_diary_entries_create_auto_select")
+    max_results = 200
+
+    def __init__(self, *args, **kwargs):
+        kwargs["attrs"] = {"data-minimum-input-length": 0}
+        super().__init__(*args, **kwargs)
+
+
+class MoodDiaryEntryForm(BaseModelForm):
+    """
+    Form for updating mood diary entries.
+    """
+
     class Meta:
         model = MoodDiaryEntry
         fields = [
@@ -14,68 +42,76 @@ class MoodDiaryEntryForm(forms.ModelForm):
             "end_time",
             "activity",
             "mood",
-            "mood_and_emotion_info",
+            "details",
         ]
         widgets = {
             "date": forms.DateInput(
-                attrs={"placeholder": "Select a date", "type": "date"},
+                attrs={"placeholder": _("Select a date"), "type": "date"}, format="%Y-%m-%d"
             ),
             "start_time": forms.TimeInput(
-                attrs={"placeholder": "Select a start time", "type": "time"},
+                attrs={"placeholder": _("Select a start time"), "type": "time"}, format="%H:%M"
             ),
             "end_time": forms.TimeInput(
-                attrs={"placeholder": "Select an end time", "type": "time"},
+                attrs={"placeholder": _("Select an end time"), "type": "time"}, format="%H:%M"
             ),
+            "activity": ActivityWidget(),
         }
-
-    activity = GroupedModelChoiceField(queryset=Activity.objects.all(), choices_group_by="category")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        [
-            self.fields[field].widget.attrs.update({"class": "form-control"})
-            for field in self.fields.keys()
-        ]
+        self.fields["date"].label = _("Date")
+        self.fields["start_time"].label = _("Start time")
+        self.fields["end_time"].label = _("End time")
         self.fields["activity"].empty_label = None
+        self.fields["activity"].label = _("Activity")
+        self.fields["mood"].label = _("Mood")
         self.fields["mood"].empty_label = None
         self.fields["mood"].initial = Mood.objects.get(value=0)
-        self.fields["mood_and_emotion_info"].label = "Additional info"
-        self.fields["mood_and_emotion_info"].widget.attrs.update(
-            {"rows": 5, "placeholder": "Enter any additional info here"}
+        self.fields["details"].label = _("Details")
+        self.fields["details"].widget.attrs.update(
+            {
+                "rows": 3,
+                "placeholder": _("Enter additional details here..."),
+                "maxlength": 300,
+            }
         )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        strain = cleaned_data.get("strain")
-        if strain:
-            return cleaned_data
-
-        strain_area = cleaned_data.get("strain_area")
-        if strain_area:
-            self.add_error("strain_area", "Please set a strain when choosing a strain area.")
-
-        strain_info = cleaned_data.get("strain_info")
-        if strain_info:
-            self.add_error("strain_info", "Please set a strain when providing strain info.")
-
-        return cleaned_data
 
 
 class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
+    """
+    Form for creating mood diary entries.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["date"].label = "Start date"
+        self.fields["date"].label = _("Start date")
+        self.fields["date"].initial = timezone.now().date().strftime("%Y-%m-%d")
+        self.fields["end_date"].initial = timezone.now().date().strftime("%Y-%m-%d")
+
+        now = timezone.now().time()
+        self.fields["start_time"].initial = now.strftime("%H:%M")
+        self.fields["end_time"].initial = now.strftime("%H:%M")
+
         self.order_fields(["date", "end_date"])
 
     end_date = forms.DateField(
-        initial=date.today(),
         required=False,
+        label=_("End date"),
         widget=forms.DateInput(
-            attrs={"placeholder": "Select an end date", "type": "date"},
+            attrs={"placeholder": _("Select an end date"), "type": "date"}, format="%Y-%m-%d"
         ),
     )
 
-    def clean(self):
+    def clean(self) -> dict:
+        """
+        Ensure that the end and start dates are set and that the
+        end date lies after the start date.
+
+        Returns
+        -------
+        dict
+            Cleaned form data
+        """
         cleaned_data = super().clean()
 
         if not cleaned_data.get("end_date"):
@@ -85,6 +121,6 @@ class MoodDiaryEntryCreateForm(MoodDiaryEntryForm):
         end_date = cleaned_data.get("end_date")
         if start_date and end_date:
             if start_date > end_date:
-                self.add_error("end_date", "End date must be after start date.")
+                self.add_error("end_date", _("End date must be after start date."))
 
         return cleaned_data

@@ -7,6 +7,14 @@ from django.utils import timezone
 def get_beginning_of_week(today: timezone.datetime = None) -> timezone.datetime:
     """
     Returns timestamp of the Monday of the current week at 00:00:00.
+
+    Parameters
+    ----------
+    today: timezone.datetime
+
+    Returns
+    -------
+    timezone.datetime
     """
     today = today or timezone.now()
     monday = today - timedelta(days=today.weekday())
@@ -16,6 +24,14 @@ def get_beginning_of_week(today: timezone.datetime = None) -> timezone.datetime:
 def get_end_of_week(today: timezone.datetime = None) -> timezone.datetime:
     """
     Returns timestamp of the Sunday of the current week at 23:59:59.
+
+    Parameters
+    ----------
+    today: timezone.datetime
+
+    Returns
+    -------
+    timezone.datetime
     """
     today = today or timezone.now()
     monday = today + timedelta(days=7 - today.weekday() - 1)
@@ -29,3 +45,6 @@ class RuleMessage(NamedTuple):
 
     client_id: int
     timestamp: timezone.datetime
+
+    def __str__(self) -> str:
+        return f"Client {self.client_id} - {self.timestamp}"

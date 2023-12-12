@@ -9,26 +9,69 @@ from django.db.models import Avg, QuerySet
 
 
 class MoodDiary(models.Model):
+    """
+    This is the MoodDiary model representing a mood diary of a client.
+    A mood diary has got a one-to-one relationship with a client and
+    can have multiple mood diary entries.
+    It serves as a container for some methods that target all mood diary
+    entries of a client.
+    """
+
     class Meta:
         db_table = "diaries_mood_diaries"
 
     client = models.OneToOneField(to=Client, on_delete=models.CASCADE, related_name="mood_diary")
 
-    def average_mood_scores_previous_days(self, n_days: int) -> QuerySet:
+    def average_mood_scores_previous_days(self, n_days: int) -> QuerySet[MoodDiaryEntry]:
+        """
+        Calculate the average mood scores of the previous n days.
+
+        Parameters
+        ----------
+        n_days: int
+
+        Returns
+        -------
+        QuerySet
+            MoodDiary entities grouped by date and with an aggregated average mood score.
+        """
         return (
             self.entries.order_by("-date")
             .values("date")
             .annotate(average_mood=Avg("mood__value"))[:n_days]
         )
 
-    def most_recent_mood_highlights(self, n_highlights: int) -> QuerySet:
-        return self.entries.order_by("-mood__value", "-date")[:n_highlights]
+    def most_recent_mood_highlights(self, n_highlights: int) -> QuerySet[MoodDiaryEntry]:
+        """
+        Return the n most recent mood highlights.
+
+        Parameters
+        ----------
+        n_highlights: int
+
+        Returns
+        -------
+        QuerySet
+            MoodDiary entities ordered by mood score and date.
+        """
+        return self.entries.order_by("-mood__value", "-date", "-start_time")[:n_highlights]
 
     def release_entries(self):
+        """
+        Release all unreleased mood diary entries.
+
+        Returns
+        -------
+        None
+        """
         self.entries.filter(released=False).update(released=True)
 
 
 class MoodDiaryEntry(TrackCreationAndUpdates):
+    """
+    This is the MoodDiaryEntry model representing a mood diary entry of a client.
+    """
+
     class Meta:
         db_table = "diaries_mood_diary_entries"
         ordering = ["-date", "-start_time"]
@@ -41,100 +84,79 @@ class MoodDiaryEntry(TrackCreationAndUpdates):
     mood = models.ForeignKey(
         to="diaries.Mood", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
-    emotion = models.ForeignKey(
-        to="diaries.Emotion",
-        on_delete=models.RESTRICT,
-        related_name="mood_diary_entries",
-        null=True,
-        blank=True,
-        default=None,
-    )
-    mood_and_emotion_info = models.TextField(null=True, blank=True, default=None)
     activity = models.ForeignKey(
         to="diaries.Activity", on_delete=models.RESTRICT, related_name="mood_diary_entries"
     )
-    strain = models.ForeignKey(
-        to="diaries.Strain",
-        on_delete=models.RESTRICT,
-        related_name="mood_diary_entries",
-        null=True,
-        blank=True,
-        default=None,
-    )
-    strain_area = models.ForeignKey(
-        to="diaries.StrainArea",
-        on_delete=models.RESTRICT,
-        related_name="mood_diary_entries",
-        null=True,
-        blank=True,
-        default=None,
-    )
-    strain_info = models.TextField(null=True, blank=True, default=None)
+    details = models.TextField(null=True, blank=True, default=None)
 
 
 class Mood(NormalizedScaleModel):
+    """
+    This is the Mood model representing the mood scale.
+    """
+
     class Meta:
         db_table = "diaries_moods"
         ordering = ["value"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.label} ({self.value})"
 
     def to_percentage(self) -> int:
+        """
+        Convert the mood value to a percentage value.
+
+        Returns
+        -------
+        int
+            Rounded percentage value.
+        """
         return int(self.value / 7 * 100)
 
     @staticmethod
     def max_value() -> int:
+        """
+        Return the maximum value of the mood scale.
+
+        Returns
+        -------
+        int
+        """
         return 3
 
 
-class Emotion(NormalizedStringValueModel):
-    class Meta:
-        db_table = "diaries_emotions"
-
-    def __str__(self):
-        return self.value
-
-
 class Activity(NormalizedStringValueModel):
+    """
+    This is the Activity model representing an activity.
+    """
+
     class Meta:
         db_table = "diaries_activities"
-        ordering = ["category__value", "value"]
+        ordering = ["category__value_de", "value_de"]
 
     category = models.ForeignKey(
         to="diaries.ActivityCategory", on_delete=models.CASCADE, related_name="activities"
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
-    food_intake_value = "Full meal"
+    sports_value = "Sports"
 
 
 class ActivityCategory(NormalizedStringValueModel):
+    """
+    This is the ActivityCategory model representing an activity category.
+    """
+
     class Meta:
         db_table = "diaries_activity_categories"
         ordering = ["value"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
     physical_activity_value = "Physical Activity"
     relaxing_value = "Relaxation"
-    media_usage_value = "Media Usage"
-
-
-class Strain(NormalizedScaleModel):
-    class Meta:
-        db_table = "diaries_strains"
-
-    def __str__(self):
-        return f"{self.label} ({self.value})"
-
-
-class StrainArea(NormalizedStringValueModel):
-    class Meta:
-        db_table = "diaries_strain_areas"
-
-    def __str__(self):
-        return self.value
+    media_usage_value = "Media"
+    food_intake_value = "Food"

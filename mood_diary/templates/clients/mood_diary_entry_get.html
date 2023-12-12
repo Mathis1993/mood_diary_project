@@ -1,48 +1,50 @@
 {% extends "base_counselor_role.html" %}
+{% load i18n %}
 
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Mood Diary Entry</h1>
+        <h1 class="h3 mb-0 text-gray-800">{% translate "Mood Diary Entry" %}</h1>
     </div>
 
     <div class="row">
-    <div class="col-lg-6 mb-4">
-        <div class="shadow mb-4">
-            <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">{{ entry.date }} </h6>
-            <h6 class="m-0 font-weight-bold text-secondary">({{ entry.start_time }} - {{ entry.end_time }})</h6>
-            </div>
-            <div class="card-body">
-                <h4 class="text-md-left">Activity</h4>
-                <div class="text">
-                    <p>{{ entry.activity.value }}</p>
+        <div class="col-lg-6 mb-4">
+            <div class="shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{{ entry.date }} </h6>
+                    <h6 class="m-0 font-weight-bold text-secondary">({{ entry.start_time }} - {{ entry.end_time }})</h6>
                 </div>
-                <h4 class="text-md-left">Mood</h4>
-                <div class="stepper-container mb-5">
-              <div class="stepper-wrapper mb-4">
-                <div class="stepper-progress"></div>
-                  {% for mood in moods %}
-                    {% if mood.value == entry.mood.value %}
-                      <div class="stepper-screen-indicator stepper-completed">{{ mood.value }}</div>
-                    {% else %}
-                      <div class="stepper-screen-indicator">{{ mood.value }}</div>
+                <div class="card-body">
+                    <h4 class="text-md-left">{% translate "Activity" %}</h4>
+                    <div class="text mb-4">
+                        <p>{{ entry.activity.value }}</p>
+                    </div>
+                    {#                <h4 class="text-md-left">Mood <span class="float-right small">{{ entry.mood.value }}/{{ entry.mood.max_value }}</span></h4>#}
+                    <h4 class="text-md-left">{% translate "Mood" %}</h4>
+                    <div class="stepper-container mb-4">
+                        <div class="circle-and-label-container"> <!-- New container -->
+                            <div class="stepper-wrapper mb-4">
+                                {% for mood in moods %}
+                                    {% if mood.value == entry.mood.value %}
+                                        <div class="stepper-screen-indicator stepper-completed">{{ mood.value }}</div>
+                                    {% else %}
+                                        <div class="stepper-screen-indicator">{{ mood.value }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <!-- Active mood label centered below the circles -->
+                            <div class="active-mood-label">{{ entry.mood.label }}</div>
+                        </div>
+                    </div>
+                    {% if entry.details %}
+                        <h4 class="text-md-left">{% translate "Details" %}</h4>
+                        <div class="text">
+                            <p>{{ entry.details }}</p>
+                        </div>
                     {% endif %}
-                  {% endfor %}
-                <div class="stepper-label-left">{{ label_left }}</div>
-                <div class="stepper-label-right">{{ label_right }}</div>
-              </div>
-            </div>
-
-                {% if entry.mood_and_emotion_info %}
-                <h4 class="text-md-left">Info</h4>
-                <div class="text">
-                    <p>{{ entry.mood_and_emotion_info }}</p>
                 </div>
-                {% endif %}
             </div>
         </div>
-    </div>
     </div>
 
 {% endblock %}

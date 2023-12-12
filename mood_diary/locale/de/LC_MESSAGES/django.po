@@ -1,0 +1,579 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-09-22 10:04+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mood_diary/clients/views.py:39
+msgid "Client already exists"
+msgstr "Klient*in existiert bereits"
+
+#: mood_diary/clients/views.py:45
+msgid "Could not send email"
+msgstr "Email konnte nicht gesendet werden"
+
+#: mood_diary/dashboards/views.py:40
+msgid "Average Mood"
+msgstr "Durschnittliche Stimmung"
+
+#: mood_diary/diaries/forms.py:39
+msgid "Select a date"
+msgstr "Wähle ein Datum aus"
+
+#: mood_diary/diaries/forms.py:42
+msgid "Select a start time"
+msgstr "Wähle eine Startzeit aus"
+
+#: mood_diary/diaries/forms.py:45
+msgid "Select an end time"
+msgstr "Wähle eine Endzeit aus"
+
+#: mood_diary/diaries/forms.py:56
+msgid "Date"
+msgstr "Datum"
+
+#: mood_diary/diaries/forms.py:57
+msgid "Start time"
+msgstr "Startzeit"
+
+#: mood_diary/diaries/forms.py:58
+msgid "End time"
+msgstr "Endzeit"
+
+#: mood_diary/diaries/forms.py:60
+#: mood_diary/templates/clients/mood_diary_entry_get.html:22
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:23
+msgid "Mood"
+msgstr "Stimmung"
+
+#: mood_diary/diaries/forms.py:63
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:40
+msgid "Details"
+msgstr "Details"
+
+#: mood_diary/diaries/forms.py:65
+msgid "Enter additional details here..."
+msgstr "Gib hier zusätzliche Details ein..."
+
+#: mood_diary/diaries/forms.py:88
+msgid "Start date"
+msgstr "Startdatum"
+
+#: mood_diary/diaries/forms.py:103
+msgid "End date"
+msgstr "Enddatum"
+
+#: mood_diary/diaries/forms.py:105
+msgid "Select an end date"
+msgstr "Wähle ein Enddatum aus"
+
+#: mood_diary/diaries/forms.py:119
+msgid "End date must be after start date."
+msgstr "Startdatum muss vor dem Enddatum liegen"
+
+#: mood_diary/templates/admin/add_form.html:6
+msgid ""
+"Enter an email address and a role. The created user will then receive an "
+"email with login information."
+msgstr ""
+"Gib eine E-Mail-Adresse und eine Rolle ein. Der*die erstellte Nutzer*in "
+"erhält dann eine E-Mail mit Anmeldeinformationen."
+
+#: mood_diary/templates/admin/add_form.html:7
+msgid ""
+"Please only create counselor users here. Counselors will in turn create "
+"client users."
+msgstr ""
+"Bitte erstelle hier nur Berater*innen-Accounts. Berater*innen werden im "
+"Anschluss Klient*innen-Accounts erstellen."
+
+#: mood_diary/templates/admin/add_form.html:9
+msgid "Enter a username and password."
+msgstr "Gib einen Benutzernamen und ein Passwort ein."
+
+#: mood_diary/templates/base_client_role.html:6
+#: mood_diary/templates/base_client_role.html:18
+#: mood_diary/templates/base_generic.html:63
+msgid "Home"
+msgstr "Startseite"
+
+#: mood_diary/templates/base_client_role.html:7
+#: mood_diary/templates/base_client_role.html:25
+msgid "Diary"
+msgstr "Tagebuch"
+
+#: mood_diary/templates/base_client_role.html:48
+msgid "Notifications Center"
+msgstr "Benachrichtigungszentrum"
+
+#: mood_diary/templates/base_client_role.html:71
+msgid "Show All Notifications"
+msgstr "Alle Benachrichtigungen anzeigen"
+
+#: mood_diary/templates/base_client_role.html:83
+#: mood_diary/templates/rules/rules_list.html:7
+msgid "Rules"
+msgstr "Regeln"
+
+#: mood_diary/templates/base_counselor_role.html:10
+msgid "Clients"
+msgstr "Klient*innen"
+
+#: mood_diary/templates/base_generic.html:113
+msgid "Profile"
+msgstr "Profil"
+
+#: mood_diary/templates/base_generic.html:120
+#: mood_diary/templates/base_generic.html:189
+msgid "Logout"
+msgstr "Abmelden"
+
+#: mood_diary/templates/base_generic.html:144
+msgid "previous"
+msgstr "vorherige"
+
+#: mood_diary/templates/base_generic.html:152
+msgid "next"
+msgstr "nächste"
+
+#: mood_diary/templates/base_generic.html:153
+msgid "last"
+msgstr "letzte"
+
+#: mood_diary/templates/base_generic.html:178
+msgid "Want to Leave?"
+msgstr "Möchtest du gehen?"
+
+#: mood_diary/templates/base_generic.html:183
+msgid "Select 'Logout' below if you are ready to end your current session."
+msgstr ""
+"Wähle unten 'Abmelden', wenn du deine aktuelle Sitzung beenden möchtest."
+
+#: mood_diary/templates/base_generic.html:186
+#: mood_diary/templates/clients/clients_list_page.html:46
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:51
+#: mood_diary/templates/diaries/mood_diary_entry_delete.html:10
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:78
+#: mood_diary/templates/rules/rule_list_page.html:76
+#: mood_diary/templates/rules/rule_list_page.html:102
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: mood_diary/templates/clients/client_create.html:6
+msgid "Create Client"
+msgstr "Klient*in erstellen"
+
+#: mood_diary/templates/clients/client_create.html:14
+msgid "Create"
+msgstr "Erstellen"
+
+#: mood_diary/templates/clients/client_creation_success.html:7
+msgid "Client Creation Success"
+msgstr "Klient*in-Erstellung erfolgreich"
+
+#: mood_diary/templates/clients/client_creation_success.html:14
+msgid "An email for account creation has been sent successfully!"
+msgstr "Eine E-Mail zur Account-Erstellung wurde erfolgreich versendet!"
+
+#: mood_diary/templates/clients/client_creation_success.html:17
+msgid "Email"
+msgstr "E-Mail"
+
+#: mood_diary/templates/clients/clients_list.html:6
+msgid "Your Clients"
+msgstr "Deine Klient*innen"
+
+#: mood_diary/templates/clients/clients_list.html:16
+msgid "No clients yet."
+msgstr "Noch keine Klient*innen vorhanden."
+
+#: mood_diary/templates/clients/clients_list_page.html:13
+msgid "Active"
+msgstr "Aktiv"
+
+#: mood_diary/templates/clients/clients_list_page.html:13
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: mood_diary/templates/clients/clients_list_page.html:37
+msgid "Set this client to inactive?"
+msgstr "Diese*n Klient*in auf inaktiv setzen?"
+
+#: mood_diary/templates/clients/clients_list_page.html:42
+#, python-format
+msgid ""
+"Select 'Confirm' below if\n"
+"                    you are ready to set client %(identifier)s to inactive "
+"to remove them from this\n"
+"                    list."
+msgstr ""
+"Wählen unten 'Bestätigen', wenn du bereit bist, Klient*in %(identifier)s auf "
+"inaktiv zu setzen, um sie*ihn von dieser Liste zu entfernen."
+
+#: mood_diary/templates/clients/clients_list_page.html:49
+#: mood_diary/templates/rules/rule_list_page.html:79
+#: mood_diary/templates/rules/rule_list_page.html:105
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: mood_diary/templates/clients/mood_diary_entries_list.html:6
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:7
+msgid "Mood Diary Entries"
+msgstr "Tagebucheinträge"
+
+#: mood_diary/templates/clients/mood_diary_entries_list.html:16
+msgid "No mood diary entries released yet."
+msgstr "Noch keine Tagebucheinträge freigegeben."
+
+#: mood_diary/templates/clients/mood_diary_entry_get.html:7
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:7
+msgid "Mood Diary Entry"
+msgstr "Tagebucheintrag"
+
+#: mood_diary/templates/clients/mood_diary_entry_get.html:18
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:18
+msgid "Activity"
+msgstr "Aktivität"
+
+#: mood_diary/templates/dashboards/dashboard_client.html:16
+msgid "Mood Overview"
+msgstr "Stimmungsübersicht"
+
+#: mood_diary/templates/dashboards/dashboard_client.html:31
+msgid "Mood Highlights"
+msgstr "Stimmungshighlights"
+
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:18
+msgid "No mood diary entries found."
+msgstr "Keine Tagebucheinträge gefunden."
+
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:15
+msgid "Entries released to your counselor show in green."
+msgstr "Einträge, die an deine*n Berater*in freigegeben wurden, sind grün markiert."
+
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:43
+msgid "Release all Entries?"
+msgstr "Alle Einträge freigeben?"
+
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:48
+msgid ""
+"Select 'Release' below if you are ready to release all new mood diary "
+"entries to your counselor."
+msgstr ""
+"Wähle unten 'Freigeben', wenn du bereit bist, alle neuen Tagebucheinträge "
+"deinem*deiner Berater*in freizugeben."
+
+#: mood_diary/templates/diaries/mood_diary_entries_list.html:54
+msgid "Release"
+msgstr "Freigeben"
+
+#: mood_diary/templates/diaries/mood_diary_entry_create.html:10
+msgid "Create Mood Diary Entry"
+msgstr "Tagebucheintrag erstellen"
+
+#: mood_diary/templates/diaries/mood_diary_entry_create.html:18
+msgid "Save"
+msgstr "Speichern"
+
+#: mood_diary/templates/diaries/mood_diary_entry_delete.html:5
+msgid "Confirm Delete Mood Diary Entry"
+msgstr "Löschung des Tagebucheintrags bestätigen"
+
+#: mood_diary/templates/diaries/mood_diary_entry_delete.html:6
+msgid "Are you sure you want to delete this mood diary entry?"
+msgstr "Bist du sicher, dass du diesen Tagebucheintrag löschen möchtest?"
+
+#: mood_diary/templates/diaries/mood_diary_entry_delete.html:9
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:81
+msgid "Delete"
+msgstr "Löschen"
+
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:70
+msgid "Delete this entry?"
+msgstr "Diesen Eintrag löschen?"
+
+#: mood_diary/templates/diaries/mood_diary_entry_get.html:75
+msgid "Select 'Delete' below if you are ready to delete this entry."
+msgstr "Wähle unten 'Löschen', wenn du diesen Eintrag löschen möchtest."
+
+#: mood_diary/templates/diaries/mood_diary_entry_release.html:5
+msgid "Release Mood Diary Entries"
+msgstr "Tagebucheinträge freigeben"
+
+#: mood_diary/templates/diaries/mood_diary_entry_release.html:6
+msgid "Are you sure you want to release all diary entries?"
+msgstr "Bist du sicher, dass du alle Tagebucheinträge freigeben möchtest?"
+
+#: mood_diary/templates/diaries/mood_diary_entry_release.html:9
+msgid "Release Entries"
+msgstr "Einträge freigeben"
+
+#: mood_diary/templates/diaries/mood_diary_entry_release_done.html:5
+msgid "Mood Diary Entries released."
+msgstr "Tagebucheinträge freigegeben."
+
+#: mood_diary/templates/diaries/mood_diary_entry_update.html:10
+msgid "Update Mood Diary Entry"
+msgstr "Tagebucheintrag aktualisieren"
+
+#: mood_diary/templates/diaries/mood_diary_entry_update.html:18
+msgid "Update"
+msgstr "Aktualisieren"
+
+#: mood_diary/templates/notifications/notification_get.html:7
+msgid "Notification"
+msgstr "Benachrichtigung"
+
+#: mood_diary/templates/notifications/notification_get.html:17
+msgid "Pattern"
+msgstr "Muster"
+
+#: mood_diary/templates/notifications/notification_get.html:21
+msgid "Description"
+msgstr "Beschreibung"
+
+#: mood_diary/templates/notifications/notification_list_page.html:15
+#: mood_diary/templates/notifications/notification_list_page.html:37
+#: mood_diary/rules/rules.py:101
+msgid "Pattern detected!"
+msgstr "Muster erkannt!"
+
+#: mood_diary/templates/notifications/notifications_list.html:7
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+#: mood_diary/templates/notifications/notifications_list.html:17
+msgid "No notifications found."
+msgstr "Keine Benachrichtigungen gefunden."
+
+#: mood_diary/templates/rules/rule_list_page.html:14
+#: mood_diary/templates/rules/rule_list_page.html:40
+msgid "Rule"
+msgstr "Regel"
+
+#: mood_diary/templates/rules/rule_list_page.html:67
+msgid "Deactivate this rule?"
+msgstr "Diese Regel deaktivieren?"
+
+#: mood_diary/templates/rules/rule_list_page.html:72
+#, python-format
+msgid ""
+"Select 'Confirm' below if\n"
+"                    you wish to deactivate the rule '%(rule_title)s'."
+msgstr ""
+"Wähle unten 'Bestätigen', wenn du die Regel '%(rule_title)s' deaktivieren "
+"möchtest."
+
+#: mood_diary/templates/rules/rule_list_page.html:93
+msgid "Reactivate this rule?"
+msgstr "Diese Regel wieder aktivieren?"
+
+#: mood_diary/templates/rules/rule_list_page.html:98
+#, python-format
+msgid ""
+"Select 'Confirm' below if\n"
+"                    you wish to activate the rule '%(rule_title)s' again."
+msgstr ""
+"Wählen unten 'Bestätigen', wenn du die Regel '%(rule_title)s' wieder "
+"aktivieren möchtest."
+
+#: mood_diary/templates/rules/rules_list.html:13
+msgid ""
+"Rules detecting patterns and creating notifications for detected patterns "
+"can be switched on and off on this page."
+msgstr ""
+"Regeln, die Muster erkennen und Benachrichtigungen für erkannte Muster "
+"erstellen, können auf dieser Seite ein- und ausgeschaltet werden."
+
+#: mood_diary/templates/rules/rules_list.html:18
+msgid "No rules found."
+msgstr "Keine Regeln gefunden."
+
+#: mood_diary/templates/users/email_update.html:6
+#: mood_diary/templates/users/email_update.html:14
+msgid "Update Email"
+msgstr "Email ändern"
+
+#: mood_diary/templates/users/login.html:15
+msgid "Mood Diary - Login"
+msgstr "Mood Diary - Anmeldung"
+
+#: mood_diary/templates/users/login.html:31
+msgid "Please login to see this page."
+msgstr "Bitte melde dich an, um diese Seite zu sehen."
+
+#: mood_diary/templates/users/login.html:57
+msgid "Enter Email Address..."
+msgstr "Emailadresse eingeben..."
+
+#: mood_diary/templates/users/login.html:64
+msgid "Enter Password..."
+msgstr "Passwort eingeben..."
+
+#: mood_diary/templates/users/login.html:71
+msgid "Login"
+msgstr "Anmelden"
+
+#: mood_diary/templates/users/password_change.html:6
+#: mood_diary/templates/users/password_change.html:14
+#: mood_diary/templates/users/profile.html:17
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+#: mood_diary/templates/users/password_change_done.html:5
+msgid "Your password was changed."
+msgstr "Dein Passwort wurde geändert."
+
+#: mood_diary/templates/users/profile.html:5
+msgid "Profile Settings"
+msgstr "Profileinstellungen"
+
+#: mood_diary/templates/users/profile.html:12
+msgid "Change Email"
+msgstr "Email ändern"
+
+#: mood_diary/users/forms.py:28
+msgid "Enter Old Password..."
+msgstr "Altes Passwort eingeben..."
+
+#: mood_diary/users/forms.py:31
+msgid "Enter New Password..."
+msgstr "Neues Passwort eingeben..."
+
+#: mood_diary/users/forms.py:34
+msgid "Confirm New Password..."
+msgstr "Neues Passwort bestätigen..."
+
+#: mood_diary/templates/users/password_reset.html:6
+#: mood_diary/templates/users/password_reset_confirm.html:9
+msgid "Password Reset"
+msgstr "Passwort zurücksetzen"
+
+#: mood_diary/templates/users/login.html:76
+msgid "Forgot Password?"
+msgstr "Passwort vergessen?"
+
+
+#: mood_diary/templates/users/profile.html:54
+msgid "May the Mood Diary send you push notifications?"
+msgstr "Darf das Mood Diary dir Push-Benachrichtigungen senden?"
+
+#: mood_diary/templates/users/profile.html:56
+msgid ""
+"Clicking the button below will prompt your browser to ask you if the Mood "
+"Diary may send you push notifications."
+msgstr ""
+"Wenn du den Button unten klickst, wird dein Browser dich fragen, ob das Mood Diary dir Push-Benachrichtigungen senden darf."
+
+#: mood_diary/templates/users/profile.html:57
+msgid ""
+"The prompt will only appear if you have not yet decided about notification "
+"settings for the Mood Diary."
+msgstr ""
+"Die Aufforderung erscheint nur, wenn du noch nicht über die Benachrichtigungseinstellungen des Mood Diary entschieden hast."
+
+#: mood_diary/templates/users/profile.html:58
+msgid ""
+"If you have deactivated notfication support for your browser in the settings "
+"of your device, instead of showing a prompt, the browser will automatically "
+"default to denying notifications."
+msgstr ""
+"Wenn du die Benachrichtigungsunterstützung für deinen Browser in den Einstellungen deines Geräts deaktiviert hast, wird der Browser anstelle einer Aufforderung automatisch Benachrichtigungen ablehnen."
+
+#: mood_diary/templates/users/profile.html:64
+msgid "Prompt Browser Notification Settings"
+msgstr "Browsereinstellungen für Benachrichtigungen aufrufen"
+
+#: mood_diary/templates/users/profile.html:76
+msgid ""
+"In addition to managing the browser settings for push notifications, you can "
+"disable push notifications here."
+msgstr ""
+"Neben der Verwaltung der Browsereinstellungen für Push-Benachrichtigungen kannst du hier Push-Benachrichtigungen deaktivieren."
+
+#: mood_diary/templates/users/profile.html:79
+msgid ""
+"It can also help to click the button above in order to renew the push "
+"subscription under the hood."
+msgstr ""
+"Es kann auch hilfreich sein, den Button oben zu klicken, um das Push-Abonnement im Hintergrund zu erneuern."
+
+#: mood_diary/templates/users/profile.html:85
+msgid "Disable Notifications"
+msgstr "Benachrichtigungen deaktivieren"
+
+#: mood_diary/templates/users/profile.html:87
+msgid "Enable Notifications"
+msgstr "Benachrichtigungen aktivieren"
+
+#: mood_diary/templates/users/offline.html:5
+msgid "Oh no! It seems that you are offline!"
+msgstr "Oh nein! Es scheint, dass du offline bist!"
+
+#: mood_diary/templates/users/profile.html:77
+msgid ""
+"Then, even when your browser settings allow push notifiactions, the Mood "
+"Diary will not send you any."
+msgstr ""
+"Dann wird das Mood Diary dir keine senden, selbst wenn deine Browsereinstellungen Push-Benachrichtigungen erlauben."
+
+#: mood_diary/templates/users/profile.html:78
+msgid ""
+"If you have enabled push notifications here but do not receive any, ensure "
+"that you allowed notifications in your browser for the Mood Diary."
+msgstr ""
+"Wenn du hier Push-Benachrichtigungen aktiviert hast, aber keine erhältst, stelle sicher, dass du Benachrichtigungen in deinem Browser für das Mood Diary zugelassen hast."
+
+#: mood_diary/templates/users/profile.html:7
+msgid "Email And Password"
+msgstr "Email und Passwort"
+
+#: mood_diary/templates/users/profile.html:25
+msgid "Push Notifications"
+msgstr "Push-Benachrichtigungen"
+
+#: mood_diary/templates/users/profile.html:23
+msgid "App Installation"
+msgstr "App-Installation"
+
+#: mood_diary/templates/users/profile.html:26
+msgid "You can install the Mood Diary as a web app on your device."
+msgstr "Du kannst das Mood Diary als Web-App auf deinem Gerät installieren."
+
+#: mood_diary/templates/users/profile.html:27
+msgid "If your browser supports this, clicking the button below will show an installation prompt."
+msgstr "Wenn dein Browser dies unterstützt, wird durch Klicken des Buttons unten eine Installationsaufforderung angezeigt."
+
+#: mood_diary/templates/users/profile.html:28
+msgid "If it doesn't, or if you already installed the Mood Diary, clicking the button will have no effect."
+msgstr "Wenn dies nicht der Fall ist oder wenn du das Mood Diary bereits installiert hast, hat das Klicken des Buttons keine Auswirkungen."
+
+#: mood_diary/templates/users/profile.html:29
+msgid "If your browser doesn't support the installation, you can still select 'Add to homescreen' from it's context menu on a mobile device for easier access to the Mood Diary."
+msgstr "Wenn dein Browser die Installation nicht unterstützt, kannst du trotzdem 'Zum Startbildschirm hinzufügen' aus dem Kontextmenü auswählen, um auf dem Smartphone einen einfacheren Zugriff auf das Mood Diary zu erhalten."
+
+#: mood_diary/templates/users/profile.html:30
+msgid "This is specifically relevant for iOS devices. Using Safari, you can install the Mood Diary, but you must select 'Add to homescreen' from the context menu manually."
+msgstr "Das ist insbesondere für iOS-Geräte relevant. Mit Safari kannst du das Mood Diary installieren, aber du musst 'Zum Startbildschirm hinzufügen' im Kontextmenü manuell auswählen."
+
+#: mood_diary/templates/users/profile.html:31
+msgid "Therefore, on iOS, use Safari to install the Mood Diary. On Android, best use Chrome."
+msgstr "Verwende daher auf iOS Safari, um das Mood Diary zu installieren. Auf Android verwende am besten Chrome."
+
+#: mood_diary/templates/users/profile.html:35
+msgid "Show Installation Prompt"
+msgstr "Installationsaufforderung anzeigen"

@@ -1,31 +1,35 @@
 {% extends "base_client_role.html" %}
+{% load i18n %}
 
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Mood Diary Entries</h1>
+        <h1 class="h3 mb-0 text-gray-800">{% translate "Mood Diary Entries" %}</h1>
     </div>
 
     <div class="row">
-  <div class="col-lg-10">
+        <div class="col-lg-10">
 
 
-  {% if entries %}
-    {% include page_template %}
-  {% else %}
-    <p>No mood diary entries found.</p>
-  {% endif %}
-  </div>
+            {% if entries %}
+                <p>{% translate "Entries released to your counselor show in green." %}</p>
+                {% include page_template %}
+            {% else %}
+                <p>{% translate "No mood diary entries found." %}</p>
+            {% endif %}
+        </div>
     </div>
 
     <!-- Create New Entry Button-->
-    <a href="{% url 'diaries:create_mood_diary_entry' %}" class="btn btn-success btn-circle btn-lg button-lower-right-corner-1">
-    <i class="fas fa-plus"></i>
+    <a href="{% url 'diaries:create_mood_diary_entry' %}"
+       class="btn btn-success btn-circle btn-lg button-lower-right-corner-1">
+        <i class="fas fa-plus"></i>
     </a>
 
     <!-- Release Entries Button-->
-    <a class="btn btn-success btn-circle btn-lg button-lower-right-corner-2" data-toggle="modal" data-target="#releaseModal">
-    <i class="fas fa-arrow-alt-circle-up"></i>
+    <a class="btn btn-success btn-circle btn-lg button-lower-right-corner-2" data-toggle="modal"
+       data-target="#releaseModal">
+        <i class="fas fa-arrow-alt-circle-up"></i>
     </a>
 {% endblock %}
 
@@ -33,21 +37,22 @@
     {{ block.super }}
     <!-- Release Entries Modal-->
     <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Release all Entries?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% translate "Release all Entries?" %}</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Release" below if you are ready to release all new mood diary entries to your counselor.</div>
+                <div class="modal-body">{% translate "Select 'Release' below if you are ready to release all new mood diary entries to your counselor." %}</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button"
+                            data-dismiss="modal">{% translate "Cancel" %}</button>
                     <form method="post" action="{% url 'diaries:release_mood_diary_entries' %}">
-                    {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Release</button>
+                        {% csrf_token %}
+                        <button class="btn btn-primary" type="submit">{% translate "Release" %}</button>
                     </form>
                 </div>
             </div>
@@ -58,6 +63,6 @@
 {% block scripts %}
     {{ block.super }}
     {% load static %}
-    <script src="{% static 'el-pagination/js/el-pagination.js'  %}"></script>
+    <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
     <script>$.endlessPaginate({paginateOnScroll: true, paginateOnScrollMargin: 20});</script>
 {% endblock %}

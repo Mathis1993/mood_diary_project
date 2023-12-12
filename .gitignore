@@ -1,3 +1,4 @@
+# All files listed here will be ignored by git
 .idea
 .docker
 .env
@@ -11,3 +12,6 @@ __pycache__/
 
 # Celery Beat Scheduler
 celerybeat-schedule
+
+# Ngrok
+ngrok

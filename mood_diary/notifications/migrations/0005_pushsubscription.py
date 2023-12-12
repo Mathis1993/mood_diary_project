@@ -1,0 +1,26 @@
+import django.db.models.deletion
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('clients', '0002_client_push_notifications_granted'),
+        ('notifications', '0004_english_translation_fields'),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='PushSubscription',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('subscription', models.JSONField()),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='push_subscriptions', to='clients.client')),
+            ],
+            options={
+                'db_table': 'notifications_push_subscriptions',
+            },
+        ),
+    ]

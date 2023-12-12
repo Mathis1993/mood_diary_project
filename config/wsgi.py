@@ -1,5 +1,6 @@
 """
 WSGI config for mood_diary project.
+Used by Gunicorn to serve the project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +12,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mood_diary.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.stage")
 
 application = get_wsgi_application()

@@ -1,217 +1,220 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        {% load pwa %}
-        {% progressive_web_app_meta %}
+<head>
+    {% load pwa %}
+    {% progressive_web_app_meta %}
 
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-        {% block title %}
+    {% block extrahead %}{% endblock %}
+
+    {% block title %}
         <title>Mood Diary</title>
-        {% endblock %}
+    {% endblock %}
 
-        {% load static %}
-        <!-- Custom fonts for this template-->
-        <link href="{% static 'theme/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-        <link
+    {% load static %}
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'theme/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
 
-        <!-- Custom styles for this template-->
-        <link href="{% static 'theme/css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{% static 'theme/css/sb-admin-2.min.css' %}" rel="stylesheet">
 
-        <!-- Custom styles -->
-        <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <!-- Custom styles -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
 
-    </head>
+    <!-- Fav Icon -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}"/>
 
-  <body id="page-top">
+</head>
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+<body id="page-top">
 
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+<!-- Page Wrapper -->
+<div id="wrapper">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'users:index' %}">
-                <div class="sidebar-brand-icon">
-                    <i class="fas fa-smile"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3"> Mood Diary </div>
-            </a>
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'users:index' %}">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-smile"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3"> Mood Diary</div>
+        </a>
 
-            {% block navigation_items %}
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        {% block navigation_items %}
 
             <!-- Nav Item - Home -->
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'users:index' %}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Home</span></a>
+                    <span>{% translate "Home" %}</span></a>
             </li>
 
-            {% endblock %}
+        {% endblock %}
 
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
 
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
 
-        </ul>
-        <!-- End of Sidebar -->
+    </ul>
+    <!-- End of Sidebar -->
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
-            <div id="content">
+        <!-- Main Content -->
+        <div id="content">
 
-                            <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
 
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
 
-                        {% block alerts %}
+                    {% block alerts %}
 
-                        {% endblock %}
+                    {% endblock %}
 
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.get_username }}</span>
-                                <img class="img-profile rounded-circle"
-                                    src="{%  static 'theme/img/undraw_profile.svg' %}">
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.get_username }}</span>
+                            <img class="img-profile rounded-circle"
+                                 src="{% static 'theme/img/undraw_profile.svg' %}">
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{% url 'users:profile' %}">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                {% translate "Profile" %}
                             </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
-                                </a>
-                                {% block rules %}
-                                {% endblock %}
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </li>
+                            {% block rules %}
+                            {% endblock %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                {% translate "Logout" %}
+                            </a>
+                        </div>
+                    </li>
 
-                    </ul>
+                </ul>
 
-                </nav>
-                <!-- End of Topbar -->
+            </nav>
+            <!-- End of Topbar -->
 
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
 
                 {% block content %}{% endblock %}
 
-                </div>
-                <!-- /.container-fluid -->
+            </div>
+            <!-- /.container-fluid -->
 
-                {% block pagination %}
-            {% if is_paginated %}
-              <div class="pagination">
+            {% block pagination %}
+                {% if is_paginated %}
+                    <div class="pagination">
                 <span class="page-links">
                   {% if page_obj.has_previous %}
-                    <a href="{{ request.path }}?page=1">&laquo; first</a>
-                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                      <a href="{{ request.path }}?page=1">&laquo; first</a>
+                      <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">{% translate "previous" %}</a>
                   {% endif %}
 
-                  <span class="page-current">
+                    <span class="page-current">
                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
                   </span>
 
-                  {% if page_obj.has_next %}
-                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
-                    <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                  {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">{% translate "next" %}</a>
+                        <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}">{% translate "last" %} &raquo;</a>
+                    {% endif %}
                 </span>
-              </div>
-            {% endif %}
-            {% endblock %}
-            </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2023</span>
                     </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
-          </div>
-          <!-- End of Content Wrapper -->
+                {% endif %}
+            {% endblock %}
         </div>
-        <!-- End of Page Wrapper -->
+        <!-- End of Main Content -->
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
 
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
 
-    {% block modals %}
+{% block modals %}
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Want to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{% translate "Want to Leave?" %}</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">{% translate "Select 'Logout' below if you are ready to end your current session." %}</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button"
+                            data-dismiss="modal">{% translate "Cancel" %}</button>
                     <form method="post" action="{% url 'users:perform_logout' %}">
-                    {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Logout</button>
+                        {% csrf_token %}
+                        <button class="btn btn-primary" type="submit">{% translate "Logout" %}</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    {% endblock %}
+{% endblock %}
 
-      <!-- Bootstrap core JavaScript-->
-    <script src="{% static 'theme/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'theme/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'theme/vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'theme/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="{% static 'theme/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<script src="{% static 'theme/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="{% static 'theme/js/sb-admin-2.min.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'theme/js/sb-admin-2.min.js' %}"></script>
 
-    <!-- Page level plugins -->
-    <script src="{% static 'theme/vendor/chart.js/Chart.min.js' %}"></script>
+<!-- Page level plugins -->
+<script src="{% static 'theme/vendor/chart.js/Chart.min.js' %}"></script>
 
-    <!-- Page level custom scripts -->
-    {%block scripts%}{%endblock scripts%}
+<!-- Asking for Notification Permission -->
+<script src="{% static 'js/notifications.js' %}"></script>
 
-  </body>
+<!-- Installation Prompt -->
+<script src="{% static 'js/installation.js' %}"></script>
+
+<!-- Page level custom scripts -->
+{% block scripts %}{% endblock scripts %}
+
+</body>
 </html>

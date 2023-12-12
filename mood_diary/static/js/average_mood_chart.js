@@ -1,12 +1,14 @@
+// JS code for the average mood chart displaying the average mood of the user over the last 7 days.
 const labels = JSON.parse(document.getElementById('chart-labels').textContent);
 const data = JSON.parse(document.getElementById('chart-data').textContent);
+const dataName = JSON.parse(document.getElementById('chart-data-name').textContent);
 const ctx = document.getElementById("moodOverviewChart")
 const myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
     labels: labels,
     datasets: [{
-      label: "Average Mood",
+      label: dataName,
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",

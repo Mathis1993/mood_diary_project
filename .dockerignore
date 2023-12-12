@@ -1,0 +1,9 @@
+# Files and directories to ignore in Docker builds
+docker-compose.yml
+.env
+.envrc
+.env-sample
+celerybeat-schedule
+.docker
+.pytest_cache
+ngrok

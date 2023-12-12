@@ -3,6 +3,10 @@ from django.db import models
 
 
 class Rule(TrackCreationAndUpdates):
+    """
+    This is the Rule model representing a rule for a client.
+    """
+
     class Meta:
         db_table = "rules_rules"
         ordering = ["title"]
@@ -26,6 +30,10 @@ class Rule(TrackCreationAndUpdates):
 
 
 class RuleClient(TrackCreationAndUpdates):
+    """
+    This is the RuleClient model representing a client's subscription to a rule.
+    """
+
     class Meta:
         db_table = "rules_rules_clients"
         ordering = ["-active", "rule__title"]
@@ -38,6 +46,10 @@ class RuleClient(TrackCreationAndUpdates):
 
 
 class RuleTriggeredLog(TrackCreation):
+    """
+    This is the RuleTriggeredLog model representing a log of a rule being triggered for a client.
+    """
+
     class Meta:
         db_table = "rules_triggered_logs"
 
@@ -45,3 +57,4 @@ class RuleTriggeredLog(TrackCreation):
     client = models.ForeignKey(
         "clients.Client", on_delete=models.CASCADE, related_name="rules_triggered_logs"
     )
+    requested_at = models.DateTimeField()
