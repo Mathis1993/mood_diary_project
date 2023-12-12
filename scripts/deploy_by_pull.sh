@@ -1,8 +1,9 @@
+#! /bin/bash
+
+# Expected to be run from the root of the repository
+
 # Load the .env file
 source .env
-
-# Navigate to the repository directory
-cd "$REPO_DIR" || exit
 
 # Ensure the main branch is checked out
 git checkout main
