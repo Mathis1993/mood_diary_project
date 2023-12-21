@@ -57,7 +57,7 @@ def test_create_client_view_post_valid_form(create_user, create_response):
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "test@example.com", "identifier": "client1"},
+        data={"email": "test@example.com", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -86,7 +86,7 @@ def test_create_client_view_post_invalid_email(create_user, create_response):
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "invalid-email", "identifier": "client1"},
+        data={"email": "invalid-email", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -106,7 +106,7 @@ def test_create_client_view_post_email_sending_fails(
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "test@example.com", "identifier": "client1"},
+        data={"email": "test@example.com", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -125,7 +125,7 @@ def test_create_client_view_post_client_already_exists(create_user, create_respo
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "test@example.com", "identifier": "client1"},
+        data={"email": "test@example.com", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
