@@ -76,7 +76,6 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
         -------
         HttpResponse
         """
-        print("HERE")
         form = self.form_class(request.POST)
         if form.is_valid():
             counselor = request.user
