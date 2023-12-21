@@ -4,6 +4,7 @@ from clients.utils import send_account_creation_email
 from core.utils import hash_email
 from core.views import AuthenticatedCounselorRoleMixin
 from diaries.models import Mood, MoodDiary, MoodDiaryEntry
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
@@ -30,6 +31,12 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
     template_name = "clients/client_create.html"
     success_template_name = "clients/client_creation_success.html"
 
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+        context["hashed_key_part"] = hash_email(user.id + settings.SECRET_KEY)
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """
         Render the form upon receiving a GET request.
@@ -42,8 +49,15 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
         -------
         HttpResponse
         """
+        # Server sends hash(secret_key) to client
+        # Client creates encryption/decryption key for client_user as
+        # hash(client_user_email + hash(secret_key)), encrypts this with the counselor's key
+        # and sends the encrypted_client_key back to the server in a hidden input field
+        hashed_key_part = hash_email(settings.SECRET_KEY)
         form = self.form_class()
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request, self.template_name, {"form": form, "hashed_key_part": hashed_key_part}
+        )
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """
@@ -62,11 +76,13 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
         -------
         HttpResponse
         """
+        print("HERE")
         form = self.form_class(request.POST)
         if form.is_valid():
             counselor = request.user
             email = form.cleaned_data["email"]
             identifier = form.cleaned_data["identifier"]
+            client_key_encrypted = form.cleaned_data["client_key_encrypted"]
             password = get_random_string(length=15)
 
             hashed_email = hash_email(email)
@@ -88,7 +104,10 @@ class CreateClientView(AuthenticatedCounselorRoleMixin, View):
             client_user.save()
 
             client = Client.objects.create(
-                user=client_user, identifier=identifier, counselor=counselor
+                user=client_user,
+                identifier=identifier,
+                counselor=counselor,
+                client_key_encrypted=client_key_encrypted,
             )
             MoodDiary.objects.create(client=client)
             client.subscribed_rules.add(*Rule.objects.all())
@@ -226,4 +245,5 @@ class MoodDiaryEntryDetailView(AuthenticatedCounselorRoleMixin, DetailView):
         context["moods"] = Mood.objects.all()
         context["label_left"] = Mood.objects.first().label
         context["label_right"] = Mood.objects.last().label
+        context["encrypted_client_key"] = self.object.mood_diary.client.client_key_encrypted
         return context

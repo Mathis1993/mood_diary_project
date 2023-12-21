@@ -1,4 +1,6 @@
+from core.utils import hash_email
 from core.views import AuthenticatedClientRoleMixin
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -69,6 +71,16 @@ class CustomLoginView(LoginView):
     """
 
     template_name = "users/login.html"
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        # Server sends hash(secret_key) to client
+        # Client creates encryption/decryption key as hash(user_email + hash(secret_key))
+        # and saves it in the session storage
+        context["hashed_key_part"] = hash_email(settings.SECRET_KEY)
+
+        return context
 
 
 class CustomPasswordChangeView(
