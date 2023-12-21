@@ -9,8 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import UpdateView
-from users.forms import CustomPasswordChangeForm, UserEmailForm
+from users.forms import CustomPasswordChangeForm
 
 User = get_user_model()
 
@@ -156,15 +155,17 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class EmailUpdateView(LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, UpdateView):
-    """
-    This view handles the updating of the email address of users.
-    """
-
-    model = User
-    form_class = UserEmailForm
-    template_name = "users/email_update.html"
-    success_url = reverse_lazy("users:index")
+# Because the email address is used to encrypt the mood diary entry detail field,
+# we disable the possibility to change the email address for now.
+# class EmailUpdateView(LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, UpdateView):
+#     """
+#     This view handles the updating of the email address of users.
+#     """
+#
+#     model = User
+#     form_class = UserEmailForm
+#     template_name = "users/email_update.html"
+#     success_url = reverse_lazy("users:index")
 
 
 class TogglePushNotificationsView(AuthenticatedClientRoleMixin, View):

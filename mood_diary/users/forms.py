@@ -1,6 +1,6 @@
 from typing import Generator
 
-from core.forms import BaseModelForm, FormWithUIClassMixin
+from core.forms import FormWithUIClassMixin
 from core.utils import hash_email
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (
@@ -17,16 +17,18 @@ from django.utils.http import urlsafe_base64_encode
 User = get_user_model()
 
 
-class UserEmailForm(BaseModelForm):
-    """
-    A form for updating a user's email address.
-    """
-
-    class Meta:
-        model = User
-        fields = [
-            "email",
-        ]
+# Because the email address is used to encrypt the mood diary entry detail field,
+# we disable the possibility to change the email address for now.
+# class UserEmailForm(BaseModelForm):
+#     """
+#     A form for updating a user's email address.
+#     """
+#
+#     class Meta:
+#         model = User
+#         fields = [
+#             "email",
+#         ]
 
 
 class CustomPasswordChangeForm(FormWithUIClassMixin, PasswordChangeForm):
