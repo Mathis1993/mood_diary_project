@@ -15,4 +15,4 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
-# FROM_EMAIL = "test@test.de"
+FROM_EMAIL = "test@test.de"
