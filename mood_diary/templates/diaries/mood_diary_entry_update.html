@@ -23,4 +23,21 @@
 
 {% block scripts %}
     {{ form.media.js }}
+    {# Encrypt the value from the detail field before sending it to the server  #}
+    <script>
+        $(document).ready(function () {
+            var hashed_key = sessionStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
+            var selector = $('textarea[name="details"]')
+            var details = selector.val(); // Get details from the form's details field
+            if (details) {
+                var decrypted_details = CryptoJS.AES.decrypt(details, hashed_key).toString(CryptoJS.enc.Utf8); // Decrypt the details
+                selector.val(decrypted_details); // Set the decrypted details as the text content of the details field
+            }
+            $('form').submit(function (event) {
+                var details_final = selector.val();
+                var encrypted_details = CryptoJS.AES.encrypt(details_final, hashed_key); // Encrypt the details
+                selector.val(encrypted_details); // Set the encrypted details onto the form's details field
+            });
+        });
+    </script>
 {% endblock %}

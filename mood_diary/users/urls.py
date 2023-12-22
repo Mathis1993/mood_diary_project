@@ -20,7 +20,9 @@ urlpatterns = [
     ),
     path("profile/", views.ProfilePageView.as_view(), name="profile"),
     path("change_password/", views.CustomPasswordChangeView.as_view(), name="change_password"),
-    path("<int:pk>/change_email/", views.EmailUpdateView.as_view(), name="change_email"),
+    # Because the email address is used to encrypt the mood diary entry detail field,
+    # we disable the possibility to change the email address for now.
+    # path("<int:pk>/change_email/", views.EmailUpdateView.as_view(), name="change_email"),
     path(
         "password_change_done/",
         auth_views.PasswordChangeDoneView.as_view(template_name="users/password_change_done.html"),

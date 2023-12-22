@@ -23,6 +23,11 @@ class Client(TrackCreationAndUpdates):
     )
     active = models.BooleanField(default=True)
     push_notifications_granted = models.BooleanField(null=True, blank=True, default=None)
+    # client_key is stored encrypted with the counselor user so that the counselor
+    # can decrypt the information from mood diary entries' detail fields for their clients
+    # It is encrypted with the counselor's key composed of the counselor's email address,
+    # their user_id and the secret_key from the settings
+    client_key_encrypted = models.TextField()
 
     def save(self, *args, **kwargs):
         """

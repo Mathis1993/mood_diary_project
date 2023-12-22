@@ -1,4 +1,6 @@
+from core.utils import hash_email
 from core.views import AuthenticatedClientRoleMixin
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,8 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import UpdateView
-from users.forms import CustomPasswordChangeForm, UserEmailForm
+from users.forms import CustomPasswordChangeForm
 
 User = get_user_model()
 
@@ -69,6 +70,16 @@ class CustomLoginView(LoginView):
     """
 
     template_name = "users/login.html"
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        # Server sends hash(secret_key) to client
+        # Client creates encryption/decryption key as hash(user_email + hash(secret_key))
+        # and saves it in the session storage
+        context["hashed_key_part"] = hash_email(settings.SECRET_KEY)
+
+        return context
 
 
 class CustomPasswordChangeView(
@@ -144,15 +155,17 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class EmailUpdateView(LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, UpdateView):
-    """
-    This view handles the updating of the email address of users.
-    """
-
-    model = User
-    form_class = UserEmailForm
-    template_name = "users/email_update.html"
-    success_url = reverse_lazy("users:index")
+# Because the email address is used to encrypt the mood diary entry detail field,
+# we disable the possibility to change the email address for now.
+# class EmailUpdateView(LoginRequiredMixin, SetBaseTemplateBasedOnUserRoleMixin, UpdateView):
+#     """
+#     This view handles the updating of the email address of users.
+#     """
+#
+#     model = User
+#     form_class = UserEmailForm
+#     template_name = "users/email_update.html"
+#     success_url = reverse_lazy("users:index")
 
 
 class TogglePushNotificationsView(AuthenticatedClientRoleMixin, View):

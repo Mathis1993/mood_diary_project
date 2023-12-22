@@ -16,3 +16,25 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {{ hashed_key_part|json_script:"hashed_key_part" }}
+    {# hashed_key = hash(email, hash(secret_key)) #}
+    <script>
+        const hashed_key_part = JSON.parse(document.getElementById('hashed_key_part').textContent);
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                var email = $('input[name="email"]').val(); // Get email from the form's email field
+                console.log(email);
+                var hashed_key_client = CryptoJS.HmacSHA256(email, hashed_key_part).toString();
+                console.log(hashed_key_client);
+                var hashed_key_counselor = sessionStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
+                console.log(hashed_key_counselor);
+                var encrypted_key_client = CryptoJS.AES.encrypt(hashed_key_client, hashed_key_counselor).toString(); // Encrypt the hashed key
+                console.log(encrypted_key_client);
+                $('input[name="client_key_encrypted"]').val(encrypted_key_client); // Set the encrypted client key onto the form's hidden client_key_encrypted field
+            });
+        });
+    </script>
+{% endblock %}
