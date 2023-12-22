@@ -97,11 +97,28 @@
 <!-- Core plugin JavaScript-->
 <script src="{% static 'theme/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
+<!-- Crypto Library-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.js"></script>
+
 <!-- Custom scripts for all pages-->
 <script src="{% static 'theme/js/sb-admin-2.min.js' %}"></script>
 
 <!-- Installation Prompt -->
 <script src="{% static 'js/installation.js' %}"></script>
+
+{% load static %}
+{{ hashed_key_part|json_script:"hashed_key_part" }}
+{# hashed_key = hash(email, hash(secret_key)) #}
+<script>
+    const hashed_key_part = JSON.parse(document.getElementById('hashed_key_part').textContent);
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            var email = $('input[name="username"]').val(); // Get email from the form's email field
+            var hashed_key = CryptoJS.HmacSHA256(email, hashed_key_part).toString();
+            sessionStorage.setItem('hashed_key', hashed_key);
+        });
+    });
+</script>
 
 </body>
 

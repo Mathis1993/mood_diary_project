@@ -4,6 +4,7 @@ import pytest
 from clients.forms import ClientCreationForm
 from clients.models import Client
 from clients.tests.factories import ClientFactory
+from core.utils import hash_email
 from diaries.models import MoodDiary, MoodDiaryEntry
 from diaries.tests.factories import MoodDiaryEntryFactory
 from django.conf import settings
@@ -56,13 +57,15 @@ def test_create_client_view_post_valid_form(create_user, create_response):
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "test@example.com", "identifier": "client1"},
+        data={"email": "test@example.com", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
     assert "email" in response.context
     assert "password" in response.context
-    assert User.objects.filter(email="test@example.com", role=User.Role.CLIENT).exists()
+    assert User.objects.filter(
+        email_hash=hash_email("test@example.com"), role=User.Role.CLIENT
+    ).exists()
     assert Client.objects.filter(identifier="client1", counselor=counselor).exists()
     assert MoodDiary.objects.filter(client__identifier="client1").exists()
     assert RuleClient.objects.count() == 3
@@ -83,7 +86,7 @@ def test_create_client_view_post_invalid_email(create_user, create_response):
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "invalid-email", "identifier": "client1"},
+        data={"email": "invalid-email", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -103,7 +106,7 @@ def test_create_client_view_post_email_sending_fails(
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "test@example.com", "identifier": "client1"},
+        data={"email": "test@example.com", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK
@@ -122,7 +125,7 @@ def test_create_client_view_post_client_already_exists(create_user, create_respo
         user=counselor,
         url=url,
         method="POST",
-        data={"email": "test@example.com", "identifier": "client1"},
+        data={"email": "test@example.com", "identifier": "client1", "client_key_encrypted": "key"},
     )
 
     assert response.status_code == http.HTTPStatus.OK

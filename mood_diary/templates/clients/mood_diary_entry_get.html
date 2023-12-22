@@ -39,7 +39,7 @@
                     {% if entry.details %}
                         <h4 class="text-md-left">{% translate "Details" %}</h4>
                         <div class="text">
-                            <p>{{ entry.details }}</p>
+                            <p id="mood_diary_entry_detail_field">{{ entry.details }}</p>
                         </div>
                     {% endif %}
                 </div>
@@ -47,4 +47,22 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {{ encrypted_client_key|json_script:"encrypted_client_key" }}
+    <script>
+        const encrypted_client_key = JSON.parse(document.getElementById('encrypted_client_key').textContent);
+        $(document).ready(function () {
+            var detailsField = document.querySelector('p[id="mood_diary_entry_detail_field"]');
+            console.log(detailsField)
+            if (detailsField) {
+                var hashed_key = sessionStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
+                var client_key = CryptoJS.AES.decrypt(encrypted_client_key, hashed_key).toString(CryptoJS.enc.Utf8); // Decrypt the client key
+                var decrypted_details = CryptoJS.AES.decrypt(detailsField.textContent, client_key).toString(CryptoJS.enc.Utf8); // Decrypt the details
+                detailsField.textContent = decrypted_details; // Set the decrypted details as the value of the details field
+            }
+        });
+    </script>
 {% endblock %}

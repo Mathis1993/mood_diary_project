@@ -1,34 +1,28 @@
 from __future__ import annotations
 
 from core.models import TrackCreationAndUpdates
+from core.utils import hash_email
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 
 class UserManager(BaseUserManager):
-    """
-    Custom user model manager that is used for the `User` model.
-    """
-
-    def create_superuser(self, email: str, password: str) -> User:
+    def create_superuser(
+        self, email: str = None, email_hash: str = None, password: str = None, **kwargs
+    ):
         """
-        Create and save a superuser with the given email and password.
-        Sets the user's role to `User.Role.ADMIN` and the
-        `first_login_completed` flag to `True`.
-
-        Parameters
-        ----------
-        email: str
-        password: str
-
-        Returns
-        -------
-        User
-            The created superuser.
+        The email should be provided here as a raw string in either the `email` or the
+        `email_hash` argument. This is done to keep compatibility with pytest-django's
+        test client fixtures like `admin_client`.
         """
+        if email is None and email_hash is None:
+            raise TypeError("Superusers must have an email address.")
         if password is None:
             raise TypeError("Superusers must have a password.")
+
+        if email is None:
+            email = email_hash
 
         user = self.model(email=email)
         user.set_password(password)
@@ -56,7 +50,11 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
         COUNSELOR = "counselor"
         CLIENT = "client"
 
-    email = models.EmailField(db_index=True, unique=True, max_length=255)
+    # empty placeholder, field is just temporarily filled when django's
+    # internal password reset is used
+    email = models.EmailField(null=True, blank=True, default=None)
+    # just store email hash for better security
+    email_hash = models.CharField(db_index=True, unique=True, max_length=64)
     role = models.CharField(choices=Role.choices, max_length=255)
     first_login_completed = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -66,7 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
     is_staff = models.BooleanField(default=False)
 
     # The `USERNAME_FIELD` property tells us which field we will use to log in
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "email_hash"
     EMAIL_FIELD = "email"
 
     # The BaseUserManager contains a "get_by_natural_key" method using the
@@ -90,3 +88,9 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
         Used as authorization check.
         """
         return self.role == User.Role.COUNSELOR
+
+    def save(self, *args, **kwargs):
+        if self.email:
+            self.email_hash = hash_email(self.email)
+            self.email = None
+        super().save(*args, **kwargs)

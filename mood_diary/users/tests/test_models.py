@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 import pytest
+from core.utils import hash_email
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -23,9 +24,10 @@ def test_create_superuser():
 
     assert not user_manager.exists()
 
-    user = user_manager.create_superuser(email, password)
+    user = user_manager.create_superuser(email, None, password)
 
-    assert user.email == email
+    assert user.email is None
+    assert user.email_hash == hash_email(email)
     assert user.check_password(password)
     assert user.is_admin()
     assert user.is_staff is True
@@ -51,7 +53,8 @@ def test_user_model_fields():
 
     user = User.objects.create(email=email, role=role)
 
-    assert user.email == email
+    assert user.email is None
+    assert user.email_hash == hash_email(email)
     assert user.role == role
     assert user.first_login_completed is False
     assert user.is_staff is False
@@ -109,3 +112,12 @@ def test_user_model_authorization_checks():
     assert client_user.is_client()
     assert not counselor.is_client()
     assert not client_user.is_counselor()
+
+
+@pytest.mark.django_db
+def test_user_model_save():
+    user = User(email="a@b.de", role=User.Role.CLIENT)
+    user.save()
+    user.refresh_from_db()
+    assert user.email is None
+    assert user.email_hash is not None

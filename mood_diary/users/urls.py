@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy
 from users import views
-from users.forms import CustomSetPasswordForm
+from users.forms import CustomPasswordResetForm, CustomSetPasswordForm
 
 app_name = "users"
 
@@ -20,7 +20,9 @@ urlpatterns = [
     ),
     path("profile/", views.ProfilePageView.as_view(), name="profile"),
     path("change_password/", views.CustomPasswordChangeView.as_view(), name="change_password"),
-    path("<int:pk>/change_email/", views.EmailUpdateView.as_view(), name="change_email"),
+    # Because the email address is used to encrypt the mood diary entry detail field,
+    # we disable the possibility to change the email address for now.
+    # path("<int:pk>/change_email/", views.EmailUpdateView.as_view(), name="change_email"),
     path(
         "password_change_done/",
         auth_views.PasswordChangeDoneView.as_view(template_name="users/password_change_done.html"),
@@ -33,6 +35,7 @@ urlpatterns = [
             from_email=settings.FROM_EMAIL,
             template_name="users/password_reset.html",
             success_url=reverse_lazy("users:password_reset_done"),
+            form_class=CustomPasswordResetForm,
         ),
         name="reset_password",
     ),

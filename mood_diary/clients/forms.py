@@ -9,3 +9,4 @@ class ClientCreationForm(BaseForm):
 
     email = forms.EmailField(label="Email")
     identifier = forms.CharField(label="Identifier")
+    client_key_encrypted = forms.CharField(label="Client key encrypted", widget=forms.HiddenInput())
