@@ -4,7 +4,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15.2
+    image: postgres:16.1
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -15,7 +15,7 @@ services:
       - ./.docker/postgres_data:/var/lib/postgresql/data
 
   redis:
-    image: redis:6.0.20-alpine
+    image: redis:7.2.3-alpine
     ports:
       - '6379:6379'
     volumes:

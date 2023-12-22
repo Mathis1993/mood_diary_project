@@ -1,5 +1,5 @@
 # Dockerfile for the Django application
-FROM python:3.11 AS base
+FROM python:3.12.1 AS base
 
 # Working directory
 RUN mkdir -p /app
@@ -8,7 +8,8 @@ WORKDIR /app
 COPY ./requirements/. ./requirements/
 
 # Install dependencies
-RUN pip install -r requirements/base.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements/base.txt
 
 COPY . .
 
