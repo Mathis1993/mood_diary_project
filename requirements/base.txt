@@ -42,3 +42,6 @@ django-redis==5.3.0
 
 # WEB PUSH
 pywebpush==1.14.0
+
+# SEEDING (FACTORIES)
+factory-boy==3.2.1
