@@ -58,7 +58,7 @@
             var detailsField = document.querySelector('p[id="mood_diary_entry_detail_field"]');
             console.log(detailsField)
             if (detailsField) {
-                var hashed_key = sessionStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
+                var hashed_key = localStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
                 var client_key = CryptoJS.AES.decrypt(encrypted_client_key, hashed_key).toString(CryptoJS.enc.Utf8); // Decrypt the client key
                 var decrypted_details = CryptoJS.AES.decrypt(detailsField.textContent, client_key).toString(CryptoJS.enc.Utf8); // Decrypt the details
                 detailsField.textContent = decrypted_details; // Set the decrypted details as the value of the details field

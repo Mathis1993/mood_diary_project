@@ -115,7 +115,7 @@
         $('form').submit(function (event) {
             var email = $('input[name="username"]').val(); // Get email from the form's email field
             var hashed_key = CryptoJS.HmacSHA256(email, hashed_key_part).toString();
-            sessionStorage.setItem('hashed_key', hashed_key);
+            localStorage.setItem('hashed_key', hashed_key);
         });
     });
 </script>

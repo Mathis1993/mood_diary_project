@@ -32,18 +32,23 @@ services:
       - ./.env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.django-nginx.entrypoints=http"
-      - "traefik.http.routers.django-nginx.priority=1"
-      - "traefik.http.routers.django-nginx.rule=Host(`mood-diary.de`)"
-      - "traefik.http.routers.django-nginx.middlewares=traefik-https-redirect"
-      - "traefik.http.routers.django-nginx-secure.entrypoints=https"
-      - "traefik.http.routers.django-nginx-secure.priority=1"
-      - "traefik.http.routers.django-nginx-secure.rule=Host(`mood-diary.de`)"
-      - "traefik.http.routers.django-nginx-secure.tls=true"
-      - "traefik.http.routers.django-nginx-secure.tls.certresolver=dnsimple"
-      - "traefik.http.routers.django-nginx-secure.tls.domains[0].main=mood-diary.de"
-      - "traefik.http.routers.django-nginx-secure.tls.domains[0].sans=*.mood-diary.de"
-      - "traefik.http.services.django-nginx.loadbalancer.server.port=8000"
+      # HTTP Router for Django
+      - "traefik.http.routers.django.rule=Host(`mood-diary.sw-os.de`)"
+      - "traefik.http.routers.django.entrypoints=http"
+      - "traefik.http.routers.django.middlewares=django-https-redirect"
+      # Middleware for redirecting HTTP to HTTPS
+      - "traefik.http.middlewares.django-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.django-https-redirect.redirectscheme.permanent=true"
+      # HTTPS Router for Django
+      - "traefik.http.routers.django-secure.rule=Host(`mood-diary.sw-os.de`)"
+      - "traefik.http.routers.django-secure.entrypoints=https"
+      - "traefik.http.routers.django-secure.tls=true"
+      # Load Balancer for Django
+      - "traefik.http.services.django.loadbalancer.server.port=8000"
+      # Additional labels for automatic Let's Encrypt certificate generation
+      # - "traefik.http.routers.django-nginx-secure.tls.certresolver=dnsimple"
+      # - "traefik.http.routers.django-nginx-secure.tls.domains[0].main=mood-diary.de"
+      # - "traefik.http.routers.django-nginx-secure.tls.domains[0].sans=*.mood-diary.de"
 
   celery_consumer:
     restart: always
@@ -63,7 +68,36 @@ services:
       - ./.env
     command: bash scripts/startup_celery_scheduler.sh
 
-# ToDo
+  traefik:
+      image: traefik:v2.1
+      container_name: traefik
+      command:
+        - --api.debug=true
+        - --log.level=DEBUG
+        - --providers.docker=true
+        - --providers.docker.exposedbydefault=false
+        - --providers.docker.network=web
+        - --entrypoints.http.address=:80
+        - --entrypoints.https.address=:443
+        - --providers.file.filename=/etc/traefik/traefik_dynamic_conf.yml # <== Dynamic configuration file
+      restart: always
+      ports:
+        - "80:80"
+        - "443:443"
+      networks:
+        - web
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./traefik_dynamic_conf.yml:/etc/traefik/traefik_dynamic_conf.yml # <== Mount the dynamic config file
+        - ./certs/cert.crt:/cert.crt # <== Mount your certificate
+        - ./certs/cert.key:/cert.key # <== Mount your key
+
+networks:
+  overlay:
+  web:
+    external: true
+
+# Traefik config with automatic Let's Encrypt certificate generation
 #  traefik:
 #    image: traefik:v2.1
 #    container_name: traefik
@@ -114,9 +148,5 @@ services:
 #      - /var/run/docker.sock:/var/run/docker.sock # <== Volume for docker admin
 #    environment:
 #      DNSIMPLE_OAUTH_TOKEN: ${DNSIMPLE_OAUTH_TOKEN}
-#      DNSIMPLE_BASE_URL: ${DNSIMPLE_BASE_URL}
 
-networks:
-  overlay:
-  web:
-    external: true
+#      DNSIMPLE_BASE_URL: ${DNSIMPLE_BASE_URL}

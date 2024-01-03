@@ -26,7 +26,7 @@
     {# Encrypt the value from the detail field before sending it to the server  #}
     <script>
         $(document).ready(function () {
-            var hashed_key = sessionStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
+            var hashed_key = localStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
             var selector = $('textarea[name="details"]')
             var details = selector.val(); // Get details from the form's details field
             if (details) {

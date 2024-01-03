@@ -70,6 +70,21 @@ def seed_database_staging():
     create_contents()
 
 
+def seed_database_production():
+    """
+    Seed the production database with a superuser and normalized entities.
+
+    Returns
+    -------
+    None
+    """
+    User.objects.create_superuser(
+        email="mathis@mood-diary.de",
+        password=settings.TEST_USER_PASSWORD,
+    )
+    create_contents()
+
+
 def create_contents():
     """
     Create some normalized entities in the database, like the items for the mood scale.
