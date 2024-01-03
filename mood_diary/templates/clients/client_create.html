@@ -29,7 +29,7 @@
                 console.log(email);
                 var hashed_key_client = CryptoJS.HmacSHA256(email, hashed_key_part).toString();
                 console.log(hashed_key_client);
-                var hashed_key_counselor = sessionStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
+                var hashed_key_counselor = localStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
                 console.log(hashed_key_counselor);
                 var encrypted_key_client = CryptoJS.AES.encrypt(hashed_key_client, hashed_key_counselor).toString(); // Encrypt the hashed key
                 console.log(encrypted_key_client);

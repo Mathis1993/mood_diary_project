@@ -30,7 +30,7 @@
             $('form').submit(function (event) {
                 var selector = $('textarea[name="details"]')
                 var details = selector.val(); // Get details from the form's details field
-                var hashed_key = sessionStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
+                var hashed_key = localStorage.getItem('hashed_key'); // Retrieve the hashed key from the session storage
                 var encrypted_details = CryptoJS.AES.encrypt(details, hashed_key); // Encrypt the details
                 selector.val(encrypted_details); // Set the encrypted details onto the form's details field
             });
