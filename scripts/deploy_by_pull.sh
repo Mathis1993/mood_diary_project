@@ -11,14 +11,14 @@ git checkout main
 # Fetch the latest changes from the remote repository
 git fetch
 
-# Check for changes
+# Reset changes to docker-compose file before checking for remote changes
+git reset --hard main
+# Check for remote changes
 if [ -n "$(git diff origin/main)" ]; then
   # If there are changes, pull the changes (resetting any local changes before pulling)
-  git reset --hard origin/main
   git pull
 
   # Choose correct compose file
-  rm docker-compose.yml
   cp ./infra/production/docker-compose.yml .
   cp ./infra/production/traefik_dynamic_conf.yml .
 
@@ -30,4 +30,7 @@ if [ -n "$(git diff origin/main)" ]; then
   docker login -u "$REGISTRY_USER" -p "$REGISTRY_TOKEN" "$REGISTRY_NAME"
   docker compose pull && docker compose up -d
   docker compose exec django python manage.py migrate
+else
+  cp ./infra/production/docker-compose.yml .
+  cp ./infra/production/traefik_dynamic_conf.yml .
 fi
