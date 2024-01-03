@@ -15,3 +15,6 @@ celerybeat-schedule
 
 # Ngrok
 ngrok
+
+# ssh
+.ssh/
