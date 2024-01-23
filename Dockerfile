@@ -5,6 +5,12 @@ FROM python:3.12.1 AS base
 RUN mkdir -p /app
 WORKDIR /app
 
+# Create a new user 'user' and give it sudo privileges (running as root is considered a security risk)
+RUN useradd -m user && echo "user:user" | chpasswd && adduser user sudo
+
+# Switch to 'user'
+USER user
+
 COPY ./requirements/. ./requirements/
 
 # Install dependencies
@@ -20,6 +26,9 @@ RUN chown -R 1000:1000 /app && \
 CMD ["scripts/startup_django.sh"]
 
 FROM base AS staging
+
+# Switch to 'user'
+USER user
 
 # Install dependencies
 RUN pip install -r requirements/test.txt
