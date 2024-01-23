@@ -19,8 +19,8 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
-# Ensure ownership and permissions (first linux user has usually id 1000)
-RUN chown -R 1000:1000 /app && \
+# Ensure ownership and permissions
+RUN chown -R user:user /app && \
     chmod +x /app/scripts/startup_django.sh
 
 CMD ["scripts/startup_django.sh"]
