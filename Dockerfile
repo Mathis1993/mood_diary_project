@@ -27,6 +27,9 @@ CMD ["scripts/startup_django.sh"]
 
 FROM base AS staging
 
+# Switch to 'root'
+USER root
+
 # Install dependencies
 RUN pip install -r requirements/test.txt
 
