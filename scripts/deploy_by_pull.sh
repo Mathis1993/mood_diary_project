@@ -9,14 +9,14 @@ source .env
 git checkout main
 
 # Fetch the latest changes from the remote repository
-git fetch
+git -c http.extraheader="AUTHORIZATION: bearer $GIT_TOKEN" fetch
 
 # Reset changes to docker-compose file before checking for remote changes
 git reset --hard main
 # Check for remote changes
-if [ -n "$(git diff origin/main)" ]; then
+if [ -n "$(git -c http.extraheader="AUTHORIZATION: bearer $GIT_TOKEN" diff origin/main)" ]; then
   # If there are changes, pull the changes (resetting any local changes before pulling)
-  git pull
+  git -c http.extraheader="AUTHORIZATION: bearer $GIT_TOKEN" pull
 
   # Choose correct compose file
   cp ./infra/production/docker-compose.yml .
