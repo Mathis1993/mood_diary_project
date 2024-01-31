@@ -33,16 +33,16 @@ services:
     labels:
       - "traefik.enable=true"
       # HTTP Router for Django
-      # - "traefik.http.routers.django.rule=Host(`mood-diary.sw-os.de`)"
-      - "traefik.http.routers.django.rule=Host(`mood-diary.de`)"
+      - "traefik.http.routers.django.rule=Host(`mood-diary.sw-os.de`)"
+      # - "traefik.http.routers.django.rule=Host(`mood-diary.de`)"
       - "traefik.http.routers.django.entrypoints=http"
       - "traefik.http.routers.django.middlewares=django-https-redirect"
       # Middleware for redirecting HTTP to HTTPS
       - "traefik.http.middlewares.django-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.django-https-redirect.redirectscheme.permanent=true"
       # HTTPS Router for Django
-      # - "traefik.http.routers.django-secure.rule=Host(`mood-diary.sw-os.de`)"
-      - "traefik.http.routers.django-secure.rule=Host(`mood-diary.de`)"
+      - "traefik.http.routers.django-secure.rule=Host(`mood-diary.sw-os.de`)"
+      # - "traefik.http.routers.django-secure.rule=Host(`mood-diary.de`)"
       - "traefik.http.routers.django-secure.entrypoints=https"
       - "traefik.http.routers.django-secure.tls=true"
       # Load Balancer for Django
