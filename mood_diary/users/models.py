@@ -73,19 +73,19 @@ class User(AbstractBaseUser, PermissionsMixin, TrackCreationAndUpdates):
 
     def is_admin(self) -> bool:
         """
-        Used as authorization check.
+        Used as an authorization check.
         """
         return self.role == User.Role.ADMIN
 
     def is_client(self) -> bool:
         """
-        Used as authorization check.
+        Used as an authorization check.
         """
         return self.role == User.Role.CLIENT
 
     def is_counselor(self) -> bool:
         """
-        Used as authorization check.
+        Used as an authorization check.
         """
         return self.role == User.Role.COUNSELOR
 
