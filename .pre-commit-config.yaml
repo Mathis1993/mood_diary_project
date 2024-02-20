@@ -26,7 +26,7 @@ repos:
         args: ["--filter-files"]
 
   - repo: https://github.com/PyCQA/flake8.git
-    rev: 3.8.1
+    rev: 7.0.0
     hooks:
       - id: flake8
         exclude: ".git .hg .idea venv __pycache__ */migrations/* config"
