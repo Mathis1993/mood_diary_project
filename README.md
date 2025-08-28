@@ -1,6 +1,4 @@
 # Mood Diary Application
-Author: Mathis Erichsen
-
 This is my bachelor thesis' software development project. For the thesis itself, see the [this pdf file](https://github.com/Mathis1993/mood_diary_project/blob/develop/Thesis.pdf).
 
 ## Description
